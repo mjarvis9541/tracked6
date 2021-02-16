@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load customfilters %}
+{% load humanize %} 
+{% block content %}
+
+<h2 class="">{{ meal_name }}, {{ date|date:"l, j M" }}</h2>
+<h1 class="mb-1">Add Food</h1>
+<form>
+<div class="diary-create-title">
+    <div class="search span-col-6">
+        {{ form.q }}
+        
+    </div>
+    <div class="span-col-2">{{ form.brand }}</div>
+    <div class="span-col-2">{{ form.category }}</div>
+    <div class="span-col-2">{{ form.sort }}</div>
+    <div class="span-col-3">{{ formset.paginator.count }} Results</div>
+    <div class="span-col-3 text-end">
+        {% if request.GET.q or request.GET.brand or request.GET.category or request.GET.sort %}
+        <a class="btn" href="{% url 'diaries:create' date.year date.month date.day meal %}">Clear</a>
+        {% endif %}
+        <button class="btn">Search</button>
+    </div>
+</div>
+</form>
+
+
+<div class="mt-1 mb-1">Select the food you wish to add to your diary below.</div>
+
+
+<div style="font-weight: bold; color: red;">{{ management_data.non_form_errors.as_text  }}</div>
+
+<form method="post"> {% csrf_token %} {{ management_data.management_form }}
+<div class="diary-create-grid">
+    <div class="grid-title food-name">Food</div>
+    
+    <div class="grid-title">Serving</div>
+    <div class="grid-title">Calories</div>
+    <div class="grid-title">Protein</div>
+    <div class="grid-title">Carbs</div>
+    <div class="grid-title">Fat</div>
+    <div class="grid-title food-name">Qty</div>
+
+
+    {% for object in formset %}
+    <div class="grid-item food-name"><a href="" tabindex=-1>{{ object.initial.name }}, {{ object.initial.food_brand }}</a></div>
+    
+    <div class="grid-item">{{ object.initial.data_value_measurement }}</div>
+    <div class="grid-item">{{ object.initial.energy|intcomma }}kcal</div>
+    <div class="grid-item">{{ object.initial.protein }}</div>
+    <div class="grid-item">{{ object.initial.carbohydrate }}</div>
+    <div class="grid-item">{{ object.initial.fat }}</div>
+    <div class="grid-item">{{ object.quantity }}</div>
+    
+
+    {% endfor %}
+</div>
+
+
+
+    <div class="pagination-grid">
+        <div >
+            <small style="padding-left: .5rem;">Page <strong>{{ formset.number }}</strong> of <strong>{{ formset.paginator.num_pages }}</strong></small>
+        </div>
+    
+        <div class="pagination text-end mb-1">
+            {% if formset.has_previous %}
+            <a href="?{% param_replace page=formset.previous_page_number %}">Previous</a>
+            {% else %}
+            {% endif %}
+    
+            {% for num in formset.paginator.page_range %}
+            {% if formset.number == num %}
+            <a class="active" href="?{% param_replace page=num %}">{{ num }}</a>
+            {% elif num > formset.number|add:'-3' and num < formset.number|add:'3' %} 
+            <a class="" href="?{% param_replace page=num %}">{{ num }}</a>
+            {% endif %}
+            {% endfor %}
+    
+            {% if formset.has_next %}
+            <a href="?{% param_replace page=formset.next_page_number %}">Next</a>
+            {% else %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="diary-create-btn-row">
+        <a class="btn" href="{% url 'diaries:day' date.year date.month date.day %}">Return to Diary</a>
+        <div class="btn-order">
+            <button class="btn" tabindex="2" name="save">Add Food</button>
+            <button class="btn" name="another">Save and add more</button>
+        </div>
+    </div>
+</form>
+
+
+
+
+
+
+
+
+
+{% endblock content %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 style="margin-top: .5rem;">{{ meal_name  }}, {{ date|date:"l, j M"  }}</h1>
+
+
+<div class="diary-meal-list-grid">
+
+{% for object in object_list %}
+
+<h4 class="grid-item span-col-2">
+    <a href="{% url 'diaries:update' object.id %}">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a>
+</h4>
+<div class="hidden-desktop grid-item">Calories</div>
+<div class="grid-item text-end">{{ object.energy }} kcal</div>
+<div class="hidden-desktop grid-item">Protein</div>
+<div class="grid-item text-end">{{ object.protein|floatformat:1 }} g</div>
+<div class="hidden-desktop grid-item">Carbs</div>
+<div class="grid-item text-end">{{ object.carbohydrate|floatformat:1 }} g</div>
+<div class="hidden-desktop grid-item">Fat</div>
+<div class="grid-item text-end">{{ object.fat|floatformat:1 }} g</div>
+
+
+
+{% endfor %}
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}

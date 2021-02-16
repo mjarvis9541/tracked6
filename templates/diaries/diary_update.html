@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2 class="">{{ object.get_meal_display  }}, {{ object.date|date:"l, j M" }}</h2>
+<h1 class="mb-1">Update</h1>
+<h2 class="mb-1">{{ object.food_name }}, {{ object.brand_name }},
+    {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}
+</h2>
+
+
+
+
+
+<div class="diary-detail-grid">
+    <div class="diary-detail-grid-item">
+        <h3 class="mb-1">Update</h3>
+
+        <form action="" method="post"> {% csrf_token %}
+            <div class="mb-2">
+                {{ form.date.label }}
+                {{ form.date }}
+            </div>
+            <div class="mb-2">
+                {{ form.meal.label }}
+                {{ form.meal }}
+            </div>
+            <div class="mb-2">
+                {{ form.quantity.label }} (of {{ object.food.serving }})
+                {{ form.quantity }}
+            </div>
+
+        
+
+    </div>
+
+
+    <div class="diary-detail-grid-item">
+        <h3 class="mb-">Nutritional Information</h3>
+        <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <th style="width: 33.3%" class="text-start"><strong>Typical Values</strong></th>
+                    
+                    <th style="width: 33.3%" class="text-end"><strong>Per
+                        {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</strong></th>
+                        <th style="width: 33.3%" class="text-end"><strong>Per {{ object.food.serving }}</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Calories:</td>
+                    <td class="text-end">{{ object.energy }} kcal </td>
+                    <td class="text-end grey-50">{{ object.food.energy }} kcal </td>
+                    
+                </tr>
+                <tr>
+                    <td>Fat:</td>
+                    <td class="text-end">{{ object.fat|floatformat:1 }} g </td>
+                    <td class="text-end grey-50">{{ object.food.fat }} g </td>
+                    
+                </tr>
+                <tr>
+                    <td>Saturates:</td>
+                    <td class="text-end">{{ object.saturates|floatformat:1 }} g </td>
+                    <td class="text-end grey-50">{{ object.food.saturates }} g </td>
+                    
+                </tr>
+                <tr>
+                    <td>Carbohydrate:</td>
+                    <td class="text-end">{{ object.carbohydrate|floatformat:1 }} g </td>
+                    <td class="text-end grey-50">{{ object.food.carbohydrate }} g </td>
+                    
+                </tr>
+                <tr>
+                    <td>Sugars:</td>
+                    <td class="text-end">{{ object.sugars|floatformat:1 }} g </td>
+                    <td class="text-end grey-50">{{ object.food.sugars }} g </td>
+                   
+                </tr>
+                <tr>
+                    <td>Fibre:</td>
+                    <td class="text-end">{{ object.fibre|floatformat:1 }} g </td>
+                    <td class="text-end grey-50">{{ object.food.fibre }} g </td>
+                   
+                </tr>
+                <tr>
+                    <td>Protein:</td>
+                    <td class="text-end">{{ object.protein|floatformat:1 }} g </td>
+                    <td class="text-end grey-50">{{ object.food.protein }} g </td>
+                   
+                </tr>
+                <tr>
+                    <td>Salt:</td>
+                    <td class="text-end">{{ object.salt|floatformat:2 }} g </td>
+                    <td class="text-end grey-50">{{ object.food.salt }} g </td>
+                   
+                </tr>
+                <tr>
+                    <td>Sodium:</td>
+                    <td class="text-end">{{ object.sodium|floatformat:0 }} mg </td>
+                    <td class="text-end grey-50">{{ object.food.sodium|floatformat:0 }} mg </td>
+                    
+                </tr>
+
+
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+<div class="diary-create-btn-row">
+    <a class="btn" href="{% url 'diaries:day' date.year date.month date.day %}">Return to Diary</a>
+    <div class="btn-order">
+        <button class="btn" tabindex="2" name="save">Save</button>
+        <button class="btn" name="another">Save and add more</button>
+    </div>
+</div>
+
+<div class="mt-2 mb-2 text-end">
+    <a class="btn" href="{% url 'diaries:delete' object.id %}">Delete</a>
+</div>
+
+</form>
+
+
+
+{% endblock content %}

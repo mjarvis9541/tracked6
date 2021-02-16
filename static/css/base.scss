@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,600;0,700;0,800;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@400;500;700;900&display=swap');
+@import 'food_database';
+@import 'text';
+@import 'margins', 'padding';
+@import 'tables';
+@import 'diary_detail';
+@import 'forms';
+@import 'buttons';
+@import 'navbar';
+@import 'diary_list';
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: #0d6efd;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    padding: 0 .75rem; 
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+
+
+
+@media (max-width: 684px) {
+
+}
+
+
+.span-col-2{grid-column: span 2 / auto;}
+.span-col-3{grid-column: span 3 / auto;}
+.span-col-4{grid-column: span 4 / auto;}
+.span-col-5{grid-column: span 5 / auto;}
+.span-col-6{grid-column: span 6 / auto;}
+.span-col-7{grid-column: span 7 / auto;}
+.span-col-8{grid-column: span 8 / auto;}
+.span-col-9{grid-column: span 9 / auto;}
+.span-col-10{grid-column: span 10 / auto;}
+.span-col-11{grid-column: span 11 / auto;}
+.span-col-12{grid-column: span 12 / auto;}
+
+.span-row-2{grid-row: span 2 / auto;}

@@ -1,0 +1,642 @@
+{% extends 'base.html' %}
+{% load humanize %} 
+{% block content %}
+<div class="diary-date">
+<h2 class="grid-item">{{ date|date:"l, j M" }}</h2>
+<div class="grid-item">
+    <a class="btn" href="{% url 'diaries:today' %}">Today</a>
+    <a class="btn" href="{% url 'diaries:day' previous_day.year previous_day.month previous_day.day %}"><i class="fas fa-arrow-left"></i></a>
+    <a class="btn" href="{% url 'diaries:day' next_day.year next_day.month next_day.day %}"><i class="fas fa-arrow-right"></i></a>
+</div>
+</div>
+
+    <form action="" method="POST"> {% csrf_token %}
+    <div class="diary-grid-1">
+
+        <!-- Meal title / desktop title -->
+        <div class="check-item"><input type="checkbox" id="select_all_meal_1"></div>
+        <div class="grid-item span-col-3"><a href=""><h3>Breakfast</h3></a></div>
+        <div class="grid-item text-end hidden-lg"></div>
+        <div class="grid-item text-end hidden-sm">Calories</div>
+        <div class="grid-item text-end hidden-sm">Protein</div>
+        <div class="grid-item text-end hidden-sm">Carbs</div>
+        <div class="grid-item text-end hidden-sm">Fat</div>
+        <div class="grid-item text-end hidden-sm">Saturates</div>
+        <div class="grid-item text-end hidden-sm">Sugar</div>
+        <div class="grid-item text-end hidden-sm">Fibre</div>
+        <div class="grid-item text-end hidden-sm">Salt</div>
+
+        <!-- Meal data -->
+        {% for object in object_list %}
+        {% if object.meal == 1 %}
+        <div class="check-item"><input type="checkbox" class="checkbox_meal_1" name="to_delete" value="{{ object.id }}"></div>
+        <div class="grid-item span-col-3"><a href="{{ object.get_absolute_url }}">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
+        <div class="grid-item text-end ">{{ object.energy|intcomma }}kcal</div>
+        <div class="grid-item text-end hidden-sm">{{ object.protein|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.carbohydrate|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fat|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.saturates|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.sugars|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fibre|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.salt|floatformat:2 }}</div>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Meal total -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item span-col-4 hidden-sm"><strong>Total</strong></div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_1.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_1.total_protein|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_1.total_carbohydrate|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_1.total_fat|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-lg"><strong>{{ total_meal_1.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_1.total_saturates|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_1.total_sugars|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_1.total_fibre|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_1.total_salt|floatformat:2 }}</strong>g</div>
+
+        <!-- lower title - small screens -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item text-end hidden-lg">Protein</div>
+        <div class="grid-item text-end hidden-lg">Carbs</div>
+        <div class="grid-item text-end hidden-lg">Fat</div>
+        <div class="grid-item text-end hidden-lg">Calories</div>
+
+        <div style="padding-top: .25rem;"class="add-food-row mb-1">
+            <div><button class="btn">Delete</button></div>            
+            <div>
+                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 1 %}">Add Food</a>
+            </div>            
+        </div>
+
+
+
+
+        <!-- Meal title / desktop title -->
+        <div class="check-item"><input type="checkbox" id="select_all_meal_2"></div>
+        <div class="grid-item span-col-3"><a href=""><h3>Morning Snack</h3></a></div>
+        <div class="grid-item text-end hidden-lg"></div>
+        <div class="grid-item text-end hidden-sm">Calories</div>
+        <div class="grid-item text-end hidden-sm">Protein</div>
+        <div class="grid-item text-end hidden-sm">Carbs</div>
+        <div class="grid-item text-end hidden-sm">Fat</div>
+        <div class="grid-item text-end hidden-sm">Saturates</div>
+        <div class="grid-item text-end hidden-sm">Sugar</div>
+        <div class="grid-item text-end hidden-sm">Fibre</div>
+        <div class="grid-item text-end hidden-sm">Salt</div>
+
+        <!-- Meal data -->
+        {% for object in object_list %}
+        {% if object.meal == 2 %}
+        <div class="check-item"><input type="checkbox" class="checkbox_meal_2" name="to_delete" value="{{ object.id }}"></div>
+        <div class="grid-item span-col-3"><a href="{{ object.get_absolute_url }}">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
+        <div class="grid-item text-end ">{{ object.energy|intcomma }}kcal</div>
+        <div class="grid-item text-end hidden-sm">{{ object.protein|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.carbohydrate|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fat|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.saturates|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.sugars|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fibre|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.salt|floatformat:2 }}</div>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Meal total -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item span-col-4 hidden-sm"><strong>Total</strong></div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_2.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_2.total_protein|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_2.total_carbohydrate|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_2.total_fat|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-lg"><strong>{{ total_meal_2.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_2.total_saturates|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_2.total_sugars|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_2.total_fibre|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_2.total_salt|floatformat:2 }}</strong>g</div>
+
+        <!-- lower title - small screens -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item text-end hidden-lg">Protein</div>
+        <div class="grid-item text-end hidden-lg">Carbs</div>
+        <div class="grid-item text-end hidden-lg">Fat</div>
+        <div class="grid-item text-end hidden-lg">Calories</div>
+
+        <div style="padding-top: .25rem;"class="add-food-row mb-1">
+            <div><button class="btn">Delete</button></div>            
+            <div>
+                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 2 %}">Add Food</a>
+            </div>            
+        </div>
+
+
+
+        
+        <!-- Meal title / desktop title -->
+        <div class="check-item"><input type="checkbox" id="select_all_meal_3"></div>
+        <div class="grid-item span-col-3"><a href=""><h3>Lunch</h3></a></div>
+        <div class="grid-item text-end hidden-lg"></div>
+        <div class="grid-item text-end hidden-sm">Calories</div>
+        <div class="grid-item text-end hidden-sm">Protein</div>
+        <div class="grid-item text-end hidden-sm">Carbs</div>
+        <div class="grid-item text-end hidden-sm">Fat</div>
+        <div class="grid-item text-end hidden-sm">Saturates</div>
+        <div class="grid-item text-end hidden-sm">Sugar</div>
+        <div class="grid-item text-end hidden-sm">Fibre</div>
+        <div class="grid-item text-end hidden-sm">Salt</div>
+
+        <!-- Meal data -->
+        {% for object in object_list %}
+        {% if object.meal == 3 %}
+        <div class="check-item"><input type="checkbox" class="checkbox_meal_3" name="to_delete" value="{{ object.id }}""></div>
+        <div class="grid-item span-col-3"><a href="{{ object.get_absolute_url }}">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
+        <div class="grid-item text-end ">{{ object.energy|intcomma }}kcal</div>
+        <div class="grid-item text-end hidden-sm">{{ object.protein|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.carbohydrate|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fat|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.saturates|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.sugars|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fibre|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.salt|floatformat:2 }}</div>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Meal total -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item span-col-4 hidden-sm"><strong>Total</strong></div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_3.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_3.total_protein|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_3.total_carbohydrate|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_3.total_fat|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-lg"><strong>{{ total_meal_3.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_3.total_saturates|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_3.total_sugars|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_3.total_fibre|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_3.total_salt|floatformat:2 }}</strong>g</div>
+
+        <!-- lower title - small screens -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item text-end hidden-lg">Protein</div>
+        <div class="grid-item text-end hidden-lg">Carbs</div>
+        <div class="grid-item text-end hidden-lg">Fat</div>
+        <div class="grid-item text-end hidden-lg">Calories</div>
+
+        <div style="padding-top: .25rem;"class="add-food-row mb-1">
+            <div><button class="btn">Delete</button></div>            
+            <div>
+                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 3 %}">Add Food</a>
+            </div>            
+        </div>
+
+
+
+
+        <!-- Meal title / desktop title -->
+        <div class="check-item"><input type="checkbox" id="select_all_meal_4"></div>
+        <div class="grid-item span-col-3"><a href=""><h3>Afternoon Snack</h3></a></div>
+        <div class="grid-item text-end hidden-lg"></div>
+        <div class="grid-item text-end hidden-sm">Calories</div>
+        <div class="grid-item text-end hidden-sm">Protein</div>
+        <div class="grid-item text-end hidden-sm">Carbs</div>
+        <div class="grid-item text-end hidden-sm">Fat</div>
+        <div class="grid-item text-end hidden-sm">Saturates</div>
+        <div class="grid-item text-end hidden-sm">Sugar</div>
+        <div class="grid-item text-end hidden-sm">Fibre</div>
+        <div class="grid-item text-end hidden-sm">Salt</div>
+
+        <!-- Meal data -->
+        {% for object in object_list %}
+        {% if object.meal == 4 %}
+        <div class="check-item"><input type="checkbox" class="checkbox_meal_4" name="to_delete" value="{{ object.id }}"></div>
+        <div class="grid-item span-col-3"><a href="{{ object.get_absolute_url }}">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
+        <div class="grid-item text-end ">{{ object.energy|intcomma }}kcal</div>
+        <div class="grid-item text-end hidden-sm">{{ object.protein|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.carbohydrate|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fat|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.saturates|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.sugars|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fibre|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.salt|floatformat:2 }}</div>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Meal total -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item span-col-4 hidden-sm"><strong>Total</strong></div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_4.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_4.total_protein|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_4.total_carbohydrate|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_4.total_fat|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-lg"><strong>{{ total_meal_4.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_4.total_saturates|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_4.total_sugars|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_4.total_fibre|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_4.total_salt|floatformat:2 }}</strong>g</div>
+
+        <!-- lower title - small screens -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item text-end hidden-lg">Protein</div>
+        <div class="grid-item text-end hidden-lg">Carbs</div>
+        <div class="grid-item text-end hidden-lg">Fat</div>
+        <div class="grid-item text-end hidden-lg">Calories</div>
+
+        <div style="padding-top: .25rem;"class="add-food-row mb-1">
+            <div><button class="btn">Delete</button></div>            
+            <div>
+                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 4 %}">Add Food</a>
+            </div>            
+        </div>
+
+
+
+
+        <!-- Meal title / desktop title -->
+        <div class="check-item"><input type="checkbox" id="select_all_meal_5"></div>
+        <div class="grid-item span-col-3"><a href=""><h3>Dinner</h3></a></div>
+        <div class="grid-item text-end hidden-lg"></div>
+        <div class="grid-item text-end hidden-sm">Calories</div>
+        <div class="grid-item text-end hidden-sm">Protein</div>
+        <div class="grid-item text-end hidden-sm">Carbs</div>
+        <div class="grid-item text-end hidden-sm">Fat</div>
+        <div class="grid-item text-end hidden-sm">Saturates</div>
+        <div class="grid-item text-end hidden-sm">Sugar</div>
+        <div class="grid-item text-end hidden-sm">Fibre</div>
+        <div class="grid-item text-end hidden-sm">Salt</div>
+
+        <!-- Meal data -->
+        {% for object in object_list %}
+        {% if object.meal == 5 %}
+        <div class="check-item"><input type="checkbox" class="checkbox_meal_5"  name="to_delete" value="{{ object.id }}"></div>
+        <div class="grid-item span-col-3"><a href="{{ object.get_absolute_url }}">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
+        <div class="grid-item text-end ">{{ object.energy|intcomma }}kcal</div>
+        <div class="grid-item text-end hidden-sm">{{ object.protein|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.carbohydrate|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fat|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.saturates|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.sugars|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fibre|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.salt|floatformat:2 }}</div>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Meal total -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item span-col-4 hidden-sm"><strong>Total</strong></div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_5.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_5.total_protein|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_5.total_carbohydrate|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_5.total_fat|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-lg"><strong>{{ total_meal_5.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_5.total_saturates|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_5.total_sugars|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_5.total_fibre|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_5.total_salt|floatformat:2 }}</strong>g</div>
+
+        <!-- lower title - small screens -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item text-end hidden-lg">Protein</div>
+        <div class="grid-item text-end hidden-lg">Carbs</div>
+        <div class="grid-item text-end hidden-lg">Fat</div>
+        <div class="grid-item text-end hidden-lg">Calories</div>
+
+        <div style="padding-top: .25rem;"class="add-food-row mb-1">
+            <div><button class="btn">Delete</button></div>            
+            <div>
+                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 5 %}">Add Food</a>
+            </div>            
+        </div>
+
+
+
+
+        <!-- Meal title / desktop title -->
+        <div class="check-item"><input type="checkbox" id="select_all_meal_6"></div>
+        <div class="grid-item span-col-3"><a href=""><h3>Evening Snack</h3></a></div>
+        <div class="grid-item text-end hidden-lg"></div>
+        <div class="grid-item text-end hidden-sm">Calories</div>
+        <div class="grid-item text-end hidden-sm">Protein</div>
+        <div class="grid-item text-end hidden-sm">Carbs</div>
+        <div class="grid-item text-end hidden-sm">Fat</div>
+        <div class="grid-item text-end hidden-sm">Saturates</div>
+        <div class="grid-item text-end hidden-sm">Sugar</div>
+        <div class="grid-item text-end hidden-sm">Fibre</div>
+        <div class="grid-item text-end hidden-sm">Salt</div>
+
+        <!-- Meal data -->
+        {% for object in object_list %}
+        {% if object.meal == 6 %}
+        <div class="check-item"><input type="checkbox" class="checkbox_meal_6" name="to_delete" value="{{ object.id }}"></div>
+        <div class="grid-item span-col-3"><a href="{{ object.get_absolute_url }}">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
+        <div class="grid-item text-end ">{{ object.energy|intcomma }}kcal</div>
+        <div class="grid-item text-end hidden-sm">{{ object.protein|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.carbohydrate|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fat|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.saturates|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.sugars|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.fibre|floatformat:1 }}</div>
+        <div class="grid-item text-end hidden-sm">{{ object.salt|floatformat:2 }}</div>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Meal total -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item span-col-4 hidden-sm"><strong>Total</strong></div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_6.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_6.total_protein|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_6.total_carbohydrate|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end"><strong>{{ total_meal_6.total_fat|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-lg"><strong>{{ total_meal_6.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_6.total_saturates|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_6.total_sugars|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_6.total_fibre|floatformat:1 }}</strong>g</div>
+        <div class="grid-item text-end hidden-sm"><strong>{{ total_meal_6.total_salt|floatformat:2 }}</strong>g</div>
+
+        <!-- lower title - small screens -->
+        <div class="grid-item hidden-lg"></div>
+        <div class="grid-item text-end hidden-lg">Protein</div>
+        <div class="grid-item text-end hidden-lg">Carbs</div>
+        <div class="grid-item text-end hidden-lg">Fat</div>
+        <div class="grid-item text-end hidden-lg">Calories</div>
+
+        <div style="padding-top: .25rem;"class="add-food-row mb-1">
+            <div><button class="btn">Delete</button></div>            
+            <div>
+                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 6 %}">Add Food</a>
+            </div>            
+        </div>
+
+        <!-- Copy all row -->
+        <div class="add-food-row mb-1">
+        <div><button class="btn">Delete</button></div>            
+        <div>
+            <a class="btn" href="">Copy All Yesterday</a>
+        </div>            
+        </div>
+
+        <!-- Large total section -->
+        <!-- Total -->
+        <!-- <div class="grid-item hidden-sm span-col-12"><a href=""><h3>Summary</h3></a></div> -->
+        <div class="grid-item-total hidden-sm span-col-4"><strong>Daily Total</strong></div>
+        <div class="grid-item-total hidden-sm text-end"><strong>{{ total.total_energy|intcomma }}</strong>kcal</div>
+        <div class="grid-item-total hidden-sm text-end"><strong>{{ total.total_protein|floatformat:1 }}</strong>g</div>
+        <div class="grid-item-total hidden-sm text-end"><strong>{{ total.total_carbohydrate|floatformat:1 }}</strong>g</div>
+        <div class="grid-item-total hidden-sm text-end"><strong>{{ total.total_fat|floatformat:1 }}</strong>g</div>
+        <div class="grid-item-total hidden-sm text-end"><strong>{{ total.total_saturates|floatformat:1 }}</strong>g</div>
+        <div class="grid-item-total hidden-sm text-end"><strong>{{ total.total_sugars|floatformat:1 }}</strong>g</div>
+        <div class="grid-item-total hidden-sm text-end"><strong>{{ total.total_fibre|floatformat:1 }}</strong>g</div>
+        <div class="grid-item-total hidden-sm text-end"><strong>{{ total.total_salt|floatformat:2 }}</strong>g</div>
+
+        <!-- Target -->
+        <div class="grid-item-total hidden-sm span-col-4"><strong>Daily Target</strong></div>
+        <div class="grid-item-total hidden-sm text-end">{{ target.energy|intcomma }}kcal</div>
+        <div class="grid-item-total hidden-sm text-end">{{ target.protein|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ target.carbohydrate|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ target.fat|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ target.saturates|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ target.sugars|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ target.fibre|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ target.salt|floatformat:2 }}g</div>
+
+        <!-- Remaining -->
+        <div class="grid-item-total hidden-sm span-col-4"><strong>Remaining</strong></div>
+        <div class="grid-item-total hidden-sm text-end">{{ remaining.energy|intcomma }}kcal</div>
+        <div class="grid-item-total hidden-sm text-end">{{ remaining.protein|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ remaining.carbohydrate|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ remaining.fat|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ remaining.saturates|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ remaining.sugars|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ remaining.fibre|floatformat:1 }}g</div>
+        <div class="grid-item-total hidden-sm text-end">{{ remaining.salt|floatformat:2 }}g</div>
+        <!-- Titles -->
+         <div class="hidden-sm span-col-4"></div>
+         <div class="grid-item hidden-sm text-end">Calories</div>
+         <div class="grid-item hidden-sm text-end">Protein</div>
+         <div class="grid-item hidden-sm text-end">Carbs</div>
+         <div class="grid-item hidden-sm text-end">Fat</div>
+         <div class="grid-item hidden-sm text-end">Saturates</div>
+         <div class="grid-item hidden-sm text-end">Sugar</div>
+         <div class="grid-item hidden-sm text-end">Fibre</div>
+         <div class="grid-item hidden-sm text-end">Salt</div>
+
+        <!-- Small total section -->
+        <div class="grid-item hidden-lg span-col-5"><h3>Summary</h3></div>
+        <div class="grid-item hidden-lg span-col-2"></div>
+        <div class="grid-item hidden-lg text-end"><strong>Total</strong></div>
+        <div class="grid-item hidden-lg text-end">Target</div>
+        <div class="grid-item hidden-lg text-end">Remain</div>
+
+        <div class="grid-item hidden-lg span-col-2">Calories</div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_energy|intcomma }}</strong></div>
+        <div class="grid-item hidden-lg text-end">{{ target.energy|intcomma }}</div>
+        <div class="grid-item hidden-lg text-end">{{ remaining.energy|intcomma }}</div>
+
+        <div class="grid-item hidden-lg span-col-2">Protein</div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_protein|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end">{{ target.protein|floatformat:0 }}</div>
+        <div class="grid-item hidden-lg text-end">{{ remaining.protein|floatformat:0 }}</div>
+
+        <div class="grid-item hidden-lg span-col-2">Carbs</div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_carbohydrate|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end">{{ target.carbohydrate|floatformat:0 }}</div>
+        <div class="grid-item hidden-lg text-end">{{ remaining.carbohydrate|floatformat:0 }}</div>
+
+        <div class="grid-item hidden-lg span-col-2">Fat</div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_fat|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end">{{ target.fat|floatformat:0 }}</div>
+        <div class="grid-item hidden-lg text-end">{{ remaining.fat|floatformat:0 }}</div>
+
+        <div class="grid-item hidden-lg span-col-2">Saturates</div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_saturates|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end">{{ target.saturates|floatformat:0 }}</div>
+        <div class="grid-item hidden-lg text-end">{{ remaining.saturates|floatformat:0 }}</div>
+
+        <div class="grid-item hidden-lg span-col-2">Sugar</div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_sugars|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end">{{ target.sugars|floatformat:0 }}</div>
+        <div class="grid-item hidden-lg text-end">{{ remaining.sugars|floatformat:0 }}</div>      
+
+        <div class="grid-item hidden-lg span-col-2">Fibre</div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_fibre|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end">{{ target.fibre|floatformat:0 }}</div>
+        <div class="grid-item hidden-lg text-end">{{ remaining.fibre|floatformat:0 }}</div>
+
+
+        <div class="grid-item hidden-lg span-col-2">Salt</div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_salt|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end">{{ target.salt|floatformat:0 }}</div>
+        <div class="grid-item hidden-lg text-end">{{ remaining.salt|floatformat:0 }}</div>
+    </div>
+    </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    var select_all_meal_1 = document.getElementById("select_all_meal_1");
+    var checkbox_meal_1 = document.getElementsByClassName("checkbox_meal_1");
+
+    select_all_meal_1.addEventListener("change", function (e) {
+        for (i = 0; i < checkbox_meal_1.length; i++) {
+            checkbox_meal_1[i].checked = select_all_meal_1.checked;
+        }
+    });
+
+    for (var i = 0; i < checkbox_meal_1.length; i++) {
+        checkbox_meal_1[i].addEventListener('change', function (e) { 
+
+            if (this.checked == false) {
+                select_all_meal_1.checked = false;
+            }
+
+            if (document.querySelectorAll('.checkbox:checked').length == checkbox_meal_1.length) {
+                select_all_meal_1.checked = true;
+            }
+
+        });
+    }
+
+    var select_all_meal_2 = document.getElementById("select_all_meal_2");
+    var checkbox_meal_2 = document.getElementsByClassName("checkbox_meal_2");
+
+    select_all_meal_2.addEventListener("change", function (e) {
+        for (i = 0; i < checkbox_meal_2.length; i++) {
+            checkbox_meal_2[i].checked = select_all_meal_2.checked;
+        }
+    });
+
+    for (var i = 0; i < checkbox_meal_2.length; i++) {
+        checkbox_meal_2[i].addEventListener('change', function (e) { 
+
+            if (this.checked == false) {
+                select_all_meal_2.checked = false;
+            }
+
+            if (document.querySelectorAll('.checkbox:checked').length == checkbox_meal_2.length) {
+                select_all_meal_2.checked = true;
+            }
+
+        });
+    }
+    var select_all_meal_3 = document.getElementById("select_all_meal_3");
+    var checkbox_meal_3 = document.getElementsByClassName("checkbox_meal_3");
+
+    select_all_meal_3.addEventListener("change", function (e) {
+        for (i = 0; i < checkbox_meal_3.length; i++) {
+            checkbox_meal_3[i].checked = select_all_meal_3.checked;
+        }
+    });
+
+    for (var i = 0; i < checkbox_meal_3.length; i++) {
+        checkbox_meal_3[i].addEventListener('change', function (e) { 
+
+            if (this.checked == false) {
+                select_all_meal_3.checked = false;
+            }
+
+            if (document.querySelectorAll('.checkbox:checked').length == checkbox_meal_3.length) {
+                select_all_meal_3.checked = true;
+            }
+
+        });
+    }
+    var select_all_meal_4 = document.getElementById("select_all_meal_4");
+    var checkbox_meal_4 = document.getElementsByClassName("checkbox_meal_4");
+
+    select_all_meal_4.addEventListener("change", function (e) {
+        for (i = 0; i < checkbox_meal_4.length; i++) {
+            checkbox_meal_4[i].checked = select_all_meal_4.checked;
+        }
+    });
+
+    for (var i = 0; i < checkbox_meal_4.length; i++) {
+        checkbox_meal_4[i].addEventListener('change', function (e) { 
+
+            if (this.checked == false) {
+                select_all_meal_4.checked = false;
+            }
+
+            if (document.querySelectorAll('.checkbox:checked').length == checkbox_meal_4.length) {
+                select_all_meal_4.checked = true;
+            }
+
+        });
+    }
+    var select_all_meal_5 = document.getElementById("select_all_meal_5");
+    var checkbox_meal_5 = document.getElementsByClassName("checkbox_meal_5");
+
+    select_all_meal_5.addEventListener("change", function (e) {
+        for (i = 0; i < checkbox_meal_5.length; i++) {
+            checkbox_meal_5[i].checked = select_all_meal_5.checked;
+        }
+    });
+
+    for (var i = 0; i < checkbox_meal_5.length; i++) {
+        checkbox_meal_5[i].addEventListener('change', function (e) { 
+
+            if (this.checked == false) {
+                select_all_meal_5.checked = false;
+            }
+
+            if (document.querySelectorAll('.checkbox:checked').length == checkbox_meal_5.length) {
+                select_all_meal_5.checked = true;
+            }
+
+        });
+    }
+    var select_all_meal_6 = document.getElementById("select_all_meal_6");
+    var checkbox_meal_6 = document.getElementsByClassName("checkbox_meal_6");
+
+    select_all_meal_6.addEventListener("change", function (e) {
+        for (i = 0; i < checkbox_meal_6.length; i++) {
+            checkbox_meal_6[i].checked = select_all_meal_6.checked;
+        }
+    });
+
+    for (var i = 0; i < checkbox_meal_6.length; i++) {
+        checkbox_meal_6[i].addEventListener('change', function (e) { 
+
+            if (this.checked == false) {
+                select_all_meal_6.checked = false;
+            }
+
+            if (document.querySelectorAll('.checkbox:checked').length == checkbox_meal_6.length) {
+                select_all_meal_6.checked = true;
+            }
+
+        });
+    }
+</script>
+
+
+
+{% endblock content %}
