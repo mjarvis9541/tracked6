@@ -83,12 +83,15 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
 def diary_delete_list_view(request):
     template_name = 'diaries/diary_confirm_delete.html'
     context = {}
-    
+
     obj_list = request.session.get('delete_list')
     if obj_list: 
         obj_list = Diary.objects.filter(id__in=obj_list)
         date = obj_list.first().date
         meal = obj_list.first().get_meal_display()
+    else:
+        date = timezone.now()
+        meal = None
     
     if request.method == 'POST':
         if obj_list: 
@@ -210,7 +213,18 @@ def add_to_diary_view(request, year, month, day, meal):
     return render(request, template_name, context)
 
 
+@login_required
+def copy_meal_from_yesterday_view(request, year, month, day, meal):
+    template_name = ''
+    context = {}
+    return render(request, template_name, context)
 
+
+@login_required
+def copy_all_meals_from_yesterday_view(request, year, month, day):
+    template_name = ''
+    context = {}
+    return render(request, template_name, context)
 
 
 @login_required
@@ -307,65 +321,3 @@ class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
 
 
 
-
-
-@login_required
-def add_recent_to_diary_view(request, year, month, day, meal):
-    """ Displays a list/formset view for the user to add food to their selected diary meal in bulk. """
-
-    try:
-        date = datetime.date(year, month, day)
-    except ValueError as e:
-        raise Http404(e)
-    if not meal in range(1,7):
-        raise Http404('Invalid meal')
-
-    template_name = 'diaries/diary_formset.html'
-    context = {}
-    queryset = Food.objects.summary().values()
-
-    q = request.GET.get('q')
-    brand = request.GET.get('brand')
-    category = request.GET.get('category')
-    sort = request.GET.get('sort')
-    if q:
-        queryset = queryset.filter(name__icontains=q)
-    if brand:
-        try:
-            queryset = queryset.filter(brand=brand)
-        except Exception:
-            pass
-    if category:
-        try:
-            queryset = queryset.filter(category=category)
-        except Exception:
-            pass
-    if sort and any(sort in x for x in FOOD_SORT_CHOICES):
-        queryset = queryset.order_by(sort)
-    
-    if request.method == 'POST':
-        formset = AddRecentToDiaryFormSet(request.POST, initial=queryset)
-        if formset.is_valid():
-            for form in formset:
-                attrs = form.cleaned_data
-                if attrs['checkbox']:
-                    attrs.pop('checkbox', False)
-                    attrs['food_id'] = attrs.pop('id')
-                    attrs['user'] = request.user
-                    attrs['date'] = date
-                    attrs['meal'] = meal
-                    Diary.objects.create(**attrs)
-            return redirect('diaries:day', date.year, date.month, date.day)
-    else:
-        formset = AddRecentToDiaryFormSet(initial=queryset)
-    context['management_data'] = formset
-
-    paginator = Paginator(formset, 25)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    context['date'] = date
-    context['meal'] = meal
-    context['formset'] = page_obj
-    context['form'] = FoodFilterForm(request.GET)
-    return render(request, template_name, context)

@@ -26,7 +26,7 @@ class Diary(Uuidable, Timestampable):
     class Meta:
         verbose_name = 'diary entry'
         verbose_name_plural = 'diary entries'
-        ordering = ('-datetime_created',)
+      # ordering = ('-datetime_created',)
 
     def __str__(self):
         return f'{self.food.data_value}{self.food.data_measurement} {self.food.name}'

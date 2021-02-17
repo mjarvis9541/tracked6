@@ -1,15 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 
-
-
-
-
 <!-- If deleting one object -->
 {% if object %}
 <h2 class="">{{ object.get_meal_display }}, {{ object.date|date:"l, j M" }}</h2>
 <h1 class="mb-1">Delete</h1>
-
 <p class="">Are you sure you want to delete the following food from your diary?</p>
 <p>{{ object.food.name }}, {{ object.food.brand }}, {{ object.serving }}</p>
 <p class="">This action cannot be undone.</p>
@@ -27,6 +22,10 @@
 {% endfor %}
 <p class="">This action cannot be undone.</p>
 {% endif %}
+<!-- If no objects -->
+<h2>You have not selected any food to delete</h2>
+
+
 
 
 <form method="post"> {% csrf_token %}
