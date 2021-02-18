@@ -4,7 +4,7 @@
 {% block content %}
 
 <h2 class="">{{ meal_name }}, {{ date|date:"l, j M" }}</h2>
-<h1 class="mb-1">Add Food</h1>
+<h2 class="mb-1">Add Food</h2>
 <form>
 <div class="diary-create-title">
     <div class="search span-col-6">
@@ -31,9 +31,10 @@
 <div style="font-weight: bold; color: red;">{{ management_data.non_form_errors.as_text  }}</div>
 
 <form method="post"> {% csrf_token %} {{ management_data.management_form }}
+
 <div class="diary-create-grid">
+
     <div class="grid-title food-name">Food</div>
-    
     <div class="grid-title">Serving</div>
     <div class="grid-title">Calories</div>
     <div class="grid-title">Protein</div>
@@ -41,19 +42,16 @@
     <div class="grid-title">Fat</div>
     <div class="grid-title food-name">Qty</div>
 
-
     {% for object in formset %}
     <div class="grid-item food-name"><a href="" tabindex=-1>{{ object.initial.name }}, {{ object.initial.food_brand }}</a></div>
-    
     <div class="grid-item">{{ object.initial.data_value_measurement }}</div>
     <div class="grid-item">{{ object.initial.energy|intcomma }}kcal</div>
     <div class="grid-item">{{ object.initial.protein }}</div>
     <div class="grid-item">{{ object.initial.carbohydrate }}</div>
     <div class="grid-item">{{ object.initial.fat }}</div>
     <div class="grid-item">{{ object.quantity }}</div>
-    
-
     {% endfor %}
+
 </div>
 
 

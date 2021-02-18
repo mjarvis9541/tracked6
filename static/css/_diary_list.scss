@@ -1,14 +1,31 @@
 .diary-date {
-    margin-top: .5rem;
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    // grid-template-columns: auto auto;
-
+    margin: .75rem 0 .5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    
+    .grid-item-a {
+        justify-items: start;
+        border: 1px solid #f2f2f2;
+    }
+    .grid-item-b {
+        border: 1px solid #f2f2f2;
+        justify-items: end;
+    }
  
 }
+
+@media (max-width: 684px) {
+    .diary-date {
+        grid-template-columns: auto;
+        .grid-item-a {
+            margin-bottom: .25rem;
+        }
+        
+    }
+}
+
+
+
 
 .b { font-weight: bold;}
 

@@ -150,7 +150,7 @@ def add_to_diary_view(request, year, month, day, meal):
     if not meal in range(1,7):
         raise Http404('Invalid meal')
 
-    template_name = 'diaries/diary_create.html'
+    template_name = 'diaries/diary_create2.html'
     context = {}
     queryset = Food.objects.summary().values()
 
@@ -214,9 +214,36 @@ def add_to_diary_view(request, year, month, day, meal):
 
 
 @login_required
-def copy_meal_from_yesterday_view(request, year, month, day, meal):
-    template_name = ''
+def copy_meal_from_previous_day_view(request, year, month, day, meal):
+    try:
+        date = datetime.date(year, month, day)
+        previous_day = date - datetime.timedelta(days=1)
+    except ValueError as e:
+        raise Http404(e)
+    if not meal in range(1,7):
+        raise Http404('Invalid meal')
+
+    template_name = 'diaries/diary_copy_previous_day.html'
     context = {}
+    object_list = Diary.objects.filter(user=request.user, date=previous_day, meal=meal).summary()
+    if request.method == 'POST':
+        for obj in object_list:
+            Diary.objects.create(
+                user=request.user,
+                date=date,
+                meal=meal,
+                food=obj.food,
+                quantity=obj.quantity,
+            )
+        messages.success(request, 'Food copied successfully')
+        return redirect('diaries:create', date.year, date.month, date.day, meal)
+
+    context['date'] = date
+    context['previous_day'] = previous_day
+    context['meal'] = meal
+    context['meal_name'] = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
+    context['object_list'] = object_list
+    context['total'] = object_list.total()
     return render(request, template_name, context)
 
 
@@ -249,7 +276,6 @@ def diary_update_view(request, pk):
             # date = form.cleaned_data.get('date')
             # messages.success(request, f'{obj.get_meal_display()} - {obj.food_name} has been updated')
             form.save()
-
 
             if 'save' in request.POST:
                 messages.success(request, f'{obj.get_meal_display()} - {obj.food_name} has been updated')

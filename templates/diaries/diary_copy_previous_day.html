@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load humanize %} 
+{% block content %}
+<div>{{ meal_name }}, {{ date|date:"l, j M" }}</div>
+<div>Copy Previous Day</div>
+<p>Are you sure you wish to copy the following food from 
+    <strong>{{ meal_name }}, {{ previous_day|date:"l, j M" }}</strong> to 
+    <strong>{{ meal_name }}, {{ date|date:"l, j M" }}</strong> ?</p>
+
+    <br>
+
+<ul>
+    {% for object in object_list %}
+    <li>{{ object.food_name }}, {{ object.brand_name }}, {{ object.quantity }}</li>
+    {% endfor %}
+</ul>
+
+<br>
+
+<form method="post"> {% csrf_token %} 
+    <div class="diary-create-btn-row">
+        <a class="btn" href="{% url 'diaries:day' date.year date.month date.day %}">Return to Diary</a>
+        <div class="btn-order">
+            <button class="btn" tabindex="2" name="save">Add Food</button>
+            <button class="btn" name="another">Save and add more</button>
+        </div>
+    </div> 
+</form>
+
+
+
+
+
+
+
+{% endblock content %}

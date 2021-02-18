@@ -10,8 +10,10 @@ urlpatterns = [
         views.diary_meal_update_view,
         name='dmu',
     ),
-    # Diary list urls
-    path('', views.DiaryDayListView.as_view(), name='today'),
+    path(
+        '', 
+        views.DiaryDayListView.as_view(), 
+        name='today'),
     path(
         '<int:year>-<int:month>-<int:day>/',
         views.DiaryDayListView.as_view(),
@@ -23,19 +25,19 @@ urlpatterns = [
         name='meal_list',
     ),
     path(
-        '<int:year>-<int:month>-<int:day>/add-food-to-meal/<int:meal>/',
+        '<int:year>-<int:month>-<int:day>/add-food-to-diary/<int:meal>/',
         views.add_to_diary_view,
         name='create',
     ),
     path(
         '<int:year>-<int:month>-<int:day>/copy-meal/<int:meal>/',
-        views.copy_meal_from_yesterday_view,
-        name='copy_meal',
+        views.copy_meal_from_previous_day_view,
+        name='copy_meal_previous_day',
     ),
     path(
         '<int:year>-<int:month>-<int:day>/copy-all-meals/',
         views.copy_all_meals_from_yesterday_view,
-        name='copy_all_meals',
+        name='copy_all_meals_previous_day',
     ),
     path('<uuid:pk>/update/', views.diary_update_view, name='update'),
     path('<uuid:pk>/delete/', views.DiaryDeleteView.as_view(), name='delete'),

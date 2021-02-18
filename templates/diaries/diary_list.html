@@ -1,14 +1,18 @@
 {% extends 'base.html' %}
 {% load humanize %} 
 {% block content %}
+
 <div class="diary-date">
-<h2 class="grid-item">{{ date|date:"l, j M" }}</h2>
-<div class="grid-item">
+<h2 class="grid-item-a">{{ date|date:"l, j M" }}</h2>
+<div class="grid-item-b text-end">
     <a class="btn" href="{% url 'diaries:today' %}">Today</a>
     <a class="btn" href="{% url 'diaries:day' previous_day.year previous_day.month previous_day.day %}"><i class="fas fa-arrow-left"></i></a>
     <a class="btn" href="{% url 'diaries:day' next_day.year next_day.month next_day.day %}"><i class="fas fa-arrow-right"></i></a>
 </div>
 </div>
+
+
+
 
     <form action="" method="POST"> {% csrf_token %}
     <div class="diary-grid-1">
@@ -65,7 +69,7 @@
         <div style="padding-top: .25rem;"class="add-food-row mb-1">
             <div><button class="btn">Delete</button></div>            
             <div>
-                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:copy_meal_previous_day' date.year date.month date.day 1 %}">Copy Previous Day</a>
                 <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 1 %}">Add Food</a>
             </div>            
         </div>
@@ -125,7 +129,7 @@
         <div style="padding-top: .25rem;"class="add-food-row mb-1">
             <div><button class="btn">Delete</button></div>            
             <div>
-                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:copy_meal_previous_day' date.year date.month date.day 2 %}">Copy Previous Day</a>
                 <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 2 %}">Add Food</a>
             </div>            
         </div>
@@ -185,7 +189,7 @@
         <div style="padding-top: .25rem;"class="add-food-row mb-1">
             <div><button class="btn">Delete</button></div>            
             <div>
-                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:copy_meal_previous_day' date.year date.month date.day 3 %}">Copy Previous Day</a>
                 <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 3 %}">Add Food</a>
             </div>            
         </div>
@@ -245,7 +249,7 @@
         <div style="padding-top: .25rem;"class="add-food-row mb-1">
             <div><button class="btn">Delete</button></div>            
             <div>
-                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:copy_meal_previous_day' date.year date.month date.day 4 %}">Copy Previous Day</a>
                 <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 4 %}">Add Food</a>
             </div>            
         </div>
@@ -305,7 +309,7 @@
         <div style="padding-top: .25rem;"class="add-food-row mb-1">
             <div><button class="btn">Delete</button></div>            
             <div>
-                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:copy_meal_previous_day' date.year date.month date.day 5 %}">Copy Previous Day</a>
                 <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 5 %}">Add Food</a>
             </div>            
         </div>
@@ -365,7 +369,7 @@
         <div style="padding-top: .25rem;"class="add-food-row mb-1">
             <div><button class="btn">Delete</button></div>            
             <div>
-                <a class="btn" href="">Copy Yesterday</a>
+                <a class="btn" href="{% url 'diaries:copy_meal_previous_day' date.year date.month date.day 6 %}">Copy Previous Day</a>
                 <a class="btn" href="{% url 'diaries:create' date.year date.month date.day 6 %}">Add Food</a>
             </div>            
         </div>
@@ -430,46 +434,46 @@
         <div class="grid-item hidden-lg text-end">Target</div>
         <div class="grid-item hidden-lg text-end">Remain</div>
 
-        <div class="grid-item hidden-lg span-col-2">Calories</div>
+        <div class="grid-item hidden-lg span-col-2">Calories (kcal)</div>
         <div class="grid-item hidden-lg text-end"><strong>{{ total.total_energy|intcomma }}</strong></div>
         <div class="grid-item hidden-lg text-end">{{ target.energy|intcomma }}</div>
         <div class="grid-item hidden-lg text-end">{{ remaining.energy|intcomma }}</div>
 
         <div class="grid-item hidden-lg span-col-2">Protein</div>
-        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_protein|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_protein|floatformat:0 }}</strong></div>
         <div class="grid-item hidden-lg text-end">{{ target.protein|floatformat:0 }}</div>
         <div class="grid-item hidden-lg text-end">{{ remaining.protein|floatformat:0 }}</div>
 
         <div class="grid-item hidden-lg span-col-2">Carbs</div>
-        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_carbohydrate|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_carbohydrate|floatformat:0 }}</strong></div>
         <div class="grid-item hidden-lg text-end">{{ target.carbohydrate|floatformat:0 }}</div>
         <div class="grid-item hidden-lg text-end">{{ remaining.carbohydrate|floatformat:0 }}</div>
 
         <div class="grid-item hidden-lg span-col-2">Fat</div>
-        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_fat|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_fat|floatformat:0 }}</strong></div>
         <div class="grid-item hidden-lg text-end">{{ target.fat|floatformat:0 }}</div>
         <div class="grid-item hidden-lg text-end">{{ remaining.fat|floatformat:0 }}</div>
 
         <div class="grid-item hidden-lg span-col-2">Saturates</div>
-        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_saturates|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_saturates|floatformat:0 }}</strong></div>
         <div class="grid-item hidden-lg text-end">{{ target.saturates|floatformat:0 }}</div>
         <div class="grid-item hidden-lg text-end">{{ remaining.saturates|floatformat:0 }}</div>
 
         <div class="grid-item hidden-lg span-col-2">Sugar</div>
-        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_sugars|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_sugars|floatformat:0 }}</strong></div>
         <div class="grid-item hidden-lg text-end">{{ target.sugars|floatformat:0 }}</div>
         <div class="grid-item hidden-lg text-end">{{ remaining.sugars|floatformat:0 }}</div>      
 
         <div class="grid-item hidden-lg span-col-2">Fibre</div>
-        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_fibre|floatformat:0}}</strong></div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_fibre|floatformat:0 }}</strong></div>
         <div class="grid-item hidden-lg text-end">{{ target.fibre|floatformat:0 }}</div>
         <div class="grid-item hidden-lg text-end">{{ remaining.fibre|floatformat:0 }}</div>
 
 
         <div class="grid-item hidden-lg span-col-2">Salt</div>
-        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_salt|floatformat:0}}</strong></div>
-        <div class="grid-item hidden-lg text-end">{{ target.salt|floatformat:0 }}</div>
-        <div class="grid-item hidden-lg text-end">{{ remaining.salt|floatformat:0 }}</div>
+        <div class="grid-item hidden-lg text-end"><strong>{{ total.total_salt|floatformat:1 }}</strong></div>
+        <div class="grid-item hidden-lg text-end">{{ target.salt|floatformat:1 }}</div>
+        <div class="grid-item hidden-lg text-end">{{ remaining.salt|floatformat:1 }}</div>
     </div>
     </form>
 

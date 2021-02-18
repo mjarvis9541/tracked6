@@ -1,0 +1,39 @@
+.diary-create-grid-2 {
+    display: grid;
+    grid-template-columns: 4fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: .25rem;
+    .grid-item {
+        border: 1px solid #f2f2f2;
+    }
+}
+.hidden-lg {
+    display: none;
+}
+.hidden-sm {
+    display: unset;
+}
+// .expand-lg {
+//     grid-column: span 1 / auto;;
+// }
+@media (max-width: 684px) {
+    .diary-create-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+
+        .grid-item {
+            border: 1px solid #f2f2f2;
+        }
+    }
+    .hidden-lg {
+        display: unset;
+    }
+    .hidden-sm {
+        display: none;
+    }
+    .expand-lg-col-3 {
+        grid-column: span 3 / auto;;
+    }
+    .expand-lg-col-2 {
+        grid-column: span 2 / auto;;
+    }
+}
