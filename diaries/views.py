@@ -150,7 +150,7 @@ def add_to_diary_view(request, year, month, day, meal):
     if not meal in range(1,7):
         raise Http404('Invalid meal')
 
-    template_name = 'diaries/diary_create2.html'
+    template_name = 'diaries/diary_create.html'
     context = {}
     queryset = Food.objects.summary().values()
 
@@ -227,17 +227,17 @@ def copy_meal_from_previous_day_view(request, year, month, day, meal):
     context = {}
     object_list = Diary.objects.filter(user=request.user, date=previous_day, meal=meal).summary()
     if request.method == 'POST':
-        for obj in object_list:
-            Diary.objects.create(
-                user=request.user,
-                date=date,
-                meal=meal,
-                food=obj.food,
-                quantity=obj.quantity,
-            )
-        messages.success(request, 'Food copied successfully')
-        return redirect('diaries:create', date.year, date.month, date.day, meal)
-
+        if object_list:
+            for obj in object_list:
+                Diary.objects.create(
+                    user=request.user,
+                    date=date,
+                    meal=meal,
+                    food=obj.food,
+                    quantity=obj.quantity,
+                )
+            messages.success(request, 'Food copied')
+            return redirect('diaries:day', date.year, date.month, date.day)
     context['date'] = date
     context['previous_day'] = previous_day
     context['meal'] = meal

@@ -1,34 +1,37 @@
 {% extends 'base.html' %}
-{% load humanize %} 
+{% load humanize %}
 {% block content %}
-<div>{{ meal_name }}, {{ date|date:"l, j M" }}</div>
-<div>Copy Previous Day</div>
-<p>Are you sure you wish to copy the following food from 
-    <strong>{{ meal_name }}, {{ previous_day|date:"l, j M" }}</strong> to 
-    <strong>{{ meal_name }}, {{ date|date:"l, j M" }}</strong> ?</p>
 
-    <br>
+<h2>{{ meal_name }}, {{ date|date:"l, j M" }}</h2>
 
-<ul>
-    {% for object in object_list %}
-    <li>{{ object.food_name }}, {{ object.brand_name }}, {{ object.quantity }}</li>
-    {% endfor %}
-</ul>
+<h1>Copy Previous Day</h1>
 
+{% if object_list %}
+<p>Are you sure you wish to copy the following food?</p>
 <br>
-
-<form method="post"> {% csrf_token %} 
-    <div class="diary-create-btn-row">
+<strong>{{ meal_name }}, {{ previous_day|date:"l, j M" }}</strong> <br>
+{% for object in object_list %}
+<p>{{ object.food_name }}, {{ object.brand_name }}, {{ object.quantity }}</p>
+{% endfor %}
+<br>
+<form method="post"> {% csrf_token %}
+    <div class="diary-action-btn-row">
         <a class="btn" href="{% url 'diaries:day' date.year date.month date.day %}">Return to Diary</a>
         <div class="btn-order">
-            <button class="btn" tabindex="2" name="save">Add Food</button>
-            <button class="btn" name="another">Save and add more</button>
+            <button class="btn" tabindex="2" name="save">Copy</button>
+            <button class="btn" name="another">Copy and add more</button>
         </div>
-    </div> 
+    </div>
 </form>
-
-
-
+{% else %}
+<br>
+<strong>{{ meal_name }}, {{ previous_day|date:"l, j M" }}</strong> <br>
+<p>No food to copy.</p>
+<br>
+<div>
+    <a class="btn" href="{% url 'diaries:day' date.year date.month date.day %}">Return to Diary</a>
+</div>
+{% endif %}
 
 
 

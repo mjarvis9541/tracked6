@@ -66,26 +66,25 @@
 
 
 
-// Small screens
-// @media (max-width: 684px) {
-//     .food-database-grid {
-//         grid-template-columns: 4fr 1fr;
-//     }
-//     .food-name {
-//         font-weight: bold;
-//     }
-//     .hide-lg {
-//         display: flex;
-//     }
-//     .hide-sm {
-//         display: none;
-//     }
-//     .span-col-2-sm {
-//         grid-column: span 2 / auto;
-//     }
-//     .flex-s {
-//         justify-items: flex-start;
-//         text-align: start;
-//     }
+@media (max-width: 684px) {
+    .food-database-grid {
+        grid-template-columns: 4fr 1fr;
+    }
+    .food-name {
+        font-weight: bold;
+    }
+    .hide-lg {
+        display: flex;
+    }
+    .hide-sm {
+        display: none;
+    }
+    .span-col-2-sm {
+        grid-column: span 2 / auto;
+    }
+    .flex-s {
+        justify-items: flex-start;
+        text-align: start;
+    }
 
-// }
+}

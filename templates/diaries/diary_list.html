@@ -4,7 +4,7 @@
 
 <div class="diary-date">
 <h2 class="grid-item-a">{{ date|date:"l, j M" }}</h2>
-<div class="grid-item-b text-end">
+<div class="grid-item-b">
     <a class="btn" href="{% url 'diaries:today' %}">Today</a>
     <a class="btn" href="{% url 'diaries:day' previous_day.year previous_day.month previous_day.day %}"><i class="fas fa-arrow-left"></i></a>
     <a class="btn" href="{% url 'diaries:day' next_day.year next_day.month next_day.day %}"><i class="fas fa-arrow-right"></i></a>
@@ -376,9 +376,9 @@
 
         <!-- Copy all row -->
         <div class="add-food-row mb-1">
-        <div><button class="btn">Delete</button></div>            
+        <div></div>            
         <div>
-            <a class="btn" href="">Copy All Yesterday</a>
+            <a class="btn" href="">Copy All Previous Day</a>
         </div>            
         </div>
 
@@ -434,7 +434,7 @@
         <div class="grid-item hidden-lg text-end">Target</div>
         <div class="grid-item hidden-lg text-end">Remain</div>
 
-        <div class="grid-item hidden-lg span-col-2">Calories (kcal)</div>
+        <div class="grid-item hidden-lg span-col-2">Calories</div>
         <div class="grid-item hidden-lg text-end"><strong>{{ total.total_energy|intcomma }}</strong></div>
         <div class="grid-item hidden-lg text-end">{{ target.energy|intcomma }}</div>
         <div class="grid-item hidden-lg text-end">{{ remaining.energy|intcomma }}</div>

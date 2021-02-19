@@ -86,6 +86,31 @@
   color: #fff;
 }
 
+@media (max-width: 684px) {
+  .food-database-grid {
+    -ms-grid-columns: 4fr 1fr;
+        grid-template-columns: 4fr 1fr;
+  }
+  .food-name {
+    font-weight: bold;
+  }
+  .hide-lg {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  .hide-sm {
+    display: none;
+  }
+  .span-col-2-sm {
+    grid-column: span 2 / auto;
+  }
+  .flex-s {
+    justify-items: flex-start;
+    text-align: start;
+  }
+}
+
 .text-start {
   text-align: start;
 }
@@ -307,6 +332,7 @@ table td {
   border: 1px solid #dcd5d5;
   -webkit-transition: background-color .3s;
   transition: background-color .3s;
+  white-space: nowrap;
 }
 
 .btn:hover {
@@ -338,6 +364,57 @@ table td {
   background: #dc3545;
 }
 
+header {
+  background: #3d5afe;
+}
+
+.new-grid {
+  text-decoration: none;
+  overflow: hidden;
+  max-width: 1200px;
+  margin: auto;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: auto 1fr auto;
+      grid-template-columns: auto 1fr auto;
+  gap: .5rem;
+}
+
+.new-grid .new-grid-item {
+  text-decoration: none;
+  padding: .5rem 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: #fff;
+}
+
+.new-grid .new-grid-item-mid {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: auto auto auto auto 1fr;
+      grid-template-columns: auto auto auto auto 1fr;
+}
+
+.new-grid .new-grid-item-mid .new-flex-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: #fff;
+  padding: 0 1.5rem;
+}
+
+.new-grid .new-grid-item-mid .new-flex-item:hover {
+  background: #2978ffb3;
+  text-decoration: none;
+}
+
 .diary-date {
   margin: .75rem 0 .5rem;
   display: -ms-grid;
@@ -347,13 +424,30 @@ table td {
 }
 
 .diary-date .grid-item-a {
-  justify-items: start;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
   border: 1px solid #f2f2f2;
 }
 
 .diary-date .grid-item-b {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   border: 1px solid #f2f2f2;
-  justify-items: end;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  text-align: end;
 }
 
 @media (max-width: 684px) {
@@ -442,8 +536,9 @@ table td {
   border: 1px solid #fff;
 }
 
-.diary-create-btn-row {
-  margin-top: 1rem;
+.diary-action-btn-row {
+  border: 1px solid #f2f2f2;
+  margin-top: .5rem;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -454,19 +549,19 @@ table td {
       flex-wrap: wrap;
 }
 
-.diary-create-btn-row .btn-order {
+.diary-action-btn-row .btn-order {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
 }
 
-.diary-create-btn-row .btn-order :nth-child(1) {
+.diary-action-btn-row .btn-order :nth-child(1) {
   -webkit-box-ordinal-group: 3;
       -ms-flex-order: 2;
           order: 2;
 }
 
-.diary-create-btn-row .btn-order :nth-child(2) {
+.diary-action-btn-row .btn-order :nth-child(2) {
   -webkit-box-ordinal-group: 2;
       -ms-flex-order: 1;
           order: 1;
@@ -574,15 +669,106 @@ table td {
   background: #fff;
 }
 
+.food-search {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: .25rem;
+}
+
+.food-search .search {
+  grid-column: span 3 / auto;
+}
+
+.food-search .filter {
+  grid-column: span 1 / auto;
+}
+
+.food-search .results {
+  grid-column: span 2 / auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+@media (max-width: 684px) {
+  .food-search {
+    -ms-grid-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
+  }
+  .food-search .search {
+    grid-column: span 2 / auto;
+  }
+  .food-search .filter {
+    grid-column: span 2 / auto;
+  }
+  .food-search .results {
+    grid-column: span 1 / auto;
+  }
+}
+
+.pagination {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+  margin: .5rem 0;
+}
+
+.pagination .page-btn {
+  display: inline-block;
+  border: 1px solid #f2f2f2;
+  padding: .5rem 0;
+  width: 6rem;
+  text-align: center;
+}
+
+.pagination .page-btn:hover {
+  background: #2979ff;
+  color: #fff;
+  text-decoration: none;
+}
+
+.pagination .disabled {
+  display: inline-block;
+  border: 1px solid #f2f2f2;
+  background: #f2f2f2;
+  color: #000;
+  padding: .5rem 0;
+  width: 5rem;
+  text-align: center;
+}
+
+.pagination .active {
+  background: #2979ff;
+  color: #fff;
+}
+
+.pagination .page-numbers {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
 .diary-create-grid-2 {
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 4fr 1fr 1fr 1fr 1fr 1fr 1fr;
       grid-template-columns: 4fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  gap: .25rem;
 }
 
 .diary-create-grid-2 .grid-item {
+  padding: .25rem;
   border: 1px solid #f2f2f2;
 }
 
@@ -595,6 +781,10 @@ table td {
 }
 
 @media (max-width: 684px) {
+  .diary-create-search {
+    -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+  }
   .diary-create-grid-2 {
     display: -ms-grid;
     display: grid;
@@ -610,10 +800,10 @@ table td {
   .hidden-sm {
     display: none;
   }
-  .expand-lg-col-3 {
+  .expand-sm-col-3 {
     grid-column: span 3 / auto;
   }
-  .expand-lg-col-2 {
+  .expand-sm-col-2 {
     grid-column: span 2 / auto;
   }
 }
@@ -632,7 +822,8 @@ a {
 }
 
 a:hover {
-  text-decoration: underline;
+  color: #ffc107;
+  font-weight: bold;
 }
 
 .container {

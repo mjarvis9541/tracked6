@@ -1,0 +1,39 @@
+header {
+    background: #3d5afe;
+    
+}
+
+.new-grid {
+    text-decoration: none;
+    overflow: hidden;
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: .5rem;
+
+    .new-grid-item {
+        text-decoration: none;
+        padding: .5rem 0;
+        display: flex;
+        align-items: center;
+        color: #fff;
+    }
+
+    .new-grid-item-mid {
+        display: grid;
+        grid-template-columns: auto auto auto auto 1fr;
+
+        .new-flex-item {
+            display: flex;
+            align-items: center;
+            color: #fff;
+            padding: 0 1.5rem;            
+        }
+        .new-flex-item:hover {
+            background: #2978ffb3;
+            text-decoration: none;
+        }
+    }
+
+}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load customfilters %}
+{% block content %}
+<h2 class="mt-1 mb-1">Create Meal</h2>
+
+<p>Choose a name and description (optional) for your meal:</p>
+
+<form action="" method="post"> {% csrf_token %}
+
+    <div style="font-weight: bold; color: red;">{{ form.non_field_errors }}</div>
+
+    <div class="mt-1 mb-3">
+        {{ form.name.label }}
+        {{ form.name }}
+        {{ form.name.errors }}
+    </div>
+
+    <div class="mb-3">
+        {{ form.description.label }}
+        {{ form.description }}
+        {{ form.description.errors }}
+    </div>
+
+    <button class="btn">Continue to Add Food</button>
+</form>
+
+
+
+{% endblock content %}

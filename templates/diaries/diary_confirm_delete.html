@@ -4,10 +4,14 @@
 <!-- If deleting one object -->
 {% if object %}
 <h2 class="">{{ object.get_meal_display }}, {{ object.date|date:"l, j M" }}</h2>
-<h1 class="mb-1">Delete</h1>
-<p class="">Are you sure you want to delete the following food from your diary?</p>
+<h1 class="">Delete</h1>
+
+
+<p class="">Are you sure you want to delete the following from your diary?</p>
+<br>
 <p>{{ object.food.name }}, {{ object.food.brand }}, {{ object.serving }}</p>
-<p class="">This action cannot be undone.</p>
+<br>
+<p>This action cannot be undone.</p>
 {% endif %}
 
 
@@ -15,22 +19,28 @@
 {% if object_list %}
 <h2 class="">{{ meal_name }}, {{ date|date:"l, j M" }}</h2>
 <h1 class="mb-1">Delete</h1>
-<p class="">Are you sure you want to delete the following food from your diary?</p>
+<p class="">Are you sure you want to delete the following from your diary?</p>
+
+<br>
 {% for object in object_list %}
 <!-- Add quantity to this section here -->
 <p>{{ object.food.name }}</p>
 {% endfor %}
-<p class="">This action cannot be undone.</p>
+<br>
+<p>This action cannot be undone.</p>
 {% endif %}
 <!-- If no objects -->
 
 
 
 <form method="post"> {% csrf_token %}
-<div class="text-end">
-    <a class="btn" href="{% url 'diaries:day' date.year date.month date.day %}">Return to Diary</a>
-    <button class="btn">Delete</button>
-</div>
+    <div class="diary-action-btn-row">
+        <a class="btn" href="{% url 'diaries:day' date.year date.month date.day %}">Return to Diary</a>
+        <div class="btn-order">
+            <button class="btn" tabindex="2" name="save">Delete</button>
+            <!-- <button class="btn" name="another">Copy and add more</button> -->
+        </div>
+    </div>
 </form>
 
 {% endblock content %}

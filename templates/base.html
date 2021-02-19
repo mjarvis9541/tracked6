@@ -16,6 +16,25 @@
 </head>
 <body>
 
+<header>
+<div class="container">
+    <div class="new-grid">
+        <a class="new-grid-item" style="font-size: 1.5rem;" href=""><strong>Trackedfitness</strong></a>
+
+        <div class="new-grid-item-mid">
+            <a class="new-flex-item" href="{% url 'diaries:today' %}">Diary</a>
+            <a class="new-flex-item" href="{% url 'meals:list' %}">Meals</a>
+            <a class="new-flex-item" href="{% url 'food:list' %}">Food</a>
+            <a class="new-flex-item" href="">Contact</a>
+        </div>
+
+
+
+    </div>
+</div>
+</header>
+
+
 {% if messages %}
 <div class="container">
 {% for message in messages %}

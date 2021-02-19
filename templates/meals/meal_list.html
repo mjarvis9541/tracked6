@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load customfilters %}
+{% block content %}
+<h2 class="mt-1 mb-1">Saved Meals</h2>
+
+<div class="mt-1 mb-1">Displays a list of meals you've saved for quickly adding to your food diary.</div>
+
+{% for object in object_list %}
+
+<div><strong><a href="">{{ object.name }}</a></strong></div>
+
+<div class="mb-1">{{ object.description }}</div>
+
+{% endfor %}
+
+
+
+<div class="mt-2 mb-2">
+    <a href="{% url 'meals:create' %}">Create Meal</a>
+</div>
+
+{% endblock content %}

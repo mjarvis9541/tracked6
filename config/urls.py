@@ -24,6 +24,7 @@ urlpatterns = [
     # Project urls
     path('food/', include('food.urls')),
     path('diary/', include('diaries.urls')),
+    path('meals/', include('meals.urls')),
     path('progress/', include('progress.urls')),
     
     # Admin urls
