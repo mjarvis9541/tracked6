@@ -17,22 +17,7 @@
 <body>
 
 <header>
-<nav class="navbar">
-    <div class="start">
-        <a href="">Trackedfitness</a>
-    </div>
-    <div class="center">
-        <a href="{% url 'diaries:today' %}">Diary</a>
-        <a href="{% url 'meals:list' %}">Meals</a>
-        <a href="{% url 'food:list' %}">Food</a>
-        
-
-    </div>
-    <div class="end">
-        <a href="">Log In</a>
-        <a class="sign-up" href="">Sign Up</a>
-    </div>
-</nav>
+{% include 'navbar.html' %}
 </header>
 
 

@@ -2,10 +2,10 @@
 {% load customfilters %}
 {% load humanize %} 
 {% block content %}
-<!-- <h2 style="text-align: center;">{{ meal_name }}, {{ date|date:"l, j M" }}</h2> -->
+<!-- <h2>{{ meal_name }}, {{ date|date:"l, j M" }}</h2> -->
 <div class="structure">
     <div>
-<h1 class="mt-1 mb-1">Add to Diary</h1>
+<h2 class="mt-1 mb-1">Add Food to {{ meal_name }}, {{ date|date:"l, j M" }}</h2>
 
 <form action="" method="get" class="mt-1 mb-1">
 <div class="food-search">
@@ -25,31 +25,32 @@
 
 <div style="font-weight: bold; color: red;">{{ management_data.non_form_errors.as_text  }}</div>
 
-<form action="" method="post"> {% csrf_token %} {{ management_data.management_form }} 
-<div class="diary-create-grid-2">
-    <div class="grid-item hidden-sm">Food</div>
-    <div class="grid-item hidden-sm">Quantity</div>
-    <div class="grid-item hidden-sm">Serving</div>
-    <div class="grid-item hidden-sm text-end">Calories</div>
-    <div class="grid-item hidden-sm text-end">Protein</div>
-    <div class="grid-item hidden-sm text-end">Carbs</div>
-    <div class="grid-item hidden-sm text-end">Fat</div>
+<form method="post"> {% csrf_token %} {{ management_data.management_form }} 
+
+<div class="diary-add-grid">
+    <div class="title hidden-sm">Food</div>
+    <div class="title hidden-sm">Quantity</div>
+    <div class="title hidden-sm end">Serving</div>
+    <div class="title hidden-sm end">Calories</div>
+    <div class="title hidden-sm end">Protein</div>
+    <div class="title hidden-sm end">Carbs</div>
+    <div class="title hidden-sm end">Fat</div>
     
 
     {% for form in formset %}
-    <div class="grid-item expand-sm-col-3"><a href="">{{ form.initial.name }}, {{ form.initial.food_brand }}</a></div>
+    <div class="grid-item expand-sm-col-3"><a href="">{{ form.initial.name }}</a> <br> <small>{{ form.initial.food_brand }}</small></div>
     <div class="grid-item hidden-lg">Quantity</div>
-    <div class="grid-item text-end">{{ form.quantity }}</div>
+    <div class="grid-item end">{{ form.quantity }}</div>
     <div class="grid-item hidden-lg"><button class="btn" style="width: 100%;" name="save">Add</button></div>
-    <div class="grid-item expand-sm-col-3">{{ form.initial.data_value_measurement }}</div>
+    <div class="grid-item end expand-sm-col-3">{{ form.initial.data_value_measurement }}</div>
     <div class="grid-item hidden-lg expand-sm-col-2">Calories</div>
-    <div class="grid-item text-end">{{ form.initial.energy }} kcal</div>
+    <div class="grid-item end">{{ form.initial.energy }}</div>
     <div class="grid-item hidden-lg expand-sm-col-2">Protein</div>
-    <div class="grid-item text-end">{{ form.initial.protein }}</div>
+    <div class="grid-item end">{{ form.initial.protein }}</div>
     <div class="grid-item hidden-lg expand-sm-col-2">Carbs</div>
-    <div class="grid-item text-end">{{ form.initial.carbohydrate }}</div>
+    <div class="grid-item end">{{ form.initial.carbohydrate }}</div>
     <div class="grid-item hidden-lg expand-sm-col-2">Fat</div>
-    <div class="grid-item text-end">{{ form.initial.fat }}</div>
+    <div class="grid-item end">{{ form.initial.fat }}</div>
   
    
     {% endfor %}
@@ -67,7 +68,7 @@
 </form>
 <div class="pagination mb-5">
     <div></div>
-    <div class="text-end">
+    <div class="end">
         <span style="margin-right: 1rem;">Page {{ formset.number }} of {{ formset.paginator.num_pages }}</span>
         {% if formset.has_previous %}
         <a class="page-btn" href="?{% param_replace page=formset.previous_page_number %}"><i class="fas fa-angle-left"></i></a>
@@ -93,13 +94,13 @@
 </div>
 
 <div class="aside">
-    <h1 class="mt-1">{{ meal_name }}</h1>
-    <h2>{{ date|date:"l, j M" }}</h2>
-    {% for object in meal_list %}
+
+  
+    <!-- {% for object in meal_list %}
     <div><a href="">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
 
 
-    {% endfor %}
+    {% endfor %} -->
 </div>
 </div>
 <br>

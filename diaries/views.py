@@ -1,6 +1,6 @@
 import datetime
 from django.views.generic.detail import SingleObjectMixin
-# Django imports
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -30,11 +30,11 @@ from food.forms import FoodFilterForm, FOOD_SORT_CHOICES
 from food.mixins import FoodFilterMixin
 from food.models import Food
 from django.views.generic.edit import FormMixin
-# Project imports
-from . import forms
+
 from .forms import AddToDiaryFormSet, DiaryUpdateForm, AddRecentToDiaryFormSet
 from .models import Diary
 from .mixins import DateMixin, MealMixin
+
 
 
 
@@ -42,10 +42,8 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
     """ Displays all the food a user has consumed and tracked on a given day. """
     template_name = 'diaries/diary_list.html'
 
-
     def get_queryset(self, **kwargs):
         return Diary.objects.filter(user=self.request.user, date=self.date).summary().order_by('datetime_created')
-        # return Diary.objects.filter(user=self.request.user, date=self.date).summary().order_by('food__name')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -79,31 +77,6 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
         return redirect('diaries:day', self.date.year, self.date.month, self.date.day) 
 
 
-@login_required
-def diary_delete_list_view(request):
-    template_name = 'diaries/diary_confirm_delete.html'
-    context = {}
-
-    obj_list = request.session.get('delete_list')
-    if obj_list: 
-        obj_list = Diary.objects.filter(id__in=obj_list)
-        date = obj_list.first().date
-        meal = obj_list.first().get_meal_display()
-    else:
-        date = timezone.now()
-        meal = None
-    
-    if request.method == 'POST':
-        if obj_list: 
-            Diary.objects.filter(id__in=obj_list).delete()
-            request.session.pop('delete_list')
-            messages.success(request, 'Food deleted')
-            return redirect('diaries:day', date.year, date.month, date.day) 
-    
-    context['meal_name'] = meal
-    context['date'] = date
-    context['object_list'] = obj_list
-    return render(request, template_name, context)
 
 
 class DiaryMealListView(LoginRequiredMixin, DateMixin, MealMixin, ListView):
@@ -138,8 +111,6 @@ def diary_meal_update_view(request, year, month, day, meal):
 
 
 
-
-@login_required
 def add_to_diary_view(request, year, month, day, meal):
     """ Displays a list/formset view for the user to add food to their selected diary meal in bulk. """
 
@@ -154,6 +125,7 @@ def add_to_diary_view(request, year, month, day, meal):
     context = {}
     queryset = Food.objects.summary().values()
 
+    # Search / filter component
     q = request.GET.get('q')
     brand = request.GET.get('brand')
     category = request.GET.get('category')
@@ -173,6 +145,7 @@ def add_to_diary_view(request, year, month, day, meal):
     if sort and any(sort in x for x in FOOD_SORT_CHOICES):
         queryset = queryset.order_by(sort)
     
+    # Adding the food via formset
     if request.method == 'POST':
         formset = AddToDiaryFormSet(request.POST, initial=queryset)
         if formset.is_valid():
@@ -186,8 +159,7 @@ def add_to_diary_view(request, year, month, day, meal):
                     attrs['meal'] = meal
                     Diary.objects.create(**attrs)
                     # data.append(attrs)
-            # print(data)
-            # Diary.objects.bulk_create(data) # some sort PK issue?
+
             if 'save' in request.POST:
                 messages.success(request, 'Food added')
                 return redirect('diaries:day', date.year, date.month, date.day)
@@ -196,9 +168,9 @@ def add_to_diary_view(request, year, month, day, meal):
                 messages.success(request, 'Food added. You can continue adding food below')
                 return redirect('diaries:create', date.year, date.month, date.day, meal)
 
-            #return 
     else:
         formset = AddToDiaryFormSet(initial=queryset)
+
     context['management_data'] = formset
 
     paginator = Paginator(formset, 20)
@@ -216,16 +188,22 @@ def add_to_diary_view(request, year, month, day, meal):
 
 @login_required
 def copy_meal_from_previous_day_view(request, year, month, day, meal):
+    
     try:
         date = datetime.date(year, month, day)
         previous_day = date - datetime.timedelta(days=1)
     except ValueError as e:
         raise Http404(e)
-    if not meal in range(1,7):
+
+    if meal in range(1,7):
+        meal_name = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
+    else:    
         raise Http404('Invalid meal')
 
     template_name = 'diaries/diary_copy_previous_day.html'
     context = {}
+    
+
     object_list = Diary.objects.filter(user=request.user, date=previous_day, meal=meal).summary()
     if request.method == 'POST':
         if object_list:
@@ -237,12 +215,12 @@ def copy_meal_from_previous_day_view(request, year, month, day, meal):
                     food=obj.food,
                     quantity=obj.quantity,
                 )
-            messages.success(request, 'Food copied')
+            messages.success(request, f'Copied {len(object_list)} food from {meal_name}, {previous_day}')
             return redirect('diaries:day', date.year, date.month, date.day)
     context['date'] = date
     context['previous_day'] = previous_day
     context['meal'] = meal
-    context['meal_name'] = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
+    context['meal_name'] = meal_name
     context['object_list'] = object_list
     context['total'] = object_list.total()
     return render(request, template_name, context)
@@ -274,12 +252,9 @@ def diary_update_view(request, pk):
     if request.method == 'POST':
         form = DiaryUpdateForm(request.POST, instance=obj)
         if form.is_valid():
-            # date = form.cleaned_data.get('date')
-            # messages.success(request, f'{obj.get_meal_display()} - {obj.food_name} has been updated')
             form.save()
-
             if 'save' in request.POST:
-                messages.success(request, f'{obj.get_meal_display()} - {obj.food_name} has been updated')
+                messages.success(request, f'Updated {obj.food_name}, {obj.get_meal_display()}')
                 return redirect('diaries:day', date.year, date.month, obj.date.day)
 
             elif 'another' in request.POST:
@@ -294,7 +269,31 @@ def diary_update_view(request, pk):
     return render(request, template_name, context)
 
 
+@login_required
+def diary_delete_list_view(request):
+    template_name = 'diaries/diary_confirm_delete.html'
+    context = {}
 
+    obj_list = request.session.get('delete_list')
+    if obj_list: 
+        obj_list = Diary.objects.filter(id__in=obj_list)
+        date = obj_list.first().date
+        meal = obj_list.first().get_meal_display()
+    else:
+        date = timezone.now()
+        meal = None
+    
+    if request.method == 'POST':
+        if obj_list: 
+            Diary.objects.filter(id__in=obj_list).delete()
+            request.session.pop('delete_list')
+            messages.success(request, f'Deleted {len(obj_list)} food from {meal}, {date}')
+            return redirect('diaries:day', date.year, date.month, date.day) 
+    
+    context['meal_name'] = meal
+    context['date'] = date
+    context['object_list'] = obj_list
+    return render(request, template_name, context)
 
 
 
@@ -307,7 +306,7 @@ def diary_update_view(request, pk):
 
 class DiaryUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Diary
-    form_class = forms.DiaryUpdateForm
+    form_class = DiaryUpdateForm
     success_message = 'Updated %(food_name)s'
 
     def test_func(self):

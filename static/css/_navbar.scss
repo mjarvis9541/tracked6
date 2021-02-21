@@ -1,39 +1,41 @@
 header {
-    background: #333;
+    background: #f2f2f2;
 }
 
 .navbar {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 .75rem;
+    padding: 0 0.75rem;
     display: grid;
     grid-template-columns: auto 1fr auto;
-    grid-gap: .75rem;
+    grid-gap: 0.75rem;
     overflow: hidden;
     white-space: nowrap;
     a {
         display: flex;
         justify-content: center;
         align-items: center;
-        color: #fff;
+        color: #333;
     }
     a:hover {
-        color: #fff;
+        color: #333;
     }
     .start {
         display: grid;
-        font-size: 1.25rem;
+        font-size: 1.5rem;
         font-weight: bold;
+        
     }
     .center {
         display: grid;
-        grid-template-columns: auto auto auto auto 1fr;
+        grid-template-columns: repeat(7, auto) 1fr;
         overflow: hidden;
         a {
-            padding: .75rem 1rem;
+            padding: 0.75rem 1rem;
         }
         a:hover {
             background: crimson;
+            color: #fff;
         }
     }
     .end {
@@ -41,14 +43,11 @@ header {
         grid-template-columns: auto auto auto auto 1fr;
         overflow: hidden;
         a {
-            padding: .5rem 1rem;
-            
+            padding: 0.5rem 1rem;
         }
         a:hover {
             background: crimson;
-        }
-        .sign-up {
-            background: crimson;
+            color: #fff;
         }
     }
 }

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load customfilters %}
 {% block content %}
-<h2 class="mt-1">Add to Meal</h2>
+<h2 class="mt-1">Add Food/Update Meal</h2>
 <div class="structure">
 
     <!-- Main content - food list -->
@@ -41,7 +41,7 @@
 
     <!-- Side content - current meal list -->
     <div class="aside">
-        <h2 class="mt-1 mb-1">{{ meal.name }}</h2>
+        <h2 ><a href="{% url 'meals:detail' meal.id %}">{{ meal.name }}</a></h2>
 
     
 

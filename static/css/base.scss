@@ -18,12 +18,13 @@
 @import 'diary_detail';
 
 // Food app imports
-@import 'food_database';
+@import 'food_list';
 
 // Meal app imports
 @import 'meals';
 
-// Stamdard stuff
+
+// Stamdard
 * {
     box-sizing: border-box;
     margin: 0;
@@ -47,9 +48,10 @@ a:hover {
 }
 
 
-// Base media query 
-@media (max-width: 684px) {
 
-}
+// Base media query 
+// @media (max-width: 684px) {
+
+// }
 
 

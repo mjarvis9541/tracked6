@@ -83,11 +83,13 @@ def meal_add_food_view(request):
     return render(request, template_name, context)
 
 
+
 def meal_detail_view(request, pk):
     template_name = 'meals/meal_detail.html'
     context = {}
     context['meal'] = get_object_or_404(Meal, id=pk)
     return render(request, template_name, context)
+
 
 
 def meal_update_view(request, pk):
@@ -147,23 +149,3 @@ def meal_delete_view(request, pk):
 
 
 
-
-    """ Multi variable assignment """
-    # def meal_update_view(request, pk):
-    # template_name = 'meals/meal_update.html'
-    # context = {}
-
-    # context['meal'] = obj = get_object_or_404(Meal, id=pk)
-
-    # meal_items = model_to_dict(obj, exclude=['id', 'user', 'name', 'description'])
-    # meal_items_updated = {}
-    # food_list = Food.objects.summary().values()
-    # print(meal_items)
-
-    # if request.method == 'POST':
-    #     formset = AddFoodToMealFormSet(request.POST, initial=food_list)
-    # else:
-    #     formset = AddFoodToMealFormSet(initial=food_list)
-
-
-    # return render(request, template_name, context)

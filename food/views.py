@@ -99,7 +99,7 @@ class CategoryDeleteView(LoginRequiredMixin, DeleteView):
 
 class FoodListView(FoodFilterMixin, ListView):
     ordering = ('name', 'brand')
-    paginate_by = 25
+    paginate_by = 20
     queryset = Food.objects.all()
 
     def get_context_data(self, **kwargs):

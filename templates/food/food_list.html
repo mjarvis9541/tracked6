@@ -1,82 +1,57 @@
 {% extends 'base.html' %}
 {% load customfilters %}
 {% block content %}
-<h2 style="margin-top: .5rem;">Food Database</h2>
+<div class="food-list-structure">
 
-<form action="">
-    <div class="food-database-search-grid">
-        <div class="span-col-3">{{ form.q }}</div>
-        <div>{{ form.brand }}</div>
-        <div>{{ form.category }}</div>
-        <div>{{ form.sort }}</div>
-        <div class="span-col-2">{{ page_obj.paginator.count }} Results</div>
-        
-        <div class="text-end">
-            <a href="{% url 'food:list' %}">Clear</a>
-            <button class="btn">Search</button></div>
+    <div class="main">
+        <h2>Food Database</h2>
+        <p>Find a list of all of the food in our database below. Click on a food name to view further details
+            and/or add the food to your diary or one your saved meals.</p>
+        <div class="food-list">
+            <div>Food</div>
+            <div>Brand</div>
+            <div class="end">Serving</div>
+            <div class="end">Calories</div>
+            <div class="end">Protein</div>
+            <div class="end">Carbs</div>
+            <div class="end">Fat</div>
+
+            {% for food in food_list %}
+            <div><a href="">{{ food.name }}</a></div>
+            <div><a href="">{{ food.brand }}</a></div>
+            <div class="end">{{ food.serving }}</div>
+            <div class="end">{{ food.energy }}</div>
+            <div class="end">{{ food.protein }}</div>
+            <div class="end">{{ food.carbohydrate }}</div>
+            <div class="end">{{ food.fat }}</div>
+            {% endfor %}
+
         </div>
-</form>
 
-<div class="food-database-grid text-end">
-    <div class="food-database-grid-item hide-sm grid-title flex-s">Food</div>
-    <div class="food-database-grid-item hide-sm grid-title flex-s">Brand</div>
-    <div class="food-database-grid-item hide-sm grid-title">Serving</div>
-    <div class="food-database-grid-item hide-sm grid-title">Calories</div>
-    <div class="food-database-grid-item hide-sm grid-title">Protein</div>
-    <div class="food-database-grid-item hide-sm grid-title">Carbs</div>
-    <div class="food-database-grid-item hide-sm grid-title">Fat</div>
-    <div class="food-database-grid-item hide-sm grid-title">Saturates</div>
-    <div class="food-database-grid-item hide-sm grid-title">Sugar</div>
-    <div class="food-database-grid-item hide-sm grid-title">Fibre</div>
-    <div class="food-database-grid-item hide-sm grid-title">Salt</div>
+        <div class="page-nav">
 
-    {% for object in object_list %}
-    <div class="food-database-grid-item food-name span-col-2-sm flex-s"><a href="">{{ object.name }}, {{ object.serving }}</a></div>
-    <div class="food-database-grid-item span-col--sm flex-s"><a href="">{{ object.brand }}</a></div>
-    <div class="food-database-grid-item"></div>
-    <div class="food-database-grid-item hide-lg flex-s"><strong>Calories</strong></div>
-    <div class="food-database-grid-item ">{{ object.energy }}</div>
-    <div class="food-database-grid-item hide-lg flex-s"><strong>Protein</strong></div>
-    <div class="food-database-grid-item ">{{ object.protein|floatformat:0 }}</div>
-    <div class="food-database-grid-item hide-lg flex-s"><strong>Carbs</strong></div>
-    <div class="food-database-grid-item ">{{ object.carbohydrate|floatformat:0 }}</div>
-    <div class="food-database-grid-item hide-lg flex-s"><strong>Fat</strong></div>
-    <div class="food-database-grid-item ">{{ object.fat|floatformat:0 }}</div>
-    <div class="food-database-grid-item hide-sm">{{ object.saturates|floatformat:0 }}</div>
-    <div class="food-database-grid-item hide-sm">{{ object.sugars|floatformat:0 }}</div>
-    <div class="food-database-grid-item hide-sm">{{ object.fibre|floatformat:0 }}</div>
-    <div class="food-database-grid-item hide-sm">{{ object.salt|floatformat:1 }}</div>
-    <div class="hide-lg mb-1"></div>
-    {% endfor %}
-</div>
+        </div>
 
 
-<div class="pagination-grid">
-    <div >
-        <small style="padding-left: .5rem;">Page <strong>{{ page_obj.number }}</strong> of <strong>{{ page_obj.paginator.num_pages }}</strong></small>
+    </div>
+    <div class="aside-1">
+        <h2>Quick Links</h2>
+        <p><a href="">Create Food</a></p>
+        <p class="mb-2"><a href="">Create Brand</a></p>
     </div>
 
-    <div class="pagination text-end mb-5">
-        {% if page_obj.has_previous %}
-        <a href="?{% param_replace page=page_obj.previous_page_number %}">Previous</a>
-        {% else %}
-        {% endif %}
-
-        {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-        <a class="active" href="?{% param_replace page=num %}">{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} 
-        <a class="" href="?{% param_replace page=num %}">{{ num }}</a>
-        {% endif %}
+    <div class="aside-2">
+        <h2>Latest Food</h2>
+        <p>A list of the lastest food added to our database.</p>
+        {% for food in latest_food %}
+        <div><a href="">{{ food.name }}, {{ food.brand }}, {{ food.serving }}</a></div>
+        <!-- <div><a href="">{{ food.brand }}</a></div>
+        <div><a href="">{{ food.serving }}</a></div> -->
+        <div class="mb-1"><small>Added {{ food.datetime_created|date:"D d M" }} by <a href="">{{ food.user_created}}</a></small></div>
         {% endfor %}
-
-        {% if page_obj.has_next %}
-        <a href="?{% param_replace page=page_obj.next_page_number %}">Next</a>
-        {% else %}
-        {% endif %}
     </div>
-</div>
 
+</div>
 
 
 {% endblock content %}

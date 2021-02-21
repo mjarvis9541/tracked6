@@ -19,9 +19,11 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
 
+from diaries.views import DiaryDayListView
 
 urlpatterns = [
     # Project urls
+    path('', DiaryDayListView.as_view()),
     path('food/', include('food.urls')),
     path('diary/', include('diaries.urls')),
     path('meals/', include('meals.urls')),

@@ -1,3 +1,27 @@
+.diary-data {
+    display: grid;
+    grid-template-columns: auto 3fr repeat(9, 1fr);
+    div {
+        border-bottom: 1px solid #f2f2f2;
+
+    }
+    .check {
+        padding-right: .5rem;
+    }
+    .grid-item {
+        display: flex;
+        align-items: center;
+    }
+    .end {
+        justify-content: flex-end;
+    }
+
+}
+
+
+
+
+
 .diary-date {
     margin: .75rem 0 .5rem;
     display: grid;
