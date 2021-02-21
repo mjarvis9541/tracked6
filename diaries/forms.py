@@ -24,7 +24,7 @@ class BaseDiaryFormset(BaseFormSet):
                 quantity.append(attrs['quantity'])
 
         if not quantity:
-            print('no checkboxs')
+            print('No quantities')
             raise forms.ValidationError('You have not selected any food to add')
 
 
@@ -32,10 +32,12 @@ class AddToDiaryForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['id'].disabled = True
-        # self.fields['id'].hidden = True
+        self.fields['id'].hidden = True
 
     id = forms.UUIDField()
-    quantity = forms.FloatField(
+    quantity = forms.DecimalField(
+        max_digits=4,
+        decimal_places=2,
         min_value=0,
         required=False,
         widget=forms.NumberInput(attrs={'tabindex': "1", 'class': 'form-control', 'placeholder': 0}),

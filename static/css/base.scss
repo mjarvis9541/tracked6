@@ -4,30 +4,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@400;500;700;900&display=swap');
-@import 'food_database';
-@import 'text';
-@import 'margins', 'padding';
+
+// Base imports
+@import 'layouts';
 @import 'tables';
-@import 'diary_detail';
 @import 'forms';
 @import 'buttons';
 @import 'navbar';
+
+// Diary app imports
 @import 'diary_list';
 @import 'diary_create_grid';
+@import 'diary_detail';
 
+// Food app imports
+@import 'food_database';
+
+// Meal app imports
+@import 'meals';
+
+// Stamdard stuff
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
 }
+
 a {
     text-decoration: none;
     color: #0d6efd;
 }
+
 a:hover {
-    color: #ffc107;
-    font-weight: bold;
+    color: #9ac2fe;
 }
 
 .container {
@@ -37,28 +47,9 @@ a:hover {
 }
 
 
-
-
-
-
-
-
-
+// Base media query 
 @media (max-width: 684px) {
 
 }
 
 
-.span-col-2{grid-column: span 2 / auto;}
-.span-col-3{grid-column: span 3 / auto;}
-.span-col-4{grid-column: span 4 / auto;}
-.span-col-5{grid-column: span 5 / auto;}
-.span-col-6{grid-column: span 6 / auto;}
-.span-col-7{grid-column: span 7 / auto;}
-.span-col-8{grid-column: span 8 / auto;}
-.span-col-9{grid-column: span 9 / auto;}
-.span-col-10{grid-column: span 10 / auto;}
-.span-col-11{grid-column: span 11 / auto;}
-.span-col-12{grid-column: span 12 / auto;}
-
-.span-row-2{grid-row: span 2 / auto;}

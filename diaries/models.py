@@ -20,7 +20,7 @@ class Diary(Uuidable, Timestampable):
     date = models.DateField(default=timezone.now)
     meal = models.IntegerField(choices=Meal.choices)
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=3, decimal_places=2)
+    quantity = models.DecimalField(max_digits=4, decimal_places=2)
     objects = DiaryQuerySet.as_manager()
 
     class Meta:

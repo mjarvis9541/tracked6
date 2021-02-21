@@ -1,39 +1,54 @@
 header {
-    background: #3d5afe;
-    
+    background: #333;
 }
 
-.new-grid {
-    text-decoration: none;
-    overflow: hidden;
+.navbar {
     max-width: 1200px;
-    margin: auto;
+    margin: 0 auto;
+    padding: 0 .75rem;
     display: grid;
     grid-template-columns: auto 1fr auto;
-    gap: .5rem;
-
-    .new-grid-item {
-        text-decoration: none;
-        padding: .5rem 0;
+    grid-gap: .75rem;
+    overflow: hidden;
+    white-space: nowrap;
+    a {
         display: flex;
+        justify-content: center;
         align-items: center;
         color: #fff;
     }
-
-    .new-grid-item-mid {
+    a:hover {
+        color: #fff;
+    }
+    .start {
+        display: grid;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+    .center {
         display: grid;
         grid-template-columns: auto auto auto auto 1fr;
-
-        .new-flex-item {
-            display: flex;
-            align-items: center;
-            color: #fff;
-            padding: 0 1.5rem;            
+        overflow: hidden;
+        a {
+            padding: .75rem 1rem;
         }
-        .new-flex-item:hover {
-            background: #2978ffb3;
-            text-decoration: none;
+        a:hover {
+            background: crimson;
         }
     }
-
+    .end {
+        display: grid;
+        grid-template-columns: auto auto auto auto 1fr;
+        overflow: hidden;
+        a {
+            padding: .5rem 1rem;
+            
+        }
+        a:hover {
+            background: crimson;
+        }
+        .sign-up {
+            background: crimson;
+        }
+    }
 }

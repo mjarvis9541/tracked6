@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
 {% load customfilters %}
 {% block content %}
-<h2 class="mt-1 mb-1">Saved Meals</h2>
+<h2 class="mt-1 mb">Saved Meals</h2>
 
-<div class="mt-1 mb-1">Displays a list of meals you've saved for quickly adding to your food diary.</div>
+<div class="mt mb-2">Displays a list of meals you've saved for quickly adding to your food diary.</div>
 
-{% for object in object_list %}
 
-<div><strong><a href="">{{ object.name }}</a></strong></div>
+<div class="meal-list">
+<div>Meal Name</div>
+<div>Description</div>
+<div>Created</div>
+<div>Updated</div>
 
-<div class="mb-1">{{ object.description }}</div>
+    {% for meal in object_list %}
+<div><a href="{% url 'meals:detail' meal.id %}">{{ meal.name }}</a></div>
+<div>{{ meal.description }}</div>
+<div>{{ meal.datetime_created|date:"d/m/Y" }}</div>
+<div>{% if meal.datetime_update > meal.datetime_created %}{{ meal.datetime_updated|date:"d/m/Y" }}{% else %}-{% endif%}</div>
 
 {% endfor %}
-
+</div>
 
 
 <div class="mt-2 mb-2">

@@ -2,8 +2,10 @@
 {% load customfilters %}
 {% load humanize %} 
 {% block content %}
-<h2>{{ meal_name }}, {{ date|date:"l, j M" }}</h2>
-<h1>Add Food</h1>
+<!-- <h2 style="text-align: center;">{{ meal_name }}, {{ date|date:"l, j M" }}</h2> -->
+<div class="structure">
+    <div>
+<h1 class="mt-1 mb-1">Add to Diary</h1>
 
 <form action="" method="get" class="mt-1 mb-1">
 <div class="food-search">
@@ -57,7 +59,7 @@
 <div class="diary-action-btn-row">
     <a class="btn" href="{% url 'diaries:day' date.year date.month date.day %}">Return to Diary</a>
     <div class="btn-order">
-        <button class="btn" tabindex="2" name="save">Save</button>
+        <button class="btn" tabindex="2" name="save">Add Food</button>
         <button class="btn" name="another">Save and add more</button>
     </div>
 </div>
@@ -88,7 +90,18 @@
         {% endif %}
     </div>
 </div>
+</div>
 
+<div class="aside">
+    <h1 class="mt-1">{{ meal_name }}</h1>
+    <h2>{{ date|date:"l, j M" }}</h2>
+    {% for object in meal_list %}
+    <div><a href="">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
+
+
+    {% endfor %}
+</div>
+</div>
 <br>
 <br>
 <br>

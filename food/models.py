@@ -73,9 +73,7 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     data_value = models.IntegerField()
-    data_measurement = models.CharField(
-        max_length=50, choices=Measurement.choices
-    )
+    data_measurement = models.CharField(max_length=50, choices=Measurement.choices)
     description = models.TextField(max_length=1000, blank=True, null=True)
     active = models.BooleanField(
         default=True,
@@ -88,10 +86,9 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
         verbose_name_plural = 'food'
         ordering = ('name',)
         constraints = [
-                    models.UniqueConstraint(
-                        fields=['name', 'brand'], name='unique_name_brand'
-                    )
-                ]
+            models.UniqueConstraint(fields=['name', 'brand'], name='unique_name_brand')
+        ]
+
     def __str__(self):
         if self.data_measurement == 'g' or self.data_measurement == 'ml':
             return f'{self.name}, {self.brand.name}, {self.data_value}{self.data_measurement}'
@@ -103,15 +100,17 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
 
     @property
     def serving(self):
-        """ Data value display for the food list page """
+        """ Data value display for the food list page. """
         if self.data_measurement == 'g' or self.data_measurement == 'ml':
             return f'{self.data_value}{self.data_measurement}'
         else:
             return f'{self.data_value} {self.get_data_measurement_display().title()}'
 
+
+
     @property
     def data_value_measurement_detail(self):
-        """ Data value display for the food detail page """
+        """ Data value display for the food detail page. """
         if self.data_measurement == 'g' or self.data_measurement == 'ml':
             return f'{self.data_value}{self.data_measurement}'
         else:

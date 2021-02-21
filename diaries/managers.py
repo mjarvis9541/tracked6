@@ -40,6 +40,10 @@ class DiaryQuerySet(models.QuerySet):
                 output_field=models.CharField(),
             ),
 
+            # New showeg 1.5 as value if serving > 1
+            # data_display_value=Case(When(data_measurement='srv', data_value__gt=1, then=Value=F()))
+            # data_display_value
+            # data_display_measurement
             energy=ExpressionWrapper(F('quantity') * F('food__energy'), output_field=models.IntegerField()),
             fat=F('quantity') * F('food__fat'),
             saturates=F('quantity') * F('food__saturates'),

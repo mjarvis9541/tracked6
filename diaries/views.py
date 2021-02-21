@@ -150,7 +150,7 @@ def add_to_diary_view(request, year, month, day, meal):
     if not meal in range(1,7):
         raise Http404('Invalid meal')
 
-    template_name = 'diaries/diary_create.html'
+    template_name = 'diaries/diary_add_food.html'
     context = {}
     queryset = Food.objects.summary().values()
 
@@ -208,6 +208,7 @@ def add_to_diary_view(request, year, month, day, meal):
     context['date'] = date
     context['meal'] = meal
     context['meal_name'] = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
+    context['meal_list'] = Diary.objects.filter(user=request.user, date=date, meal=meal).summary()
     context['formset'] = page_obj
     context['form'] = FoodFilterForm(request.GET)
     return render(request, template_name, context)

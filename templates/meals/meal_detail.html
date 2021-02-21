@@ -1,14 +1,23 @@
-<!-- Displays details of the meal -->
-
 {% extends 'base.html' %}
 {% load customfilters %}
 {% block content %}
+<h2 class="mt-1 mb">Saved Meals</h2>
+<h3>{{ meal.name }}</h3>
+<p>Created on {{ meal.datetime_created }}</p>
 
+<div class="meal-detail-grid">
+    <div class="grid-item">Food</div>
+    <div class="grid-item">Quantity</div>
+    <div class="grid-item">{{ meal.item_1.name }}, {{ meal.item_1.serving }}</div>
+    <div class="grid-item">{{ meal.item_1_quantity }}</div>
+    <div class="grid-item">{{ meal.item_2.name }}, {{ meal.item_2.serving }}</div>
+    <div class="grid-item">{{ meal.item_2_quantity }}</div>
+    <div class="grid-item">{{ meal.item_3.name }}, {{ meal.item_3.serving }}</div>
+    <div class="grid-item">{{ meal.item_3_quantity }}</div>
+    <div class="grid-item">{{ meal.item_5.name }}, {{ meal.item_4.serving }}</div>
+    <div class="grid-item">{{ meal.item_4_quantity }}</div>
 
-
-
-
-
+</div>
 
 <div class="mt-2 mb-2">
     <a href="{% url 'meals:create' %}">Create Meal</a>
