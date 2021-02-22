@@ -16,7 +16,7 @@ from .models import Meal, MealItem
 
 class MealListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
-        return Meal.objects.filter(user=self.request.user)
+        return Meal.objects.filter(user=self.request.user).summary()
 
 
 class MealCreateView(LoginRequiredMixin, CreateView):
@@ -25,6 +25,11 @@ class MealCreateView(LoginRequiredMixin, CreateView):
     template_name = 'meals/meal_create.html'
     model = Meal
     form_class = MealCreateForm
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -117,21 +122,22 @@ class MealItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class MealItemListView(ListView):
     def get_queryset(self):
-        return MealItem.objects.filter(meal=self.kwargs.get('pk'))
+        return MealItem.objects.filter(meal=self.kwargs.get('pk')).summary()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object'] = get_object_or_404(Meal, id=self.kwargs.get('pk'))
+        context['total'] = self.get_queryset().total()
         return context
 
 
-class MealDetailView(DetailView):
-    model = Meal
+# class MealDetailView(DetailView):
+#     model = Meal
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['mealitem_set'] = self.object.mealitem_set.all()
-        return context
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['mealitem_set'] = self.object.mealitem_set.all()
+#         return context
 
 
 class MealItemDetailView(DetailView):

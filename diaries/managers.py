@@ -36,14 +36,10 @@ class DiaryQuerySet(models.QuerySet):
                 When(data_measurement='ml', then=Value('ml')),
                 When(data_measurement='srv', data_value__gt=1, then=Value(' Servings')),
                 When(data_measurement='srv', data_value__lte=1, then=Value(' Serving')),
-                # default=Value(''),
+                default=Value(''),
                 output_field=models.CharField(),
             ),
 
-            # New showeg 1.5 as value if serving > 1
-            # data_display_value=Case(When(data_measurement='srv', data_value__gt=1, then=Value=F()))
-            # data_display_value
-            # data_display_measurement
             energy=ExpressionWrapper(F('quantity') * F('food__energy'), output_field=models.IntegerField()),
             fat=F('quantity') * F('food__fat'),
             saturates=F('quantity') * F('food__saturates'),
@@ -54,35 +50,6 @@ class DiaryQuerySet(models.QuerySet):
             salt=F('quantity') * F('food__salt'),
             sodium=F('salt') * 400,
         )
-
-
-    # def summary(self):
-    #     """
-    #     Gets a summary of calculates food values to display on the user's food diary display page.
-    #     """
-    #     return self.select_related('food', 'food__brand').annotate(
-    #         food_name=F('food__name'),
-    #         brand_name=F('food__brand__name'),
-    #         data_measurement=F('food__data_measurement'),
-    #         data_value=Case(
-    #             # When the measurement is serving, round the diary display data_value to decimal place 
-    #             When(data_measurement='srv', then=Round1(ExpressionWrapper(F('quantity') * F('food__data_value'), output_field=models.DecimalField()))),
-    #             # When the measurement is serving, round the diary display data_value to decimal place 
-    #             When(data_measurement='g', then=Round(ExpressionWrapper(F('quantity') * F('food__data_value'), output_field=models.DecimalField()))),
-    #             # When the measurement is serving, round the diary display data_value to decimal place 
-    #             When(data_measurement='ml', then=Round(ExpressionWrapper(F('quantity') * F('food__data_value'), output_field=models.DecimalField()))),
-    #         ),
-    #         data_value_measurement=Case( 
-    #             # removes 'servings' measurement so it's displayed as '1 <item>' instead of '1 serving <item>'
-    #             When(data_measurement='g', then=Value('g')),
-    #             When(data_measurement='ml', then=Value('ml')),
-    #             When(data_measurement='srv', data_value__gt=1, then=Value(' servings')),
-    #             When(data_measurement='srv', data_value__lte=1, then=Value(' serving')),
-    #             # default=Value(''),
-    #             output_field=models.CharField(),
-    #         ),
-    #     )
-
 
     def total(self):
         """

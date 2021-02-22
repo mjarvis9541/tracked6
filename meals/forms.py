@@ -6,6 +6,10 @@ from .models import Meal, MealItem
 
 # add initial data here
 class MealCreateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
     class Meta:
         model = Meal
         fields = ['name', 'description']
@@ -14,6 +18,16 @@ class MealCreateForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        if Meal.objects.filter(user=self.user, name=name).exists():
+            raise forms.ValidationError(
+                'You have already created a meal with this name.'
+            )
+        return cleaned_data
+
 
 class AddToMealForm(forms.ModelForm):
     class Meta:

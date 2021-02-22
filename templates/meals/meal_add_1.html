@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 {% load customfilters %}
 {% block content %}
+<h2 class="mt-1 mb-1">Add Food to {{ meal }}</h2>
 
-<h1 class="mt-1 mb-1">Add Food to Meal: Step 1</h1>
-
-<p class="mt-1 mb-1">Select a food you wish to add to <strong>{{ meal }}</strong> below.</p>
 
 <form>
     {% include 'includes/foodfilter.html' %}
