@@ -1,6 +1,8 @@
 import datetime
-from django.utils import timezone
+
 from django.http import Http404
+from django.utils import timezone
+
 from diaries.models import Diary
 
 

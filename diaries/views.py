@@ -1,5 +1,4 @@
 import datetime
-from django.views.generic.detail import SingleObjectMixin
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -17,25 +16,16 @@ from django.views.generic import (CreateView, DayArchiveView, DeleteView,
                                   TodayArchiveView, UpdateView, View,
                                   WeekArchiveView)
 from django.views.generic.base import ContextMixin
-from django.views.generic.detail import DetailView
-# from django.views.generic.dates import (
-#     DateMixin,
-#     BaseDateListView,
-#     DayMixin,
-#     MonthMixin,
-#     YearMixin,
-# )
+from django.views.generic.detail import DetailView, SingleObjectMixin
+from django.views.generic.edit import FormMixin
 from django.views.generic.list import MultipleObjectMixin
-from food.forms import FoodFilterForm, FOOD_SORT_CHOICES
+from food.forms import FOOD_SORT_CHOICES, FoodFilterForm
 from food.mixins import FoodFilterMixin
 from food.models import Food
-from django.views.generic.edit import FormMixin
 
-from .forms import AddToDiaryFormSet, DiaryUpdateForm, AddRecentToDiaryFormSet
-from .models import Diary
+from .forms import AddRecentToDiaryFormSet, AddToDiaryFormSet, DiaryUpdateForm
 from .mixins import DateMixin, MealMixin
-
-
+from .models import Diary
 
 
 class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):

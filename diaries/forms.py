@@ -1,7 +1,7 @@
 from django import forms
-
 from django.forms import BaseFormSet, formset_factory
 from utils.forms import DateInput
+
 from .models import Diary
 
 

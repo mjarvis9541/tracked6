@@ -3,6 +3,7 @@ from django.forms import formset_factory, widgets
 
 from .models import Meal, MealItem
 
+
 # add initial data here
 class MealCreateForm(forms.ModelForm):
     class Meta:

@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from food.models import Food
+from utils.behaviours import Timestampable, Uuidable
+
 from .managers import DiaryQuerySet
-from utils.behaviours import Uuidable, Timestampable
-from django.urls import reverse
 
 
 class Diary(Uuidable, Timestampable):

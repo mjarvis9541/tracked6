@@ -1,19 +1,17 @@
-from django.forms.forms import Form
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, FormView, ListView, TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
-from meals.models import Meal, MealItem
-from django.views.generic import CreateView, FormView, ListView, View, TemplateView
-from django.views.generic.base import ContextMixin
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy, reverse
-from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
-from food.models import Food
-from food.mixins import FoodFilterMixin
 from food.forms import FoodFilterForm
-from diaries.forms import AddToDiaryFormSet, BaseDiaryFormset
-from .forms import AddToMealFormSet, MealItemForm, MealCreateForm, AddToMealForm
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
+from food.mixins import FoodFilterMixin
+from food.models import Food
+
+from .forms import AddToMealForm, MealCreateForm
+from .models import Meal, MealItem
 
 
 class MealListView(LoginRequiredMixin, ListView):
@@ -109,7 +107,7 @@ class MealItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         obj = self.get_object()
-        return reverse('meals:detail', kwargs={'pk': obj.meal.id})
+        return reverse('meals:item_list', kwargs={'pk': obj.meal.id})
 
     def delete(self, request, *args, **kwargs):
         obj = self.get_object()

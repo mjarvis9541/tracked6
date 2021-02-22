@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
-
 from food.models import Food
 from utils.behaviours import Timestampable, Uuidable
 
@@ -32,7 +31,7 @@ class Meal(Uuidable, Timestampable):
         return self.name
     
     def get_absolute_url(self):
-        return reverse('meals:detail', kwargs={'pk': self.id})
+        return reverse('meals:item_list', kwargs={'pk': self.id})
 
 
 class MealItem(Uuidable, Timestampable):
@@ -48,4 +47,4 @@ class MealItem(Uuidable, Timestampable):
         return f'{self.food.name} of {self.meal.name}'
 
     def get_absolute_url(self):
-        return reverse('meals:detail', kwargs={'pk': self.meal.id})
+        return reverse('meals:item_list', kwargs={'pk': self.meal.id})
