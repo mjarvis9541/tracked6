@@ -23,9 +23,9 @@
 </div>
 </form>
 
-<div style="font-weight: bold; color: red;">{{ management_data.non_form_errors.as_text  }}</div>
+<div style="font-weight: bold; color: red;">{{ management_data.non_form_errors.as_text }} {{ formset.non_form_errors.as_text  }}</div>
 
-<form method="post"> {% csrf_token %} {{ management_data.management_form }} 
+<form method="post"> {% csrf_token %} {{ management_data.management_form }}  {{ formset.management_form }} 
 
 <div class="diary-add-grid">
     <div class="title hidden-sm">Food</div>
@@ -40,7 +40,7 @@
     {% for form in formset %}
     <div class="grid-item expand-sm-col-3"><a href="">{{ form.initial.name }}</a> <br> <small>{{ form.initial.food_brand }}</small></div>
     <div class="grid-item hidden-lg">Quantity</div>
-    <div class="grid-item end">{{ form.quantity }}</div>
+    <div class="grid-item end">{{ form.quantity }} {{ form.quantity.errors }}</div>
     <div class="grid-item hidden-lg"><button class="btn" style="width: 100%;" name="save">Add</button></div>
     <div class="grid-item end expand-sm-col-3">{{ form.initial.data_value_measurement }}</div>
     <div class="grid-item hidden-lg expand-sm-col-2">Calories</div>

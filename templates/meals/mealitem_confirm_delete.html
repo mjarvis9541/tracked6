@@ -1,16 +1,14 @@
 {% extends 'base.html' %}
-{% load customfilters %}
 {% block content %}
 
-<h1 class="mt-1 mb-1">Delete Meal Item</h1>
+<h1 class="mt-1 mb-1">Delete {{ object.food.name }}</h1>
 
-<p>Are you sure you wish to delete your saved meal {{ object.name }}s?</p>
+<p>Are you sure you wish to delete {{ object.food.name }} from {{ object.meal.name }}?</p>
+
 <p class="mt-1 mb-2">This action cannot be undone.</p>
-
 
 <form method="post"> {% csrf_token %}
     <button class="btn">Delete</button>
 </form>
-
 
 {% endblock content %}

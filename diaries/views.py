@@ -69,18 +69,6 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
 
 
 
-class DiaryMealListView(LoginRequiredMixin, DateMixin, MealMixin, ListView):
-    template_name = 'diaries/diary_meal_list.html'
-
-    def get_queryset(self):
-        return Diary.objects.filter(user=self.request.user, date=self.date, meal=self.meal).summary()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['total'] = self.get_queryset().total()
-        context['total_meal'] = self.get_queryset().filter(meal=self.meal).total()
-        return context
-
 def diary_meal_update_view(request, year, month, day, meal):
     try:
         date = datetime.date(year, month, day)
@@ -97,6 +85,40 @@ def diary_meal_update_view(request, year, month, day, meal):
     context['meal_name'] = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
     context['object_list'] = queryset
     return render(request, template_name, context)
+
+
+
+
+
+""" In progress """
+class AddFoodToDiaryView(DateMixin, MealMixin, FoodFilterMixin, TemplateView):
+    template_name = 'diaries/diary_add_food.html'
+    queryset = Food.objects.summary().values()
+
+    def get_queryset(self):
+        return Food.objects.summary().values()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = FoodFilterForm(self.request.GET)
+        context['formset'] = AddToDiaryFormSet(self.request.POST or None, initial=self.queryset)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        formset = context.get('formset')
+        if formset.is_valid():
+            for form in formset:
+                attrs = form.cleaned_data
+                if attrs['quantity']:
+                    attrs['food_id'] = attrs.pop('id')
+                    attrs['user'] = self.request.user
+                    attrs['date'] = self.date
+                    attrs['meal'] = self.meal
+                    Diary.objects.create(**attrs)
+            return redirect('diaries:day', self.date.year, self.date.month, self.date.day)
+        return render(request, self.template_name, context)
+""" In progress """
 
 
 
@@ -333,7 +355,14 @@ class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
         return reverse('diaries:day', kwargs={'year': obj.date.year, 'month': obj.date.month, 'day': obj.date.day})
 
 
+class DiaryMealListView(LoginRequiredMixin, DateMixin, MealMixin, ListView):
+    template_name = 'diaries/diary_meal_list.html'
 
+    def get_queryset(self):
+        return Diary.objects.filter(user=self.request.user, date=self.date, meal=self.meal).summary()
 
-
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total'] = self.get_queryset().total()
+        context['total_meal'] = self.get_queryset().filter(meal=self.meal).total()
+        return context
