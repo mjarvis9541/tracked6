@@ -1,5 +1,8 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
+from django.utils.text import slugify
+
 from food.models import Food
 from utils.behaviours import Timestampable, Uuidable
 
@@ -7,39 +10,42 @@ from utils.behaviours import Timestampable, Uuidable
 class Meal(Uuidable, Timestampable):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    description = models.TextField(max_length=1000, null=True, blank=True)
-    item_1 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_1')
-    item_1_quantity = models.DecimalField(max_digits=4, decimal_places=2)
-    item_2 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_2', null=True, blank=True)
-    item_2_quantity = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    item_3 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_3', null=True, blank=True)
-    item_3_quantity = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    item_4 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_4', null=True, blank=True)
-    item_4_quantity = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    item_5 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_5', null=True, blank=True)
-    item_5_quantity = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    item_6 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_6', null=True, blank=True)
-    item_6_quantity = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    item_7 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_7', null=True, blank=True)
-    item_7_quantity = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    item_8 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_8', null=True, blank=True)
-    item_8_quantity = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    item_9 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_9', null=True, blank=True)
-    item_9_quantity = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-    item_10 = models.ForeignKey(Food, on_delete=models.CASCADE, related_name='meal_items_10', null=True, blank=True)
-    item_10_quantity = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
-
+    description = models.TextField(max_length=1000, null=True, blank=True, help_text='Optional.')
+    slug = models.SlugField(max_length=255, unique=True)
+    
     class Meta:
         verbose_name = 'meal'
-        verbose_name_plural = 'saved meals'
+        verbose_name_plural = 'meals'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'name'], name='unique_meal_name'
             )
         ]
     
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            slug_str = f'{self.user.username} {self.name}'
+            self.slug = slugify(slug_str)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
     
+    def get_absolute_url(self):
+        return reverse('meals:detail', kwargs={'pk': self.id})
 
-    
+
+class MealItem(Uuidable, Timestampable):
+    meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    quantity = models.DecimalField(max_digits=4, decimal_places=2)
+
+    class Meta:
+        verbose_name = 'meal item'
+        verbose_name_plural = 'meal items'
+
+    def __str__(self):
+        return f'{self.food.name} of {self.meal.name}'
+
+    def get_absolute_url(self):
+        return reverse('meals:detail', kwargs={'pk': self.meal.id})

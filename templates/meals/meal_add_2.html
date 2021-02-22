@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load customfilters %}
+{% block content %}
+
+<h1 class="mt-1 mb-1">Add Food to Meal: Step 2</h1>
+
+<div class="mt-1 mb-1">{{ meal.name }}</div>
+<div class="mt-1 mb-1">{{ food.name }}</div>
+
+<div style="font-weight: bold; color: red;">{{ form.non_field_errors  }}</div>
+
+<form action="" method="post" novalidate> {% csrf_token %}
+
+    <div class="mt-2 mb-2">
+        <div class="mb-1">{{ form.quantity.label }}</div>
+        {{ form.quantity }}
+        <div>{{ form.quantity.errors }}</div>
+    </div>
+    <button class="btn">Submit</button>
+</form>
+
+
+{% endblock content %}

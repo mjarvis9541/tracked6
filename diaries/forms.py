@@ -13,6 +13,7 @@ class DiaryUpdateForm(forms.ModelForm):
 
 
 class BaseDiaryFormset(BaseFormSet):
+    # Only checks if quantities are in any of the forms submitted 
     def clean(self):
         if any(self.errors):
             return

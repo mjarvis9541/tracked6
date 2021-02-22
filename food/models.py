@@ -44,6 +44,9 @@ class Category(Authorable, Timestampable, Uuidable):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('food:category_detail', kwargs={'pk': self.pk})
+
 
 class FoodQuerySet(models.QuerySet):
     def summary(self):

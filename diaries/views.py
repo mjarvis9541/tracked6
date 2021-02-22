@@ -42,7 +42,7 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
     """ Displays all the food a user has consumed and tracked on a given day. """
     template_name = 'diaries/diary_list.html'
 
-    def get_queryset(self, **kwargs):
+    def get_queryset(self):
         return Diary.objects.filter(user=self.request.user, date=self.date).summary().order_by('datetime_created')
 
     def get_context_data(self, **kwargs):

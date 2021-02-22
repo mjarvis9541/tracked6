@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load customfilters %}
+{% block content %}
+<div style="font-weight: bold; color: red;">{{ formset.non_form_errors  }}</div>
+
+<form method="post"> {% csrf_token %} {{ formset.management_form }}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Food</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+    <tbody>
+        {% for form in formset %}
+        <tr>
+            <td>{{ form.initial.name }}</td>
+            <td>{{ form.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+
+<button class="btn">Submit</button>
+</form>
+
+
+{% endblock content %}

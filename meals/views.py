@@ -1,151 +1,146 @@
-from django.core.paginator import Paginator
-from django.contrib import messages
+from django.forms.forms import Form
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import DeleteView
+from meals.models import Meal, MealItem
+from django.views.generic import CreateView, FormView, ListView, View, TemplateView
+from django.views.generic.base import ContextMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_list_or_404, get_object_or_404, redirect, render
-from django.forms.models import model_to_dict
 from food.models import Food
-
-from .forms import MealCreateForm, AddFoodToMealFormSet
-from .models import Meal
-
-
-def meal_list_view(request):
-    template_name = 'meals/meal_list.html'
-    context = {}
-    context['object_list'] = Meal.objects.filter(user=request.user)
-    return render(request, template_name, context)
+from food.mixins import FoodFilterMixin
+from food.forms import FoodFilterForm
+from diaries.forms import AddToDiaryFormSet, BaseDiaryFormset
+from .forms import AddToMealFormSet, MealItemForm, MealCreateForm, AddToMealForm
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
 
-def meal_create_view(request):
+class MealListView(LoginRequiredMixin, ListView):
+    def get_queryset(self):
+        return Meal.objects.filter(user=self.request.user)
+
+
+class MealCreateView(LoginRequiredMixin, CreateView):
+    """ Step 1: Create a meal (name, description). """
 
     template_name = 'meals/meal_create.html'
-    context = {}
-    initial_data = {
-        'name': request.session.get('name'),
-        'description': request.session.get('description'),
-    }
+    model = Meal
+    form_class = MealCreateForm
 
-    if request.method == 'POST':
-        form = MealCreateForm(request.POST, request=request, initial=initial_data)
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('meals:meal_add_1', kwargs={'meal_id': self.object.id})
+
+
+class MealItemCreateStep1View(LoginRequiredMixin, UserPassesTestMixin, FoodFilterMixin, ListView):
+    """ Step 2: Find food to add to the meal. """
+
+    model = Food
+    template_name = 'meals/meal_add_1.html'
+    paginate_by = 20
+
+    def test_func(self):
+        meal = get_object_or_404(Meal, id=self.kwargs.get('meal_id'))
+        return meal.user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = FoodFilterForm(self.request.GET)
+        context['meal'] = get_object_or_404(Meal, id=self.kwargs.get('meal_id'))
+        return context
+
+
+class MealItemCreateStep2View(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    """ Step 3: Display food details and render form to enable user to add food to the meal. """
+
+    template_name = 'meals/meal_add_2.html'
+
+    def test_func(self):
+        meal = get_object_or_404(Meal, id=self.kwargs.get('meal_id'))
+        return meal.user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['food'] = get_object_or_404(Food, id=self.kwargs.get('food_id'))
+        context['meal'] = get_object_or_404(Meal, id=self.kwargs.get('meal_id'))
+        context['form'] = AddToMealForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        context['form'] = form = AddToMealForm(request.POST)
         if form.is_valid():
-            request.session['name'] = form.cleaned_data.get('name')
-            request.session['description'] = form.cleaned_data.get('description')
-            return redirect('meals:add_food')
-    else:
-        form = MealCreateForm(request=request, initial=initial_data)
-
-    context['form'] = form
-    return render(request, template_name, context)
+            instance = form.save(commit=False)
+            instance.meal = context.get('meal')
+            instance.food = context.get('food')
+            instance.save()
+            return redirect(instance.get_absolute_url())
+        return render(request, self.template_name, context)
 
 
-def meal_add_food_view(request):
+class MealDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """ Delete a meal and return user to meal list view. """
 
-    if not request.session.get('name'): # or not request.session.get('description'):
-        return redirect('meals:create')
+    model = Meal
+    success_url = reverse_lazy('meals:list')
 
-    template_name = 'meals/meal_add_food.html'
-    context = {}
-    food_list = Food.objects.summary().values()
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
 
-    if request.method == 'POST':
-        formset = AddFoodToMealFormSet(request.POST, initial=food_list)
-        if formset.is_valid():
-            meal = {
-                'user': request.user,
-                'name': request.session.get('name'),
-                'description': request.session.get('description')
-            }
-            count = 1
-            for form in formset.cleaned_data:
-                if form.get('quantity'):
-                    if count < 10:
-                        meal[f'item_{count}'] = get_object_or_404(Food, id=form.get('id'))
-                        meal[f'item_{count}_quantity'] = form.get('quantity')
-                        count += 1
-            obj = Meal.objects.create(**meal)
-            request.session.pop('name')
-            request.session.pop('description')
-            if 'save' in request.POST:
-                messages.success(request, 'Food added')
-                return redirect('meals:detail', obj.id)
-            elif 'another' in request.POST:
-                messages.success(request, 'Food added. You can continue adding food below')
-                return redirect('meals:update', obj.id)
-    else:
-        formset = AddFoodToMealFormSet(initial=food_list)
-
-    context['management_data'] = formset
-
-    paginator = Paginator(formset, 15)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    context['food_list'] = page_obj
-    return render(request, template_name, context)
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        messages.success(self.request, f'Deleted {self.get_object().name}')
+        return super().delete(request, *args, **kwargs)
 
 
+class MealItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """ Delete a food from meal and return user to the meal detail view of the deleted food. """
 
-def meal_detail_view(request, pk):
-    template_name = 'meals/meal_detail.html'
-    context = {}
-    context['meal'] = get_object_or_404(Meal, id=pk)
-    return render(request, template_name, context)
+    model = MealItem
 
+    def test_func(self):
+        obj = self.get_object()
+        return obj.meal.user == self.request.user
 
+    def get_success_url(self):
+        obj = self.get_object()
+        return reverse('meals:detail', kwargs={'pk': obj.meal.id})
 
-def meal_update_view(request, pk):
-    template_name = 'meals/meal_update.html'
-    context = {}
-
-    obj = get_object_or_404(Meal, id=pk)
-    meal_items = model_to_dict(obj, exclude=['id', 'user', 'name', 'description'])
-    updated_meal_items = {}
-    food_list = Food.objects.summary().values()
-
-    if request.method == 'POST':
-        formset = AddFoodToMealFormSet(request.POST, initial=food_list)
-
-        if formset.is_valid():
-            count = 1
-            for item in meal_items:
-                if count <= 10:
-                    if meal_items[f'item_{count}'] is not None:
-                        updated_meal_items[f'item_{count}'] = get_object_or_404(Food, id=meal_items.get(f'item_{count}'))
-                        updated_meal_items[f'item_{count}_quantity'] = meal_items[f'item_{count}_quantity']
-                        count += 1
-                else:
-                    messages.error(request, 'You can only add a maximum of 10 items per meal.')
-                    break
-                for form in formset.cleaned_data:
-                    if form.get('quantity'):
-                        if count <= 10:
-                            updated_meal_items[f'item_{count}'] = get_object_or_404(Food, id=form.get('id'))
-                            updated_meal_items[f'item_{count}_quantity'] = form.get('quantity')
-                            count += 1
-            for attr, value in updated_meal_items.items():
-                setattr(obj, attr, value)
-                obj.save()
-                messages.success(request, 'Food added')
-                return redirect('meals:list')
-
-    else:
-        formset = AddFoodToMealFormSet(initial=food_list)
-
-    context['meal'] = obj
-    context['management_data'] = formset
-
-    paginator = Paginator(formset, 20)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    context['food_list'] = page_obj
-    return render(request, template_name, context)
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        messages.success(self.request, f'Deleted {obj.food.name} from {obj.meal.name}')
+        return super().delete(request, *args, **kwargs)
 
 
-def meal_delete_view(request, pk):
-    template_name = 'meals/meal_confirm_delete.html'
-    context = {}
-    context['meal'] = get_object_or_404(Meal, id=pk)
-    return render(request, template_name, context)
+class MealItemListView(ListView):
+    def get_queryset(self):
+        return MealItem.objects.filter(meal=self.kwargs.get('pk'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object'] = get_object_or_404(Meal, id=self.kwargs.get('pk'))
+        return context
 
 
+class MealDetailView(DetailView):
+    model = Meal
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['mealitem_set'] = self.object.mealitem_set.all()
+        return context
+
+
+class MealItemDetailView(DetailView):
+    model = MealItem
+    template_name = 'meals/meal_item'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['mealitem_set'] = self.object.mealitem_set.all()
+        return context
