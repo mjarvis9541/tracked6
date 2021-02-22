@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load customfilters %}
 {% block content %}
-<h1 class="mt-1 mb-1">Meal List</h1>
+<h2 class="mt-1 mb-1">Meal List</h2>
 
 <div class="mt- mb-2">Displays a list of meals you've saved for quickly adding to your food diary.</div>
 
@@ -35,8 +35,6 @@
 </table>
 
 
-<div class="mt-3 mb-3">
-    <a href="{% url 'meals:create' %}">Create Meal</a>
-</div>
+    <a class="btn mt-2" href="{% url 'meals:create' %}">Create Meal</a>
 
 {% endblock content %}
