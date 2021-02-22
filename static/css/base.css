@@ -365,8 +365,20 @@ header {
 .diary-data {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: auto 3fr (1fr)[9];
-      grid-template-columns: auto 3fr repeat(9, 1fr);
+  -ms-grid-columns: auto 3fr (1fr)[5];
+      grid-template-columns: auto 3fr repeat(5, 1fr);
+  grid-column-gap: .5rem;
+}
+
+.diary-data .grid-title {
+  font-weight: bold;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-bottom: 1px solid #f2f2f2;
 }
 
 .diary-data div {
@@ -384,12 +396,14 @@ header {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  border-bottom: 1px solid #f2f2f2;
 }
 
 .diary-data .end {
   -webkit-box-pack: end;
       -ms-flex-pack: end;
           justify-content: flex-end;
+  text-align: end;
 }
 
 .diary-date {

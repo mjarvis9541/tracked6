@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="mt-1 mb-1">Add Saved Meal</h1>
+
+<p class="mb-3">Do you wish to add your saved meal to Diary?</p>
+
+
+<form method="post"> {% csrf_token %}
+<button class="btn">Yes!</button>
+</form>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}

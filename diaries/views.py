@@ -23,6 +23,8 @@ from food.forms import FOOD_SORT_CHOICES, FoodFilterForm
 from food.mixins import FoodFilterMixin
 from food.models import Food
 
+from meals.models import Meal, MealItem
+
 from .forms import AddRecentToDiaryFormSet, AddToDiaryFormSet, DiaryUpdateForm
 from .mixins import DateMixin, MealMixin
 from .models import Diary
@@ -53,18 +55,21 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
         obj_list = request.POST.getlist('to_delete')
         if obj_list: 
             delete_list = Diary.objects.filter(id__in=obj_list)
-            # msg_list = []
             for obj in delete_list:
                 if obj.user != request.user:
                     return HttpResponseForbidden('You are not authorized to delete this user\'s diary entry')
             request.session['delete_list'] = obj_list
-            # delete_list.delete()
-            # messages.success(request, f'Food deleted: {msg_list}')
-            # messages.success(request, f'Food deleted')
             return redirect('diaries:delete_list') 
         else:
             messages.error(request, 'You have not selected any food to delete')
         return redirect('diaries:day', self.date.year, self.date.month, self.date.day) 
+
+
+
+
+
+
+
 
 
 
@@ -198,6 +203,12 @@ def add_to_diary_view(request, year, month, day, meal):
     return render(request, template_name, context)
 
 
+
+
+
+
+
+
 @login_required
 def copy_meal_from_previous_day_view(request, year, month, day, meal):
     
@@ -215,6 +226,10 @@ def copy_meal_from_previous_day_view(request, year, month, day, meal):
     template_name = 'diaries/diary_copy_previous_day.html'
     context = {}
     
+    meal_list = MealItem.objects.filter(meal_id='e3a38240-ea6a-40b3-a6b8-d2b4460503a6')
+    for obj in meal_list:
+        print(obj.food_id)
+        print(obj.quantity)
 
     object_list = Diary.objects.filter(user=request.user, date=previous_day, meal=meal).summary()
     if request.method == 'POST':
@@ -366,3 +381,61 @@ class DiaryMealListView(LoginRequiredMixin, DateMixin, MealMixin, ListView):
         context['total'] = self.get_queryset().total()
         context['total_meal'] = self.get_queryset().filter(meal=self.meal).total()
         return context
+
+
+
+
+def browse_saved_meals_view(request, year, month, day, meal):
+    try:
+        date = datetime.date(year, month, day)
+        previous_day = date - datetime.timedelta(days=1)
+    except ValueError as e:
+        raise Http404(e)
+
+    if meal in range(1,7):
+        meal_name = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
+    else:    
+        raise Http404('Invalid meal')
+
+
+    template_name = 'diaries/browse_saved_meals.html'
+    context = {}
+    context['object_list'] = Meal.objects.filter(user=request.user)
+    context['date'] = date
+    context['meal'] = meal
+    return render(request, template_name, context)
+
+
+
+def add_saved_meal_to_diary_view(request, year, month, day, meal, saved_meal):
+    try:
+        date = datetime.date(year, month, day)
+        previous_day = date - datetime.timedelta(days=1)
+    except ValueError as e:
+        raise Http404(e)
+
+    if meal in range(1,7):
+        meal_name = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
+    else:    
+        raise Http404('Invalid meal')
+    
+    saved_meal_obj = get_object_or_404(Meal, id=saved_meal)
+
+    template_name = 'diaries/add_saved_meal.html'
+    context = {}
+    meal_item_list = MealItem.objects.filter(meal_id=saved_meal_obj)
+    
+    if request.method == 'POST':
+        if meal_item_list:
+            for food_item in meal_item_list:
+                Diary.objects.create(
+                    user=request.user,
+                    date=date,
+                    meal=meal,
+                    food=food_item.food,
+                    quantity=food_item.quantity
+                )
+            messages.success(request, f'Added {len(meal_item_list)} items from {saved_meal_obj} to {meal_name}')
+            return redirect('diaries:day', date.year, date.month, date.day)
+    return render(request, template_name, context)
+

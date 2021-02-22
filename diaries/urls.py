@@ -4,6 +4,20 @@ from . import views
 
 app_name = 'diaries'
 urlpatterns = [
+    path(
+        'browse-saved-meals/<int:year>-<int:month>-<int:day>/<int:meal>/',
+        views.browse_saved_meals_view, 
+        name='browse_saved_meal',
+    ),
+
+    path(
+        'add-saved-meal/<int:year>-<int:month>-<int:day>/<int:meal>/<uuid:saved_meal>/',
+        views.add_saved_meal_to_diary_view, 
+        name='saved_meal_to_diary',
+    ),
+
+
+
     path('meal_update/<int:year>-<int:month>-<int:day>/<int:meal>/',views.diary_meal_update_view,name='dmu'),
     
     path('', views.DiaryDayListView.as_view(), name='today'),
@@ -15,7 +29,6 @@ urlpatterns = [
 
     path('<int:year>-<int:month>-<int:day>/add-food-to-diary/<int:meal>/',views.add_to_diary_view,name='create'),
 
-    # New
     # path('<int:year>-<int:month>-<int:day>/add-to-diary/<int:meal>/',views.AddFoodToDiaryView.as_view(), name='create'),
     
     path('<int:year>-<int:month>-<int:day>/copy-meal/<int:meal>/',views.copy_meal_from_previous_day_view,name='copy_meal_previous_day'),
