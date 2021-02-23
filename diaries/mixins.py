@@ -6,7 +6,6 @@ from django.utils import timezone
 from diaries.models import Diary
 
 
-
 class DateMixin:
     """
     Validates date parameters that are passed into the url, and provides date information to the context.

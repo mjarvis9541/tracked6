@@ -22,18 +22,11 @@ from django.views.generic.list import MultipleObjectMixin
 from food.forms import FOOD_SORT_CHOICES, FoodFilterForm
 from food.mixins import FoodFilterMixin
 from food.models import Food
-
 from meals.models import Meal, MealItem
 
 from .forms import AddRecentToDiaryFormSet, AddToDiaryFormSet, DiaryUpdateForm
-from .mixins import MealMixin, DateMixin
+from .mixins import DateMixin, MealMixin
 from .models import Diary
-
-from django.http import Http404
-from django.utils import timezone
-import datetime
-
-
 
 
 class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
@@ -73,10 +66,6 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
 
 
 
-
-
-
-
 def diary_meal_update_view(request, year, month, day, meal):
     try:
         date = datetime.date(year, month, day)
@@ -95,12 +84,7 @@ def diary_meal_update_view(request, year, month, day, meal):
     return render(request, template_name, context)
 
 
-
-
-
-
-
-""" In progress """
+""" In progress - not included in urls.py """
 class AddFoodToDiaryView(DateMixin, MealMixin, FoodFilterMixin, TemplateView):
     template_name = 'diaries/diary_add_food.html'
     queryset = Food.objects.summary().values()
@@ -181,7 +165,6 @@ def add_to_diary_view(request, year, month, day, meal):
     if request.method == 'POST':
         formset = AddToDiaryFormSet(request.POST, initial=queryset)
         if formset.is_valid():
-            # data = []
             for form in formset:
                 attrs = form.cleaned_data
                 if attrs['quantity']:
@@ -190,7 +173,6 @@ def add_to_diary_view(request, year, month, day, meal):
                     attrs['date'] = date
                     attrs['meal'] = meal
                     Diary.objects.create(**attrs)
-                    # data.append(attrs)
 
             if 'save' in request.POST:
                 messages.success(request, 'Food added')
@@ -216,12 +198,6 @@ def add_to_diary_view(request, year, month, day, meal):
     context['formset'] = page_obj
     context['form'] = FoodFilterForm(request.GET)
     return render(request, template_name, context)
-
-
-
-
-
-
 
 
 @login_required
@@ -384,6 +360,7 @@ class DiaryMealListView(LoginRequiredMixin, DateMixin, MealMixin, ListView):
     template_name = 'diaries/diary_meal_list.html'
 
     def get_queryset(self):
+        self.get_date()
         return Diary.objects.filter(user=self.request.user, date=self.date, meal=self.meal).summary()
 
     def get_context_data(self, **kwargs):
@@ -394,6 +371,7 @@ class DiaryMealListView(LoginRequiredMixin, DateMixin, MealMixin, ListView):
 
 
 
+""" Adding saved meals to diary """
 
 def browse_saved_meals_view(request, year, month, day, meal):
     try:
@@ -406,9 +384,9 @@ def browse_saved_meals_view(request, year, month, day, meal):
     else:    
         raise Http404('Invalid meal')
 
-
     template_name = 'diaries/browse_saved_meals.html'
     context = {}
+
     context['object_list'] = Meal.objects.filter(user=request.user)
     context['date'] = date
     context['meal'] = meal
@@ -421,14 +399,12 @@ def add_saved_meal_to_diary_view(request, year, month, day, meal, saved_meal):
         date = datetime.date(year, month, day)
     except ValueError as e:
         raise Http404(e)
-
     if meal in range(1,7):
         meal_name = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
     else:    
         raise Http404('Invalid meal')
     
     saved_meal_obj = get_object_or_404(Meal, id=saved_meal)
-
     template_name = 'diaries/add_saved_meal.html'
     context = {}
     meal_item_list = MealItem.objects.filter(meal_id=saved_meal_obj)
@@ -450,6 +426,3 @@ def add_saved_meal_to_diary_view(request, year, month, day, meal, saved_meal):
 
 
 
-
-class DiaryUpdateView(View):
-    pass
