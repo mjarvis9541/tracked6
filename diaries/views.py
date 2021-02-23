@@ -77,9 +77,6 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
 
 
 
-
-
-
 def diary_meal_update_view(request, year, month, day, meal):
     try:
         date = datetime.date(year, month, day)
@@ -136,7 +133,6 @@ class AddFoodToDiaryView(DateMixin, MealMixin, FoodFilterMixin, TemplateView):
 """ In progress """
 
 
-
 class AddFoodToDiaryView(View):
     template_name = 'diaries/diary_add_food.html'
 
@@ -145,9 +141,6 @@ class AddFoodToDiaryView(View):
     
     def post(self, request, *args, **kwargs):
         return render(request, self.template_name, self.context)
-
-
-
 
 
 def add_to_diary_view(request, year, month, day, meal):

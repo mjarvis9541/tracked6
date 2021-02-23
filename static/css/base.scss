@@ -1,9 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,600;0,700;0,800;1,400&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Roboto:wght@400;500;700;900&display=swap');
+
 
 // Base imports
 @import 'layouts';
@@ -13,15 +9,13 @@
 @import 'navbar';
 
 // Diary app imports
-@import 'diary_list';
-@import 'diary_create_grid';
-@import 'diary_detail';
+@import 'diary_app';
 
 // Food app imports
-@import 'food_list';
+@import 'food_app';
 
 // Meal app imports
-@import 'meals';
+@import 'meal_app';
 
 
 // Stamdard
