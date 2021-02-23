@@ -4,6 +4,7 @@ from django import forms
 from django.utils.safestring import SafeData, SafeText, mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+
 from .models import Brand, Category, Food
 from diaries.models import Diary
 from utils.forms import DateInput

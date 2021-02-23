@@ -4,6 +4,7 @@ from utils.behaviours import Uuidable, Timestampable
 from django.utils import timezone
 from django.urls import reverse
 
+
 class Progress(Uuidable, Timestampable):
     """
     Model for users to record daily progress indicators such as weight, pictures and notes.

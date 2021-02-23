@@ -36,7 +36,7 @@ class MealCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('meals:meal_add_1', kwargs={'meal_id': self.object.id})
+        return reverse('meals:meal_add_1', kwargs={'meal_id': self.object.pk})
 
 
 class MealItemCreateStep1View(LoginRequiredMixin, UserPassesTestMixin, FoodFilterMixin, ListView):
@@ -112,7 +112,7 @@ class MealItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         obj = self.get_object()
-        return reverse('meals:item_list', kwargs={'pk': obj.meal.id})
+        return reverse('meals:item_list', kwargs={'pk': obj.meal.pk})
 
     def delete(self, request, *args, **kwargs):
         obj = self.get_object()

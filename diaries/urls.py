@@ -4,6 +4,7 @@ from . import views
 
 app_name = 'diaries'
 urlpatterns = [
+
     path(
         'browse-saved-meals/<int:year>-<int:month>-<int:day>/<int:meal>/',
         views.browse_saved_meals_view, 
