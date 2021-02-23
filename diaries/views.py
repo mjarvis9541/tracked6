@@ -26,15 +26,23 @@ from food.models import Food
 from meals.models import Meal, MealItem
 
 from .forms import AddRecentToDiaryFormSet, AddToDiaryFormSet, DiaryUpdateForm
-from .mixins import DateMixin, MealMixin
+from .mixins import MealMixin, DateMixin
 from .models import Diary
+
+from django.http import Http404
+from django.utils import timezone
+import datetime
+
+
 
 
 class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
     """ Displays all the food a user has consumed and tracked on a given day. """
-    template_name = 'diaries/diary_list.html'
 
+    template_name = 'diaries/diary_list.html'
+    
     def get_queryset(self):
+        self.get_date()
         return Diary.objects.filter(user=self.request.user, date=self.date).summary().order_by('datetime_created')
 
     def get_context_data(self, **kwargs):
@@ -50,7 +58,6 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
         context['total_meal_6'] = self.get_queryset().filter(meal=6).total()
         return context
 
-
     def post(self, request, *args, **kwargs):
         obj_list = request.POST.getlist('to_delete')
         if obj_list: 
@@ -63,7 +70,6 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
         else:
             messages.error(request, 'You have not selected any food to delete')
         return redirect('diaries:day', self.date.year, self.date.month, self.date.day) 
-
 
 
 
@@ -95,13 +101,15 @@ def diary_meal_update_view(request, year, month, day, meal):
 
 
 
+
+
 """ In progress """
 class AddFoodToDiaryView(DateMixin, MealMixin, FoodFilterMixin, TemplateView):
     template_name = 'diaries/diary_add_food.html'
     queryset = Food.objects.summary().values()
 
-    def get_queryset(self):
-        return Food.objects.summary().values()
+    # def get_queryset(self):
+    #     return Food.objects.summary().values()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -111,7 +119,7 @@ class AddFoodToDiaryView(DateMixin, MealMixin, FoodFilterMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-        formset = context.get('formset')
+        formset =  AddToDiaryFormSet(self.request.POST, initial=self.queryset)
         if formset.is_valid():
             for form in formset:
                 attrs = form.cleaned_data
@@ -122,8 +130,22 @@ class AddFoodToDiaryView(DateMixin, MealMixin, FoodFilterMixin, TemplateView):
                     attrs['meal'] = self.meal
                     Diary.objects.create(**attrs)
             return redirect('diaries:day', self.date.year, self.date.month, self.date.day)
+
+        context['form'] = FoodFilterForm(self.request.GET)
         return render(request, self.template_name, context)
 """ In progress """
+
+
+
+class AddFoodToDiaryView(View):
+    template_name = 'diaries/diary_add_food.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context)
+    
+    def post(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.context)
+
 
 
 
@@ -296,6 +318,9 @@ def diary_update_view(request, pk):
     return render(request, template_name, context)
 
 
+
+
+
 @login_required
 def diary_delete_list_view(request):
     template_name = 'diaries/diary_confirm_delete.html'
@@ -321,14 +346,6 @@ def diary_delete_list_view(request):
     context['date'] = date
     context['object_list'] = obj_list
     return render(request, template_name, context)
-
-
-
-
-
-
-
-
 
 
 class DiaryUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
@@ -388,7 +405,6 @@ class DiaryMealListView(LoginRequiredMixin, DateMixin, MealMixin, ListView):
 def browse_saved_meals_view(request, year, month, day, meal):
     try:
         date = datetime.date(year, month, day)
-        previous_day = date - datetime.timedelta(days=1)
     except ValueError as e:
         raise Http404(e)
 
@@ -410,7 +426,6 @@ def browse_saved_meals_view(request, year, month, day, meal):
 def add_saved_meal_to_diary_view(request, year, month, day, meal, saved_meal):
     try:
         date = datetime.date(year, month, day)
-        previous_day = date - datetime.timedelta(days=1)
     except ValueError as e:
         raise Http404(e)
 
@@ -439,3 +454,9 @@ def add_saved_meal_to_diary_view(request, year, month, day, meal, saved_meal):
             return redirect('diaries:day', date.year, date.month, date.day)
     return render(request, template_name, context)
 
+
+
+
+
+class DiaryUpdateView(View):
+    pass
