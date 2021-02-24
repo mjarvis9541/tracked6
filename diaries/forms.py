@@ -54,10 +54,13 @@ class AddToDiaryForm(forms.Form):
     #     return cleaned_data
 
 
+
 AddToDiaryFormSet = formset_factory(AddToDiaryForm, formset=BaseDiaryFormset, extra=0)
 
 
-
+    # if sort and any(sort in x for x in FOOD_SORT_CHOICES):
+    #     queryset = queryset.order_by(sort)
+    # Adding the food via formset
 
 
 

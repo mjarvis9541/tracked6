@@ -178,7 +178,7 @@ class NewProfile(View):
         brand = self.kwargs.get('brand')
         category = self.kwargs.get('category')
         sort = self.kwargs.get('sort')
-        
+       
         self.context['form'] = FoodFilterForm(self.request.GET)
         return self.context
 
