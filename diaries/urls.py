@@ -12,16 +12,22 @@ urlpatterns = [
         views.DiaryDayListView.as_view(),
         name='day',
     ),
-    # Detail view of a diary meal (break, morning snack, lunch etc.)
+    # Detail view of a diary meal (breakfast, morning snack, lunch, etc.)
     path(
-        '<int:year>-<int:month>-<int:day>/meal/<int:meal>/',
-        views.DiaryMealListView.as_view(),
-        name='meal_list',
+        '<int:year>-<int:month>-<int:day>/meal-detail/<int:meal>/',
+        views.DiaryMealDetailView.as_view(),
+        name='meal_detail',
     ),
     # Adding multiple diary food entries in a single view - formset
     path(
-        '<int:year>-<int:month>-<int:day>/add-food-to-diary/<int:meal>/',
-        views.add_to_diary_view,
+        '<int:year>-<int:month>-<int:day>/add-multiple-food-to-diary/<int:meal>/',
+        views.DiaryAddMultipleFoodView.as_view(),
+        name='create',
+    ),
+    # Adding multiple diary food entries in a single view - formset
+    path(
+        '<int:year>-<int:month>-<int:day>/add-mutliple-food-to-diary-meal/<int:meal>/',
+        views.diary_add_multiple_food_view,
         name='create',
     ),
     # Copying diary food entries from a single meal on a previous day
@@ -45,13 +51,13 @@ urlpatterns = [
     # Adding a saved meal to food diary - selecting the meal to add
     # Saved meal is a collection of food and associated quantities
     path(
-        'browse-saved-meals/<int:year>-<int:month>-<int:day>/<int:meal>/',
+        '<int:year>-<int:month>-<int:day>/add-saved-meal-to-food-diary/<int:meal>/',
         views.browse_saved_meals_view,
         name='browse_saved_meal',
     ),
     # Adding a saved meal to the food diary - confirmation view
     path(
-        'add-saved-meal/<int:year>-<int:month>-<int:day>/<int:meal>/<uuid:saved_meal>/',
+        '<int:year>-<int:month>-<int:day>/add-saved-meal-to-food-diary-confirm/<int:meal>/<uuid:saved_meal>/',
         views.add_saved_meal_to_diary_view,
         name='saved_meal_to_diary',
     ),

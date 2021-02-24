@@ -85,6 +85,7 @@ class MealItemCreateStep2View(LoginRequiredMixin, UserPassesTestMixin, TemplateV
         return render(request, self.template_name, context)
 
 
+
 class MealDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """ Delete a meal and return user to meal list view. """
 

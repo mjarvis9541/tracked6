@@ -24,6 +24,7 @@ from diaries.views import DiaryDayListView
 urlpatterns = [
     # Project urls
     path('', DiaryDayListView.as_view()),
+    path('', include('profiles.urls')),
     path('food/', include('food.urls')),
     path('diary/', include('diaries.urls')),
     path('meals/', include('meals.urls')),

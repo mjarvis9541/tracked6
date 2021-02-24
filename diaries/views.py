@@ -25,17 +25,21 @@ from food.models import Food
 from meals.models import Meal, MealItem
 
 from .forms import AddRecentToDiaryFormSet, AddToDiaryFormSet, DiaryUpdateForm
-from .mixins import DateMixin, MealMixin
+from .mixins import DateMixin,DateMixin2, MealMixin
 from .models import Diary
 
 
-class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
-    """ Displays all the food a user has consumed and tracked on a given day. """
+class DiaryDayListView(DateMixin2, ListView):
+    """
+    Displays a list of food objects by date, associated quantities, calculated calorie and macronutrient values for a given day.
+    Defaults to displaying data today
+    TODO: Update date mixin
+    """
 
     template_name = 'diaries/diary_list.html'
     
     def get_queryset(self):
-        self.get_date()
+        self.get_date() # from date_mixin2
         return Diary.objects.filter(user=self.request.user, date=self.date).summary().order_by('datetime_created')
 
     def get_context_data(self, **kwargs):
@@ -65,6 +69,24 @@ class DiaryDayListView(LoginRequiredMixin, DateMixin, ListView):
         return redirect('diaries:day', self.date.year, self.date.month, self.date.day) 
 
 
+class DiaryMealDetailView(LoginRequiredMixin, DateMixin2, MealMixin, ListView):
+    """
+    Displays a detail view of a diary meal and associated food, quantities and calories/macronutrients.
+    """
+
+    template_name = 'diaries/diary_meal_list.html'
+
+
+    def get_queryset(self):
+        self.get_date()
+        return Diary.objects.filter(user=self.request.user, date=self.date, meal=self.meal).summary()
+
+    def get_context_data_data(self, **kwargs):
+        context = super().get_context_data_data(**kwargs)
+        context['total'] = self.get_queryset().total()
+        context['total_meal'] = self.get_queryset().filter(meal=self.meal).total()
+        return context
+
 
 def diary_meal_update_view(request, year, month, day, meal):
     try:
@@ -84,50 +106,72 @@ def diary_meal_update_view(request, year, month, day, meal):
     return render(request, template_name, context)
 
 
-""" In progress - not included in urls.py """
-class AddFoodToDiaryView(DateMixin, MealMixin, FoodFilterMixin, TemplateView):
+
+class DiaryAddMultipleFoodView(DateMixin2, View):
+    """
+    Create-type view
+    Renders a formset containing food objects to add to a given diary meal
+    # TODO formset pagination
+    """
     template_name = 'diaries/diary_add_food.html'
-    queryset = Food.objects.summary().values()
+ 
+    def filter_queryset(self):
+        queryset = Food.objects.summary().values()
+        q = self.request.GET.get('q')
+        brand = self.request.GET.get('brand')
+        category = self.request.GET.get('category')
+        sort = self.request.GET.get('sort')
+        if q:
+            queryset = queryset.filter(name__icontains=q)
+        if brand:
+            try:
+                queryset = queryset.filter(brand=brand)
+            except Exception:
+                raise Http404('Invalid brand filter choice')
+        if category:
+            try:
+                queryset = queryset.filter(category=category)
+            except Exception:
+                raise Http404('Invalid category filter choice')
+        if sort:
+            try:
+                queryset = queryset.order_by(sort)
+            except Exception:
+                raise Http404('Invalid sort filter choice')
+        return queryset
 
-    # def get_queryset(self):
-    #     return Food.objects.summary().values()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self):
+        queryset = self.filter_queryset()
+        context = {}
+        context['queryset'] = queryset
+        context['date'] = timezone.now()
+        context['meal'] = 1
+        context['meal_name'] = [x[1] for x in Diary.Meal.choices if x[0] == self.kwargs.get('meal')][0]
         context['form'] = FoodFilterForm(self.request.GET)
-        context['formset'] = AddToDiaryFormSet(self.request.POST or None, initial=self.queryset)
+        context['formset'] = formset = AddToDiaryFormSet(initial=queryset)
+        context['management_data'] = formset
         return context
 
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.get_context_data())
+   
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        formset =  AddToDiaryFormSet(self.request.POST, initial=self.queryset)
+        context = self.get_context_data()
+        formset = AddToDiaryFormSet(self.request.POST, initial=context.get('queryset'))
         if formset.is_valid():
             for form in formset:
                 attrs = form.cleaned_data
                 if attrs['quantity']:
                     attrs['food_id'] = attrs.pop('id')
-                    attrs['user'] = self.request.user
+                    attrs['user'] = request.user
                     attrs['date'] = self.date
-                    attrs['meal'] = self.meal
-                    Diary.objects.create(**attrs)
-            return redirect('diaries:day', self.date.year, self.date.month, self.date.day)
-
-        context['form'] = FoodFilterForm(self.request.GET)
+                    attrs['meal'] = 1
+                    print(attrs)
+        context['formset'] = formset
         return render(request, self.template_name, context)
-""" In progress """
 
 
-class AddFoodToDiaryView(View):
-    template_name = 'diaries/diary_add_food.html'
-
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, self.context)
-    
-    def post(self, request, *args, **kwargs):
-        return render(request, self.template_name, self.context)
-
-
-def add_to_diary_view(request, year, month, day, meal):
+def diary_add_multiple_food_view(request, year, month, day, meal):
     """ Displays a list/formset view for the user to add food to their selected diary meal in bulk. """
 
     try:
@@ -136,7 +180,7 @@ def add_to_diary_view(request, year, month, day, meal):
         raise Http404(e)
     if not meal in range(1,7):
         raise Http404('Invalid meal')
-
+    print('hi')
     template_name = 'diaries/diary_add_food.html'
     context = {}
     queryset = Food.objects.summary().values()
@@ -160,7 +204,6 @@ def add_to_diary_view(request, year, month, day, meal):
             pass
     if sort and any(sort in x for x in FOOD_SORT_CHOICES):
         queryset = queryset.order_by(sort)
-    
     # Adding the food via formset
     if request.method == 'POST':
         formset = AddToDiaryFormSet(request.POST, initial=queryset)
@@ -337,8 +380,8 @@ class DiaryUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
 class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
     model = Diary
 
-    def get_context_data(self, **kwargs):
-        context =  super().get_context_data(**kwargs)
+    def get_context_data_data(self, **kwargs):
+        context =  super().get_context_data_data(**kwargs)
         context['date'] = self.get_object().date
         return context
 
@@ -356,18 +399,7 @@ class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
         return reverse('diaries:day', kwargs={'year': obj.date.year, 'month': obj.date.month, 'day': obj.date.day})
 
 
-class DiaryMealListView(LoginRequiredMixin, DateMixin, MealMixin, ListView):
-    template_name = 'diaries/diary_meal_list.html'
 
-    def get_queryset(self):
-        self.get_date()
-        return Diary.objects.filter(user=self.request.user, date=self.date, meal=self.meal).summary()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['total'] = self.get_queryset().total()
-        context['total_meal'] = self.get_queryset().filter(meal=self.meal).total()
-        return context
 
 
 

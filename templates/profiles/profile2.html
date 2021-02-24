@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Hello There, {{ request.user }}</h1>
+
+
+<form action="" method="get" class="mt-1 mb-1">
+    <div class="food-search">
+        <div class="search">{{ form.q }}</div>
+        <div class="filter">{{ form.brand }}</div>
+        <div class="filter">{{ form.category }}</div>
+        <div class="filter">{{ form.sort }}</div>
+        <div class="results">{{ formset.paginator.count }} Results</div>
+        <div class="text-end">
+            <button class="btn">Search</button>
+        </div>
+    </div>
+</form>
+
+<br>
+<form action="" method="post"> {% csrf_token %}
+    <button class="btn">Post it!</button>
+</form>
+
+<div>{{ date }}</div>
+
+{% endblock content %}

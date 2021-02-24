@@ -7,12 +7,9 @@ from utils.behaviours import Nutritionable, Uuidable
 from django.urls import reverse
 
 User = settings.AUTH_USER_MODEL
-import uuid
 
+admin_user = get_user_model().objects.get(username='admin')
 
-
-# User = settings.AUTH_USER_MODEL
-dmin_user = get_user_model().objects.get(username='admin')
 
 class Profile(Uuidable):
     class Sex(models.TextChoices):
@@ -47,10 +44,10 @@ class Profile(Uuidable):
         return self.user.email
 
 
-# @receiver(post_save, sender=User)
-# def create_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
-#     if not Profile.objects.filter(user=instance):
-#         Profile.objects.create(user=instance)
-#     instance.profile.save()
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+    if not Profile.objects.filter(user=instance):
+        Profile.objects.create(user=instance)
+    instance.profile.save()
