@@ -1,56 +1,45 @@
 {% extends 'base.html' %}
 {% load customfilters %}
 {% block content %}
+<style>
+    body {
+        background: #f4f4f4;
+    }
+</style>
+<div class="food__structure">
+    <h2 class="pt-1 mb-1">Food Database</h2>
 
-<div class="food-list-structure mt-1">
-
-    <div class="main">
-        <h2>Food Database</h2>
-        <p>Find a list of all of the food in our database below. Click on a food name to view further details
-            and/or add the food to your diary or one your saved meals.</p>
-        <div class="food-list">
-            <div>Food</div>
-            <div>Brand</div>
-            <div class="end">Serving</div>
-            <div class="end">Calories</div>
-            <div class="end">Protein</div>
-            <div class="end">Carbs</div>
-            <div class="end">Fat</div>
-
-            {% for food in food_list %}
-            <div><a href="">{{ food.name }}</a></div>
-            <div><a href="">{{ food.brand }}</a></div>
-            <div class="end">{{ food.serving }}</div>
-            <div class="end">{{ food.energy }}</div>
-            <div class="end">{{ food.protein }}</div>
-            <div class="end">{{ food.carbohydrate }}</div>
-            <div class="end">{{ food.fat }}</div>
-            {% endfor %}
-
-        </div>
-
-        <div class="page-nav">
-
-        </div>
-
-
-    </div>
-    <div class="aside-2">
-        <p><a href="">Create Food</a></p>
-        <p class="mb-2"><a href="">Create Brand</a></p>
-    </div>
-
-    <div class="aside-1">
-        <h2>Latest Food</h2>
-        {% for food in latest_food %}
-        <div><a href="">{{ food.name }}, {{ food.brand }}, {{ food.serving }}</a></div>
-        <!-- <div><a href="">{{ food.brand }}</a></div>
-        <div><a href="">{{ food.serving }}</a></div> -->
-        <div class="mb-1"><small>{{ food.datetime_created|date:"D d M" }}, by <a href="">{{ food.user_created}}</a></small></div>
+    <div class="food_database">
+        <div class="food_database__title">Food</div>
+        <div class="food_database__title end">Serving</div>
+        <div class="food_database__title end">Calories</div>
+        <div class="food_database__title end">Protein</div>
+        <div class="food_database__title end">Carbs</div>
+        <div class="food_database__title end">Fat</div>
+        <div class="food_database__title end text-nowrap">Sat. Fat</div>
+        <div class="food_database__title end">Sugars</div>
+        <div class="food_database__title end">Fibre</div>
+        <div class="food_database__title end">Salt</div>
+        {% for food in food_list %}
+        <div class="food_database__name"><a href="">{{ food.name }}</a><br><small>{{ food.brand }}</small></div>
+        <div class="food_database__data end text-nowrap">{{ food.serving }}</div>
+        <div class="food_database__data end">{{ food.energy }}</div>
+        <div class="food_database__data end">{{ food.protein }}</div>
+        <div class="food_database__data end">{{ food.carbohydrate }}</div>
+        <div class="food_database__data end">{{ food.fat }}</div>
+        <div class="food_database__data end">{{ food.saturates }}</div>
+        <div class="food_database__data end">{{ food.sugars }}</div>
+        <div class="food_database__data end">{{ food.fibre }}</div>
+        <div class="food_database__data end">{{ food.salt }}</div>
+    
         {% endfor %}
     </div>
 
 </div>
+
+
+
+
 
 
 {% endblock content %}

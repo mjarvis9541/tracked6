@@ -64,7 +64,6 @@
     {% endfor %}
 </div>
 
-
 <div class="diary-action-btn-row">
     <a class="btn" href="{% url 'diaries:day' date.year date.month date.day %}">Return to Diary</a>
     <div class="btn-order">
@@ -74,6 +73,8 @@
 </div>
 
 </form>
+
+
 <div class="pagination mb-5">
     <div></div>
     <div class="end">
@@ -103,17 +104,11 @@
 
 <div class="aside">
 
-  
-    <!-- {% for object in meal_list %}
-    <div><a href="">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
 
-
-    {% endfor %} -->
+    
 </div>
 </div>
-<br>
-<br>
-<br>
+
 
 
 

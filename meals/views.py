@@ -16,7 +16,7 @@ from .models import Meal, MealItem
 
 class MealListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
-        return Meal.objects.filter(user=self.request.user).summary()
+        return Meal.objects.filter(user=self.request.user).summary().order_by('name')
 
 
 class MealCreateView(LoginRequiredMixin, CreateView):
@@ -98,7 +98,7 @@ class MealDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         obj = self.get_object()
-        messages.success(self.request, f'Deleted {self.get_object().name}')
+        messages.success(self.request, f'Deleted Meal {self.get_object().name}')
         return super().delete(request, *args, **kwargs)
 
 

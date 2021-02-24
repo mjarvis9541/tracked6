@@ -111,7 +111,7 @@ class DiaryAddMultipleFoodView(DiaryDateMixin, DiaryMealMixin, FoodFilterMixin, 
     Using template view as the main view class as it provides a get method.
     # TODO add pagination
     """
-    template_name = 'diaries/diary_add_multiple_food.html'
+    template_name = 'diaries/diary_add_food_multiple.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -158,7 +158,7 @@ def diary_add_multiple_food_view(request, year, month, day, meal):
         raise Http404('Invalid meal')
     meal_name = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
     
-    template_name = 'diaries/diary_add_multiple_food.html'
+    template_name = 'diaries/diary_add_food_multiple.html'
     context = {}
     queryset = Food.objects.summary().values()
 
