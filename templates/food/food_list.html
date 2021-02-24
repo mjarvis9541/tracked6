@@ -36,19 +36,17 @@
 
     </div>
     <div class="aside-2">
-        <h2>Quick Links</h2>
         <p><a href="">Create Food</a></p>
         <p class="mb-2"><a href="">Create Brand</a></p>
     </div>
 
     <div class="aside-1">
-        <h2>Latest Added</h2>
-        <p>A list of the lastest food added to our database.</p>
+        <h2>Latest Food</h2>
         {% for food in latest_food %}
         <div><a href="">{{ food.name }}, {{ food.brand }}, {{ food.serving }}</a></div>
         <!-- <div><a href="">{{ food.brand }}</a></div>
         <div><a href="">{{ food.serving }}</a></div> -->
-        <div class="mb-1"><small>Added {{ food.datetime_created|date:"D d M" }} by <a href="">{{ food.user_created}}</a></small></div>
+        <div class="mb-1"><small>{{ food.datetime_created|date:"D d M" }}, by <a href="">{{ food.user_created}}</a></small></div>
         {% endfor %}
     </div>
 

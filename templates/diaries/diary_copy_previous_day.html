@@ -2,9 +2,9 @@
 {% load humanize %}
 {% block content %}
 
-<h2>{{ meal_name }}, {{ date|date:"l, j M" }}</h2>
+<h2></h2>
 
-<h1>Copy Previous Day</h1>
+<h2 class="mt-1 mb-1">Copy Food from Previous Day to {{ meal_name }}, {{ date|date:"l, j M" }}</h2>
 
 {% if object_list %}
 <p>Are you sure you wish to copy the following food?</p>

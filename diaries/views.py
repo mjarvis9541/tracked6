@@ -30,14 +30,14 @@ from .models import Diary
 
 
 
-class DiaryDayListView(DiaryDateMixin, ListView):
+class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, ListView):
     """
     Displays a list of food objects by date, associated quantities, calculated calorie and macronutrient values for a given day.
     Defaults to displaying data today
     TODO: Use django window function instead calling total multiple times.
     """
 
-    template_name = 'diaries/diary_list.html'
+    template_name = 'diaries/diary_day_list.html'
     
     def get_queryset(self):
         self.get_diary_date() # from DiaryDateMixin
@@ -57,12 +57,13 @@ class DiaryDayListView(DiaryDateMixin, ListView):
         return context
 
     def post(self, request, *args, **kwargs):
+        self.get_diary_date()
         obj_list = request.POST.getlist('to_delete')
         if obj_list: 
             delete_list = Diary.objects.filter(id__in=obj_list)
             for obj in delete_list:
                 if obj.user != request.user:
-                    return HttpResponseForbidden('You are not authorized to delete this user\'s diary entry')
+                    return HttpResponseForbidden('You are not authorized to delete this user\'s diary entries')
             request.session['delete_list'] = obj_list
             return redirect('diaries:delete_list') 
         else:
@@ -76,7 +77,7 @@ class DiaryMealDetailView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, Li
     """
     template_name = 'diaries/diary_meal_list.html'
     def get_queryset(self):
-        # self.get_date()
+        self.get_diary_date()
         return Diary.objects.filter(user=self.request.user, date=self.date, meal=self.meal).summary()
 
     def get_context_data_data(self, **kwargs):
@@ -115,7 +116,7 @@ class DiaryAddMultipleFoodView(DiaryDateMixin, DiaryMealMixin, FoodFilterMixin, 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['formset'] = formset = AddToDiaryFormSet(initial=context.get('queryset'))
+        context['formset'] = AddToDiaryFormSet(initial=context.get('queryset'))
         return context
    
     def post(self, request, *args, **kwargs):
@@ -394,7 +395,7 @@ class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMix
 class DiaryAddMealView(DiaryDateMixin, DiaryMealMixin, TemplateView):
     # TODO: Use a list view to provide pagination
     
-    template_name = 'diaries/browse_saved_meals.html'
+    template_name = 'diaries/diary_add_meal.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -413,7 +414,7 @@ def diary_add_meal_view(request, year, month, day, meal):
     else:    
         raise Http404('Invalid meal')
 
-    template_name = 'diaries/browse_saved_meals.html'
+    template_name = 'diaries/diary_add_meal.html'
     context = {}
 
     context['object_list'] = Meal.objects.filter(user=request.user)
@@ -434,6 +435,7 @@ class DiaryAddMealConfirmView(DiaryDateMixin, DiaryMealMixin, TemplateView):
 
 
 def diary_add_meal_confirm_view(request, year, month, day, meal, saved_meal):
+    """ View to allow user to confirm the saved meal addition to diary meal. """
     try:
         date = datetime.date(year, month, day)
     except ValueError as e:
@@ -444,7 +446,7 @@ def diary_add_meal_confirm_view(request, year, month, day, meal, saved_meal):
         raise Http404('Invalid meal')
     
     saved_meal_obj = get_object_or_404(Meal, id=saved_meal)
-    template_name = 'diaries/add_saved_meal.html'
+    template_name = 'diaries/diary_add_meal_confirm.html'
     context = {}
     meal_item_list = MealItem.objects.filter(meal_id=saved_meal_obj)
     

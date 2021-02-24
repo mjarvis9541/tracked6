@@ -57,9 +57,10 @@ class DiaryDateMixin(ContextMixin):
     # month = None
     # day = None
     # today = None
+    # date = None
 
     def get_diary_date(self, *args, **kwargs):
-        year = kwargs.get('year', timezone.now().year)
+        year = self.kwargs.get('year', timezone.now().year)
         month = self.kwargs.get('month', timezone.now().month)
         day = self.kwargs.get('day', timezone.now().day)
 

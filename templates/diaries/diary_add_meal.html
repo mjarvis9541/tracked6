@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="mt-1 mb-1">Browse Saved Meals</h1>
+<h2 class="mt-1 mb-1">Add Meal to {{ meal_name }}, {{ date|date:"l, j M" }}</h2>
 <p>View below a list of your saved meals to add to your diary.</p>
 
 {% for object in object_list %}
