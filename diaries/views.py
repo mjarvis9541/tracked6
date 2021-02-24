@@ -20,7 +20,6 @@ from django.views.generic.detail import DetailView, SingleObjectMixin
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import MultipleObjectMixin
 from food.forms import FOOD_SORT_CHOICES, FoodFilterForm
-from food.mixins import FoodFilterMixin
 from food.models import Food
 from meals.models import Meal, MealItem
 

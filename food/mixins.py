@@ -29,6 +29,7 @@ class FoodFilterMixin:
 
         return queryset
 
+
 class BrandFilterMixin:
     def get_queryset(self):
         queryset = super().get_queryset()

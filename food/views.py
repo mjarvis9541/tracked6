@@ -224,7 +224,7 @@ class FoodFilter(django_filters.FilterSet):
             ('-protein', 'Protein (high-low)'),
             ('carbohydrate', 'Carbs (low-high)'),
             ('-carbohydrate', 'Carbs (high-low)'),
-            ('fat', 'Fat (low-high)'),
+            ('fat', 'Fat (low-high)'), 
             ('-fat', 'Fat (high-low)'),
             ('-datetime_created', 'Recently Created'),
             ('-datetime_updated', 'Recently Updated'),
