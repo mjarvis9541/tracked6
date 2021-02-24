@@ -132,14 +132,6 @@ class MealItemListView(ListView):
         return context
 
 
-# class MealDetailView(DetailView):
-#     model = Meal
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['mealitem_set'] = self.object.mealitem_set.all()
-#         return context
-
 
 class MealItemDetailView(DetailView):
     model = MealItem
