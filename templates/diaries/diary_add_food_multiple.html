@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% load customfilters %}
-{% load humanize %} 
+{% load humanize %}
 {% block content %}
+
 <div class="structure">
     <div>
 <h2 class="mt-1 mb-1">Add Food to {{ meal_name }}, {{ date|date:"l, j M" }}</h2>
@@ -27,10 +28,7 @@
 <form method="post"> {% csrf_token %} 
     {{ management_data.management_form }}  
     {{ formset.management_form }} 
-    
-    {% for form in formset %}
-    <div s></div>
-    {% endfor %}
+
 <div class="diary-add-grid">
     <div class="title hidden-sm">Food</div>
     <div class="title hidden-sm">Quantity</div>
