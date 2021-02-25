@@ -93,7 +93,7 @@ class BrandFilterForm(forms.Form):
 
 class FoodCreateServingForm(forms.ModelForm):
     serving = forms.ChoiceField(
-        choices=SERVING_CHOICES, widget=forms.Select(attrs={'class': 'form-select'})
+        choices=SERVING_CHOICES, widget=forms.Select(attrs={'class': 'form-control'})
     )
 
     class Meta:
@@ -114,8 +114,8 @@ class FoodCreateServingForm(forms.ModelForm):
         ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'brand': forms.Select(attrs={'class': 'form-select'}),
-            'category': forms.Select(attrs={'class': 'form-select'}),
+            'brand': forms.Select(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
             'energy': forms.NumberInput(attrs={'class': 'form-control'}),
             'fat': forms.NumberInput(attrs={'class': 'form-control'}),
             'saturates': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -175,6 +175,7 @@ class FoodCreateServingForm(forms.ModelForm):
     #     return cleaned_data
 
 
+
 class BrandCreateForm(forms.ModelForm):
     class Meta:
         model = Brand
@@ -203,6 +204,7 @@ class FoodDetailToDiaryForm(forms.ModelForm):
             'meal': forms.Select(attrs={'class': 'form-select'}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
 
 
 class DiaryMealUpdateForm(forms.ModelForm):

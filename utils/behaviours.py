@@ -17,7 +17,7 @@ class Uuidable(models.Model):
 class Nutritionable(models.Model):
     """ Model behaviour that adds energy and macronutrient fields """
 
-    energy = models.IntegerField(verbose_name='calories')
+    energy = models.IntegerField(verbose_name='calories (kcal)')
     fat = models.DecimalField(max_digits=4, decimal_places=1)
     saturates = models.DecimalField(max_digits=4, decimal_places=1)
     carbohydrate = models.DecimalField(max_digits=4, decimal_places=1)

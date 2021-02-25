@@ -114,7 +114,6 @@ class FoodCreateView(LoginRequiredMixin, CreateView):
     Food create view with one 'serving' form field to combine and replace
     the two model fields 'data_value' and 'data_measurement'
     """
-
     model = Food
     form_class = FoodCreateServingForm
     success_url = '/'

@@ -854,8 +854,18 @@ header {
 
 .food__structure {
   padding: 0 1rem;
-  height: 90vh;
+  min-height: 100vh;
   background: #fff;
+}
+
+.food__structure--2-1 {
+  padding: 0 1rem;
+  min-height: 100vh;
+  background: #fff;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 3fr 1fr;
+      grid-template-columns: 3fr 1fr;
 }
 
 .food_database {

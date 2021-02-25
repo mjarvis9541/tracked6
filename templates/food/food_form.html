@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background: #f4f4f4;
+    }
+</style>
+
+<div class="food__structure--2-1">
+    <!-- Left side -->
+    <div>
+        <h2 class="mt-1 mb-1">Create Food</h2>
+
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+          
+            {{ form.non_field_errors }}
+          
+            {% for hidden_field in form.hidden_fields %}
+              {{ hidden_field.errors }}
+              {{ hidden_field }}
+            {% endfor %}
+          
+            <table class="table border="1">
+              {% for field in form.visible_fields %}
+                <tr>
+                  <th>{{ field.label_tag }}</th>
+                  <td>
+                    {{ field.errors.as_text }}
+                    {{ field }}
+                    {{ field.help_text }}
+                  </td>
+                </tr>
+              {% endfor %}
+            </table>
+          
+            <button class="btn mt-1">Submit</button>
+          </form>
+
+
+
+
+
+
+
+
+    </div>
+    <div>2</div>
+</div>
+
+
+{% endblock content %}

@@ -107,9 +107,7 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
         if self.data_measurement == 'g' or self.data_measurement == 'ml':
             return f'{self.data_value}{self.data_measurement}'
         else:
-            return f'{self.data_value} Serv'# {self.get_data_measurement_display().title()}'
-
-
+            return f'{self.data_value} {self.get_data_measurement_display().title()}'
 
     @property
     def data_value_measurement_detail(self):
