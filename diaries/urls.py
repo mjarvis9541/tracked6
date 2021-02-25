@@ -36,9 +36,14 @@ urlpatterns = [
     # Copying diary food entries from a single meal on a previous day
     path(
         '<int:year>-<int:month>-<int:day>/copy-meal/<int:meal>/',
-        views.diary_copy_meal_from_previous_day_view,
+        views.DiaryMealCopyPreviousDay.as_view(),
         name='copy_meal_previous_day',
     ),
+    # path(
+    #     '<int:year>-<int:month>-<int:day>/copy-meal/<int:meal>/',
+    #     views.diary_copy_meal_from_previous_day_view,
+    #     name='copy_meal_previous_day',
+    # ),
     # Copying diary food entries from all meals on a previous day
     path(
         '<int:year>-<int:month>-<int:day>/copy-all-meals/',

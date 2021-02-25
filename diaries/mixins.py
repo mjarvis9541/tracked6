@@ -9,11 +9,27 @@ from food.forms import FoodFilterForm
 from food.models import Food
 
 
+# class ContextMixin:
+#     """
+#     A default context mixin that passes the keyword arguments received by
+#     get_context_data() as the template context.
+#     """
+
+#     extra_context = None
+
+#     def get_context_data(self, **kwargs):
+#         print('context main')
+#         kwargs.setdefault('view', self)
+#         if self.extra_context is not None:
+#             kwargs.update(self.extra_context)
+#         return kwargs
+
 
 class FoodFilterMixin(ContextMixin):
     """
     Provides the user the ability to filter the food list.
     """
+
     def filter_queryset(self):
         queryset = Food.objects.summary().values()
         q = self.request.GET.get('q')
@@ -75,6 +91,7 @@ class DiaryDateMixin(ContextMixin):
     def get_context_data(self, **kwargs):
         """Insert dates into the context dict."""
         self.get_diary_date()
+        print('diary date mixin')
         kwargs['date'] = self.date
         kwargs['previous_day'] = self.previous_day
         kwargs['next_day'] = self.next_day
@@ -95,7 +112,9 @@ class DiaryMealMixin(ContextMixin):
 
         meal = self.kwargs.get('meal')
         if meal not in range(1, 7):
-            raise Http404('Invalid diary meal number provided within the URL. Diary meal number must be between 1 and 6.')
+            raise Http404(
+                'Invalid diary meal number provided within the URL. Diary meal number must be between 1 and 6.'
+            )
 
         self.diary_meal = meal
         self.diary_meal_name = [x[1] for x in Diary.Meal.choices if x[0] == meal][0]
@@ -103,66 +122,7 @@ class DiaryMealMixin(ContextMixin):
     def get_context_data(self, **kwargs):
         """ Inserts meal information into context dict."""
         self.get_diary_meal()
+        print('diary meal mixin')
         kwargs['meal'] = self.diary_meal
         kwargs['meal_name'] = self.diary_meal_name
         return super().get_context_data(**kwargs)
-
-
-
-
-""" To Remove """
-
-class MealMixin:
-    """
-    Mixin that validates the meal passed into the URL params is a valid choice.
-    Provides the meal name to the view.
-    """
-
-    meal = None
-    meal_name = None
-    meal_num = None
-
-    def dispatch(self, request, *args, **kwargs):
-        if not self.kwargs['meal'] in range(1, 7):
-            raise Http404('Invalid meal')
-        else:
-            self.meal = self.kwargs['meal']
-            self.meal_name = [x[1] for x in Diary.Meal.choices if x[0] == self.meal][0]
-            self.meal_num = self.meal
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['meal_name'] = self.meal_name
-        context['meal_num'] = self.meal_num
-        return context
-
-
-class DateMixin:
-    """
-    Mixin that validates the date passed into the URL by the user.
-    Adds date object, next and previous days to the context dictionary.
-    """
-
-    date = None
-    previous_day = None
-    next_day = None
-    today = timezone.now()
-
-    def dispatch(self, request, *args, **kwargs):
-        year = self.kwargs.get('year', timezone.now().year)
-        month = self.kwargs.get('month', timezone.now().month)
-        day = self.kwargs.get('day', timezone.now().day)
-        try:
-            self.date = datetime.date(year, month, day)
-        except ValueError as e:
-            raise Http404(e)  # raise Http404('Invalid date')
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['date'] = self.date
-        context['previous_day'] = self.date - datetime.timedelta(days=1)
-        context['next_day'] = self.date + datetime.timedelta(days=1)
-        context['today'] = self.today
-        return context

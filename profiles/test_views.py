@@ -173,19 +173,16 @@ class NewProfile(View):
     template_name = 'profiles/profile2.html'
     context = {}
 
-    def get_context(self, **args):
-        q = self.kwargs.get('q')
-        brand = self.kwargs.get('brand')
-        category = self.kwargs.get('category')
-        sort = self.kwargs.get('sort')
-       
-        self.context['form'] = FoodFilterForm(self.request.GET)
-        return self.context
+    def get_context(self, **kwargs):
+        
+        return self.kwargs
 
     def get(self, request, *args, **kwargs):
+        print(self.__dict__)
         return render(request, self.template_name, self.get_context())
    
     def post(self, request, *args, **kwargs):
+        print(self.__dict__)
         return render(request, self.template_name, self.get_context())
  
 
