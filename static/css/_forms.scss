@@ -13,3 +13,16 @@
 //     height: 1rem;
 //     border: 1px solid #f2f2f2;
 // }
+
+.form-grid-1 {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+
+    .mb-field {
+        // border-bottom: 1px solid #f2f2f2;
+        padding-bottom: .5rem;
+        margin-bottom: .5rem;
+        font-weight: bold;
+        color: red;
+    }
+}

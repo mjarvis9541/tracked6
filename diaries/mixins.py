@@ -91,7 +91,7 @@ class DiaryDateMixin(ContextMixin):
     def get_context_data(self, **kwargs):
         """Insert dates into the context dict."""
         self.get_diary_date()
-        print('diary date mixin')
+        # print('diary date mixin')
         kwargs['date'] = self.date
         kwargs['previous_day'] = self.previous_day
         kwargs['next_day'] = self.next_day
@@ -122,7 +122,7 @@ class DiaryMealMixin(ContextMixin):
     def get_context_data(self, **kwargs):
         """ Inserts meal information into context dict."""
         self.get_diary_meal()
-        print('diary meal mixin')
+        # print('diary meal mixin')
         kwargs['meal'] = self.diary_meal
         kwargs['meal_name'] = self.diary_meal_name
         return super().get_context_data(**kwargs)

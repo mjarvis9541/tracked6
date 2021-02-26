@@ -1,6 +1,5 @@
 .food__structure {
     padding: 0 1rem;
-    min-height: 100vh;
     background: #fff;
     // display: grid;
     // grid-template-columns: 3fr 1fr;
@@ -8,11 +7,13 @@
 
 .food__structure--2-1 {
     padding: 0 1rem;
-    min-height: 100vh;
     background: #fff;
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 1rem;
 }
+
+
 
 .food_database {
     display: grid;
@@ -21,17 +22,15 @@
     &__title {
         display: flex;
         align-items: center;
-        padding-bottom: .5rem;
+        padding: 0.5rem 0;
         font-weight: bold;
-        // background: #2979ff;
+        // background: #f2f2f2;
         // color: #fff;
         border-bottom: 1px solid #000;
     }
     &__name {
-        // line-height: 1.25;
         text-align: start;
         border-bottom: 1px solid #f2f2f2;
-        // padding: .125rem .5rem;
     }
     &__data {
         display: flex;
@@ -49,16 +48,58 @@
     }
 }
 
-
-@media (max-width: 684px) {
-    .food_database {
-        display: grid;
-        grid-template-columns: 4fr repeat(9, 1fr);
-    
-        &__title {
-            display: none;
-        } 
-    }
+.hidden-lg {
+    display: none;
 }
 
+.hidden-sm {
+    display: flex;
+}
 
+@media (max-width: 684px) {
+
+    .food__structure--2-1 {
+        grid-template-columns: 1fr;
+        grid-gap: 0rem;
+    }
+
+    
+    .food_database {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+
+        &__title {
+            display: none;
+        }
+        &__data {
+            padding: 0.25rem 0.5rem;
+            text-align: start;
+            border-bottom: 1px solid #f2f2f2;
+        }
+    }
+
+    .space-right {
+        margin-right: 0.25rem;
+    }
+    .kcal::after {
+        content: "kcal";
+    }
+
+    .g::after {
+        content: "g";
+    }
+    .hidden-lg {
+        display: flex;
+    }
+
+    .hidden-sm {
+        display: none;
+    }
+    .serving {
+        font-weight: bold;
+    }
+    .food-title-sm {
+        background: #f2f2f2;
+        padding: 0.5rem;
+    }
+}

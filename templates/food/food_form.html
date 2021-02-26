@@ -1,52 +1,57 @@
 {% extends 'base.html' %}
 {% block content %}
 <style>
-    body {
-        background: #f4f4f4;
-    }
+  body {
+    background: #f4f4f4;
+  }
 </style>
 
 <div class="food__structure--2-1">
-    <!-- Left side -->
-    <div>
-        <h2 class="mt-1 mb-1">Create Food</h2>
+  <!-- Left side -->
+
+  <div>
+    <h2 class="mt-1 mb-1">Create Food</h2>
+    <p class="mb-3">Create a new food to add to our database using the form below.</p>
+    <form method="post" novalidate> {% csrf_token %}
 
 
-        <form method="post" novalidate>
-            {% csrf_token %}
-          
-            {{ form.non_field_errors }}
-          
-            {% for hidden_field in form.hidden_fields %}
-              {{ hidden_field.errors }}
-              {{ hidden_field }}
-            {% endfor %}
-          
-            <table class="table border="1">
-              {% for field in form.visible_fields %}
-                <tr>
-                  <th>{{ field.label_tag }}</th>
-                  <td>
-                    {{ field.errors.as_text }}
-                    {{ field }}
-                    {{ field.help_text }}
-                  </td>
-                </tr>
-              {% endfor %}
-            </table>
-          
-            <button class="btn mt-1">Submit</button>
-          </form>
+      {{ form.non_field_errors }}
 
+      {% for hidden_field in form.hidden_fields %}
+      {{ hidden_field.errors }}
+      {{ hidden_field }}
+      {% endfor %}
+      <div class="form-grid-1 mb-1">
+      {% for field in form.visible_fields %}
 
+    
+        <div class="">{{ field.label_tag }}</div>
+        <div class="">{{ field }}</div>
+        <div class="mb-field"></div><div class="mb-field">{{ field.errors.as_text }}</div>
+        {{ field.help_text }}
+    
+      
+ 
 
-
-
-
-
-
+      {% endfor %}
     </div>
-    <div>2</div>
+      <button class="btn">Submit</button>
+    </form>
+
+
+
+
+
+
+
+
+  </div>
+  <div>
+    <h2 class="mt-1 mb-1">Help</h2>
+    <p>Create a new food to add to our database.</p>
+    <br>
+
+  </div>
 </div>
 
 

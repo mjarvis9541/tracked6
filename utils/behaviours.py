@@ -18,13 +18,13 @@ class Nutritionable(models.Model):
     """ Model behaviour that adds energy and macronutrient fields """
 
     energy = models.IntegerField(verbose_name='calories (kcal)')
-    fat = models.DecimalField(max_digits=4, decimal_places=1)
-    saturates = models.DecimalField(max_digits=4, decimal_places=1)
-    carbohydrate = models.DecimalField(max_digits=4, decimal_places=1)
-    sugars = models.DecimalField(max_digits=4, decimal_places=1)
-    fibre = models.DecimalField(max_digits=4, decimal_places=1)
-    protein = models.DecimalField(max_digits=4, decimal_places=1)
-    salt = models.DecimalField(max_digits=5, decimal_places=2)
+    fat = models.DecimalField(verbose_name='fat (g)', max_digits=4, decimal_places=1)
+    saturates = models.DecimalField(verbose_name='saturates (g)', max_digits=4, decimal_places=1)
+    carbohydrate = models.DecimalField(verbose_name='carbohydrate (g)', max_digits=4, decimal_places=1)
+    sugars = models.DecimalField(verbose_name='sugars (g)', max_digits=4, decimal_places=1)
+    fibre = models.DecimalField(verbose_name='fibre (g)', max_digits=4, decimal_places=1)
+    protein = models.DecimalField(verbose_name='protein (g)', max_digits=4, decimal_places=1)
+    salt = models.DecimalField(verbose_name='salt (g)', max_digits=5, decimal_places=2)
 
     @property
     def sodium(self):

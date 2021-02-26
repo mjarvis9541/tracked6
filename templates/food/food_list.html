@@ -3,13 +3,13 @@
 {% block content %}
 <style>
     body {
-        background: #f4f4f4;
+        background: #f2f2f2;
     }
 </style>
 <div class="food__structure">
     <h2 class="pt-1 mb-1">Food Database</h2>
 
-    <div class="food_database mb-3">
+    <div class="food_database mb-2">
         <div class="food_database__title">Food</div>
         <div class="food_database__title end">Serving</div>
         <div class="food_database__title end">Calories</div>
@@ -21,23 +21,28 @@
         <div class="food_database__title end">Fibre</div>
         <div class="food_database__title end">Salt</div>
         {% for food in food_list %}
-        <div class="food_database__name"><a href="{% url 'food:detail' food.id %}">{{ food.name }}</a><br><small>{{ food.brand }}</small></div>
-        <div class="food_database__data end text-nowrap">{{ food.serving }}</div>
-        <div class="food_database__data end">{{ food.energy }}</div>
-        <div class="food_database__data end">{{ food.protein }}</div>
-        <div class="food_database__data end">{{ food.carbohydrate }}</div>
-        <div class="food_database__data end">{{ food.fat }}</div>
-        <div class="food_database__data end">{{ food.saturates }}</div>
-        <div class="food_database__data end">{{ food.sugars }}</div>
-        <div class="food_database__data end">{{ food.fibre }}</div>
-        <div class="food_database__data end">{{ food.salt }}</div>
+        <div class="food_database__name serving food-title-sm"><a href="{% url 'food:detail' food.id %}">{{ food.name }}</a>
+            <br><small style="font-weight: normal;"><a href="">{{ food.brand }}</a></small></div>
+        <div class="food_database__data end serving text-nowrap food-title-sm">{{ food.serving }}</div>
+        
+        <div class="food_database__data hidden-lg">Calories</div>
+        <div class="food_database__data end kcal"><span class="space-right">{{ food.energy }}</span></div>
+        <div class="food_database__data hidden-lg">Protein</div>
+        <div class="food_database__data end g"><span class="space-right">{{ food.protein }}</span></div>
+        <div class="food_database__data hidden-lg">Carbs</div>
+        <div class="food_database__data end g"><span class="space-right">{{ food.carbohydrate }}</span></div>
+        <div class="food_database__data hidden-lg">Fat</div>
+        <div class="food_database__data end g"><span class="space-right">{{ food.fat }}</span></div>
+        <div class="hidden-lg pb-2 span-col-2"></div>
+        <div class="food_database__data hidden-sm end">{{ food.saturates }}</div>
+        <div class="food_database__data hidden-sm end">{{ food.sugars }}</div>
+        <div class="food_database__data hidden-sm end">{{ food.fibre }}</div>
+        <div class="food_database__data hidden-sm end">{{ food.salt }}</div>
     
         {% endfor %}
     </div>
 
-
-    <div><a href="{% url 'food:create' %}">Create Food</a></div>
-    <div><a href="{% url 'food:create' %}">Create Food</a></div>
+    <div><a class="btn" href="{% url 'food:create' %}">Create Food</a></div>
 
 </div>
 

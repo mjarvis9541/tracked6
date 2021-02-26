@@ -259,6 +259,10 @@
   text-align: end;
 }
 
+small {
+  font-size: .875rem;
+}
+
 table th,
 table td {
   text-align: start;
@@ -276,6 +280,20 @@ table td {
   padding: .25rem .5rem;
   border: 1px solid #e6e6e6;
   border-radius: 4px;
+}
+
+.form-grid-1 {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1.5fr;
+      grid-template-columns: 1fr 1.5fr;
+}
+
+.form-grid-1 .mb-field {
+  padding-bottom: .5rem;
+  margin-bottom: .5rem;
+  font-weight: bold;
+  color: red;
 }
 
 .btn {
@@ -854,18 +872,17 @@ header {
 
 .food__structure {
   padding: 0 1rem;
-  min-height: 100vh;
   background: #fff;
 }
 
 .food__structure--2-1 {
   padding: 0 1rem;
-  min-height: 100vh;
   background: #fff;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 3fr 1fr;
-      grid-template-columns: 3fr 1fr;
+  -ms-grid-columns: 2fr 1fr;
+      grid-template-columns: 2fr 1fr;
+  grid-gap: 1rem;
 }
 
 .food_database {
@@ -882,7 +899,7 @@ header {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  padding-bottom: .5rem;
+  padding: 0.5rem 0;
   font-weight: bold;
   border-bottom: 1px solid #000;
 }
@@ -914,15 +931,59 @@ header {
   white-space: nowrap;
 }
 
+.hidden-lg {
+  display: none;
+}
+
+.hidden-sm {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
 @media (max-width: 684px) {
+  .food__structure--2-1 {
+    -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    grid-gap: 0rem;
+  }
   .food_database {
     display: -ms-grid;
     display: grid;
-    -ms-grid-columns: 4fr (1fr)[9];
-        grid-template-columns: 4fr repeat(9, 1fr);
+    -ms-grid-columns: 3fr 1fr;
+        grid-template-columns: 3fr 1fr;
   }
   .food_database__title {
     display: none;
+  }
+  .food_database__data {
+    padding: 0.25rem 0.5rem;
+    text-align: start;
+    border-bottom: 1px solid #f2f2f2;
+  }
+  .space-right {
+    margin-right: 0.25rem;
+  }
+  .kcal::after {
+    content: "kcal";
+  }
+  .g::after {
+    content: "g";
+  }
+  .hidden-lg {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+  }
+  .hidden-sm {
+    display: none;
+  }
+  .serving {
+    font-weight: bold;
+  }
+  .food-title-sm {
+    background: #f2f2f2;
+    padding: 0.5rem;
   }
 }
 
@@ -1010,10 +1071,6 @@ header {
 a {
   text-decoration: none;
   color: #0d6efd;
-}
-
-a:hover {
-  color: #9ac2fe;
 }
 
 .container {
