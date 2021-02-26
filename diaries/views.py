@@ -50,8 +50,7 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        self.get_diary_date() # method of DiaryDateMixin
-        # TODO: self.get_context_data(**kwargs) to replace above once tested.
+        context = self.get_context_data(**kwargs) 
         obj_list = request.POST.getlist('to_delete')
         if obj_list: 
             delete_list = Diary.objects.filter(id__in=obj_list)
@@ -62,7 +61,7 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
             return redirect('diaries:delete_list') 
         else:
             messages.error(request, 'You have not selected any food to delete')
-        return redirect('diaries:day', self.date.year, self.date.month, self.date.day) 
+        return self.render_to_response(context)
 
 
 class DiaryMealListView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, TemplateView):
@@ -318,11 +317,13 @@ class DiaryDeleteMultipleView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         object_list = context['object_list']
+        count = len(object_list)
         date = context['date']
         meal = context['meal_name']
         if object_list:
             object_list.delete()
             request.session.pop('delete_list')
-            messages.success(request, f'Deleted {len(object_list)} food from {meal}, {date}')
+            messages.success(request, f'Deleted {count} food from {meal}, {date}')
             return redirect('diaries:day', date.year, date.month, date.day) 
         return self.render_to_response(context)
+    
