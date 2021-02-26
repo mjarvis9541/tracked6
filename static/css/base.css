@@ -1,4 +1,33 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
+.grid-structure-1-5 {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 5fr;
+      grid-template-columns: 1fr 5fr;
+  background: #fff;
+  min-height: 50vh;
+}
+
+.progress-grid {
+  margin-right: 1rem;
+  padding: .75rem 0;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr 1fr 3fr;
+      grid-template-columns: 1fr 1fr 1fr 3fr;
+}
+
+.progress-grid .title {
+  font-weight: 700;
+  padding: .75rem 0;
+  border-bottom: 1px solid #000;
+}
+
+.progress-grid .item {
+  padding: .75rem 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
 .span-col-2 {
   grid-column: span 2 / auto;
 }

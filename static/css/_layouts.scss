@@ -1,3 +1,30 @@
+.grid-structure-1-5 {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    background: #fff;
+    min-height: 50vh;
+}
+
+.progress-grid {
+    margin-right: 1rem;
+    padding: .75rem 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 3fr;
+
+    .title {
+        font-weight: 700;
+        padding: .75rem 0;
+        border-bottom: 1px solid #000;
+    }
+    .item {
+        padding: .75rem 0;
+        border-bottom: 1px solid #f2f2f2;
+    }
+    
+}
+
+
+
 .span-col-2{grid-column: span 2 / auto;}
 .span-col-3{grid-column: span 3 / auto;}
 .span-col-4{grid-column: span 4 / auto;}

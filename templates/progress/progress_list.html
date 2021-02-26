@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background: #f2f2f2;
+    }
+</style>
+<div class="grid-structure-1-5">
+    <!-- Right Sidebar -->
+    <div>
+        Right Sidebar
+    </div>
+   
+    
+    <!-- Main -->
+    <div>
+        <h2 class="mt-1 mb-1">Progress</h2>
+
+        <div class="progress-grid">
+            
+            <div class="title">Date</div>
+            <div class="title">Weight (kg)</div>
+            <div class="title">Weight (lb)</div>
+            <div class="title">Notes</div>
+        
+            {% for object in progress_list %}
+            <div class="item"><a href="">{{ object.date }}</a></div>
+            <div class="item">{{ object.weight }}</div>
+            <div class="item">{{ object.weight_st }}</div>
+            <div class="item">{{ object.notes }}</div>
+            {% endfor %}
+
+        </div>
+
+
+        <a class="btn" href="">Log Progress</a>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock content %}

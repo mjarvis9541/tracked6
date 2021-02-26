@@ -19,6 +19,6 @@ class UserProfileView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['profile'] = get_object_or_404(
-            Profile, user__username=self.kwargs.get('username')
+            Profile, user__username=self.kwargs['username']
         )
         return context

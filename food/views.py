@@ -131,70 +131,7 @@ class FoodCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-# class FoodDisplay(DetailView):
-#     model = Food
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['form'] = FoodDetailToDiaryForm()
-#         return context
-
-
-# class FoodDetailForm(SingleObjectMixin, FormView):
-#     template_name = 'food/food_detail.html'
-#     form_class = FoodDetailToDiaryForm
-#     model = Food
-
-#     def post(self, request, *args, **kwargs):
-#         if not request.user.is_authenticated:
-#             return HttpResponseForbidden()
-#         self.object = self.get_object()
-#         return super().post(request, *args, **kwargs)
-
-#     def form_valid(self, form):
-#         self.date = form.cleaned_data.get('date')
-#         form.instance.user = self.request.user
-#         form.instance.food = self.object
-#         form.save()
-#         return super().form_valid(form)
-
-#     def get_success_url(self):
-#         return reverse('diaries:day', kwargs={'year': self.date.year, 'month': self.date.month, 'day': self.date.day})
-
-
-# class FoodDetailView(View):
-#     def get(self, request, *args, **kwargs):
-#         view = FoodDisplay.as_view()
-#         return view(request, *args, **kwargs)
-
-#     def post(self, request, *args, **kwargs):
-#         view = FoodDetailForm.as_view()
-#         return view(request, *args, **kwargs)
-
-
-
-
-class FoodDetailView(TemplateView):
-    template_name = 'food/food_detail.html'
-
-    def get(self, request, *args, **kwargs):
-        self.context['obj'] = get_object_or_404(Food, id=self.kwargs.get('pk'))
-        self.context['diary_form'] = FoodToDiaryForm(prefix='diary')
-        self.context['meal_form'] = FoodToMealForm(prefix='meal', request=request)
-
-        return render(request, self.template_name, self.context)
-
-    def post(self, request, *args, **kwargs):
-        self.context['obj'] = get_object_or_404(Food, id=self.kwargs.get('pk'))
-        self.context['diary_form'] = FoodToDiaryForm(request.POST, prefix='diary')
-        self.context['meal_form'] = FoodToMealForm(
-            request.POST, prefix='meal', request=request
-        )
-
-        return render(request, self.template_name, self.context)
-
-
-def food_detail_view(request, pk):
+class FoodDetailView(LoginRequiredMixin, TemplateView):
     """
     View to show the following:
     * Detail view of food obj passed into URL.
@@ -202,46 +139,10 @@ def food_detail_view(request, pk):
     * Form to add food to a saved meal.
     """
     template_name = 'food/food_detail.html'
-    context = {}
-
-    obj = get_object_or_404(Food, id=pk)
-    diary_form = FoodToDiaryForm(prefix='diary')
-    meal_form = FoodToMealForm(prefix='meal', request=request)
-
-    # Food to Diary Meal
-    if request.method == 'POST' and 'food_to_diary' in request.POST:
-        diary_form = FoodToDiaryForm(request.POST, prefix='diary')
-        if diary_form.is_valid():
-            form = diary_form.save(commit=False)
-            form.user = request.user
-            form.food = obj
-            form.save()
-    else:
-        diary_form = FoodToDiaryForm(prefix='diary')
-
-    # Food to Saved Meal
-    if request.method == 'POST' and 'food_to_meal' in request.POST:
-        meal_form = FoodToMealForm(request.POST, request=request, prefix='meal')
-        if meal_form.is_valid():
-            form = meal_form.save(commit=False)
-            form.user = request.user
-            form.food = obj
-            form.save()
-    else:
-        meal_form = FoodToMealForm(prefix='meal', request=request)
-
-    context['obj'] = obj
-    context['diary_form'] = diary_form
-    context['meal_form'] = meal_form
-    return render(request, template_name, context)
-
-
-class FoodDetailView(TemplateView):
-    template_name = 'food/food_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['object'] = get_object_or_404(Food, id=self.kwargs['pk'])
+        context['object'] = get_object_or_404(Food, slug=self.kwargs['slug'])
         context['diary_form'] = FoodToDiaryForm(
             prefix='diary_form',
             data=self.request.POST if 'diary_form' in self.request.POST else None,
@@ -301,6 +202,7 @@ class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         obj = self.get_object()
         return obj.user_created == self.request.user
+
 
 
 class FoodDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

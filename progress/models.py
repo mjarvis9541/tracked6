@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.conf import settings
 from django.db import models
 from utils.behaviours import Uuidable, Timestampable
@@ -36,3 +37,18 @@ class Progress(Uuidable, Timestampable):
 
     def get_absolute_url(self):
         return reverse('progress:detail', kwargs={'pk': self.pk})
+
+    @property
+    def weight_lb(self):
+        if self.weight:
+            return round(self.weight * Decimal(2.20462))
+
+    @property
+    def weight_st(self):
+        if self.weight_lb:
+            weight = {}
+            weight["st"] = round(self.weight_lb // 14)
+            weight["lb"] = round(self.weight_lb % 14)
+            stone = weight["st"]
+            pounds = weight["lb"]
+            return f'{stone} st, {pounds} lb'

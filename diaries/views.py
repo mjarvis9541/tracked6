@@ -19,6 +19,9 @@ from meals.models import Meal, MealItem
 from .forms import AddRecentToDiaryFormSet, AddToDiaryFormSet, DiaryUpdateForm
 from .mixins import DiaryDateMixin, DiaryMealMixin, FoodFilterMixin
 from .models import Diary
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
@@ -64,6 +67,8 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
         else:
             messages.error(request, 'You have not selected any food to delete')
         return self.render_to_response(context)
+
+
 
 
 class DiaryMealListView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, TemplateView):
@@ -256,7 +261,7 @@ class DiaryUpdateView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
         return self.render_to_response(context)
 
 
-class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """
     Allows the user to confirm deletion of single diary food item.
     """
@@ -312,3 +317,38 @@ class DiaryDeleteMultipleView(LoginRequiredMixin, TemplateView):
             return redirect('diaries:day', date.year, date.month, date.day) 
         return self.render_to_response(context)
     
+
+class DiaryUserDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
+    template_name = 'diaries/diary_day_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_ = get_object_or_404(User, username=self.kwargs.get('username'))
+        object_list = Diary.objects.filter(user__username=self.kwargs.get('username'), date=self.date).summary().order_by('datetime_created')
+        context['object_list'] = object_list 
+        context['total'] = object_list.total()
+        context['total_meal_1'] = object_list.filter(meal=1).total()
+        context['total_meal_2'] = object_list.filter(meal=2).total()
+        context['total_meal_3'] = object_list.filter(meal=3).total()
+        context['total_meal_4'] = object_list.filter(meal=4).total()
+        context['total_meal_5'] = object_list.filter(meal=5).total()
+        context['total_meal_6'] = object_list.filter(meal=6).total()
+        context['target'] = user_.profile
+        context['remaining'] = object_list.remaining(user=user_)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs) 
+        obj_list = request.POST.getlist('to_delete')
+        if obj_list: 
+            delete_list = Diary.objects.filter(id__in=obj_list)
+            count = len(delete_list)
+            for obj in delete_list:
+                if obj.user != request.user:
+                    return HttpResponseForbidden('You are not authorized to delete this user\'s diary entries')
+            request.session['delete_list'] = obj_list
+            messages.success(request, f'Selected {count} food to delete')
+            return redirect('diaries:delete_list') 
+        else:
+            messages.error(request, 'You have not selected any food to delete')
+        return self.render_to_response(context)
