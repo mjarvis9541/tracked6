@@ -28,10 +28,10 @@ urlpatterns = [
         name='copy_meal_previous_day',
     ),
     path(
-        '<int:year>-<int:month>-<int:day>/copy-meal/<int:meal>/',
+        '<int:year>-<int:month>-<int:day>/copy-all-meal/',
         views.DiaryCopyAllMealPreviousDay.as_view(),
         name='copy_all_meal_previous_day',
-    ), # TODO: Complete the view.
+    ),
     path(
         '<int:year>-<int:month>-<int:day>/add-meal-to-diary/<int:meal>/',
         views.DiaryAddMealView.as_view(),
@@ -48,7 +48,7 @@ urlpatterns = [
     path('<uuid:pk>/confirm-delete/', views.DiaryDeleteView.as_view(), name='delete'),
     path(
         'confirm-delete-multiple/',
-        views.diary_delete_multiple_food_view,
+        views.DiaryDeleteMultipleView.as_view(),
         name='delete_list',
     ),
 ]

@@ -9,6 +9,23 @@
 <div class="food__structure">
     <h2 class="pt-1 mb-1">Food Database</h2>
 
+    <form action="" method="get" class="mt-1 mb-1">
+        <div class="food-search">
+            <div class="search">{{ form.q }}</div>
+            <div class="filter">{{ form.brand }}</div>
+            <div class="filter">{{ form.category }}</div>
+            <div class="filter">{{ form.sort }}</div>
+            <div class="results">{{ page_obj.paginator.count }} Results</div>
+            <div class="text-end">
+                {% if request.GET.q or request.GET.brand or request.GET.category or request.GET.sort %}
+                <a class="btn" href="{% url 'food:list' %}">Clear</a>
+                {% endif %}
+                <button class="btn">Search</button>
+            </div>
+        </div>
+    </form>
+
+
     <div class="food_database mb-2">
         <div class="food_database__title">Food</div>
         <div class="food_database__title end">Serving</div>
@@ -42,7 +59,34 @@
         {% endfor %}
     </div>
 
-    <div><a class="btn" href="{% url 'food:create' %}">Create Food</a></div>
+    <div class="pagination">
+        <div class="end">
+            <span style="margin-right: 1rem;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_previous %}
+            <a class="page-btn" href="?{% param_replace page=page_obj.previous_page_number %}"><i
+                    class="fas fa-angle-left"></i></a>
+            {% else %}
+            <a class="disabled"><i class="fas fa-angle-left"></i></a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <a class="page-btn active" href="?{% param_replace page=num %}">{{ num }}</a>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <a class="page-btn"
+                href="?{% param_replace page=num %}">{{ num }}</a>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a class="page-btn" href="?{% param_replace page=page_obj.next_page_number %}"><i
+                        class="fas fa-angle-right"></i></a>
+                {% else %}
+                <a class="disabled"><i class="fas fa-angle-right"></i></a>
+                {% endif %}
+        </div>
+    </div>
+
+    <div><a class="btn mt-2 mb-2" href="{% url 'food:create' %}">Create New Food</a></div>
 
 </div>
 

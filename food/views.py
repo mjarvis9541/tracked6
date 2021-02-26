@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseForbidden
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import (
@@ -11,9 +11,11 @@ from django.views.generic import (
     ListView,
     UpdateView,
     View,
+    TemplateView,
 )
+from django.contrib import messages
 from django.views.generic.detail import SingleObjectMixin
-
+from .forms import FoodToDiaryForm, FoodToMealForm
 from .forms import (
     BrandCreateForm,
     FoodCreateServingForm,
@@ -35,6 +37,7 @@ class BrandListView(BrandFilterMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = BrandFilterForm(self.request.GET)
         return context
+
 
 class BrandCreateView(LoginRequiredMixin, CreateView):
     model = Brand
@@ -114,6 +117,7 @@ class FoodCreateView(LoginRequiredMixin, CreateView):
     Food create view with one 'serving' form field to combine and replace
     the two model fields 'data_value' and 'data_measurement'
     """
+
     model = Food
     form_class = FoodCreateServingForm
     success_url = '/'
@@ -127,45 +131,151 @@ class FoodCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class FoodDisplay(DetailView):
-    model = Food
+# class FoodDisplay(DetailView):
+#     model = Food
 
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['form'] = FoodDetailToDiaryForm()
+#         return context
+
+
+# class FoodDetailForm(SingleObjectMixin, FormView):
+#     template_name = 'food/food_detail.html'
+#     form_class = FoodDetailToDiaryForm
+#     model = Food
+
+#     def post(self, request, *args, **kwargs):
+#         if not request.user.is_authenticated:
+#             return HttpResponseForbidden()
+#         self.object = self.get_object()
+#         return super().post(request, *args, **kwargs)
+
+#     def form_valid(self, form):
+#         self.date = form.cleaned_data.get('date')
+#         form.instance.user = self.request.user
+#         form.instance.food = self.object
+#         form.save()
+#         return super().form_valid(form)
+
+#     def get_success_url(self):
+#         return reverse('diaries:day', kwargs={'year': self.date.year, 'month': self.date.month, 'day': self.date.day})
+
+
+# class FoodDetailView(View):
+#     def get(self, request, *args, **kwargs):
+#         view = FoodDisplay.as_view()
+#         return view(request, *args, **kwargs)
+
+#     def post(self, request, *args, **kwargs):
+#         view = FoodDetailForm.as_view()
+#         return view(request, *args, **kwargs)
+
+
+
+
+class FoodDetailView(TemplateView):
+    template_name = 'food/food_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        self.context['obj'] = get_object_or_404(Food, id=self.kwargs.get('pk'))
+        self.context['diary_form'] = FoodToDiaryForm(prefix='diary')
+        self.context['meal_form'] = FoodToMealForm(prefix='meal', request=request)
+
+        return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        self.context['obj'] = get_object_or_404(Food, id=self.kwargs.get('pk'))
+        self.context['diary_form'] = FoodToDiaryForm(request.POST, prefix='diary')
+        self.context['meal_form'] = FoodToMealForm(
+            request.POST, prefix='meal', request=request
+        )
+
+        return render(request, self.template_name, self.context)
+
+
+def food_detail_view(request, pk):
+    """
+    View to show the following:
+    * Detail view of food obj passed into URL.
+    * Form to add food to a diary meal.
+    * Form to add food to a saved meal.
+    """
+    template_name = 'food/food_detail.html'
+    context = {}
+
+    obj = get_object_or_404(Food, id=pk)
+    diary_form = FoodToDiaryForm(prefix='diary')
+    meal_form = FoodToMealForm(prefix='meal', request=request)
+
+    # Food to Diary Meal
+    if request.method == 'POST' and 'food_to_diary' in request.POST:
+        diary_form = FoodToDiaryForm(request.POST, prefix='diary')
+        if diary_form.is_valid():
+            form = diary_form.save(commit=False)
+            form.user = request.user
+            form.food = obj
+            form.save()
+    else:
+        diary_form = FoodToDiaryForm(prefix='diary')
+
+    # Food to Saved Meal
+    if request.method == 'POST' and 'food_to_meal' in request.POST:
+        meal_form = FoodToMealForm(request.POST, request=request, prefix='meal')
+        if meal_form.is_valid():
+            form = meal_form.save(commit=False)
+            form.user = request.user
+            form.food = obj
+            form.save()
+    else:
+        meal_form = FoodToMealForm(prefix='meal', request=request)
+
+    context['obj'] = obj
+    context['diary_form'] = diary_form
+    context['meal_form'] = meal_form
+    return render(request, template_name, context)
+
+
+class FoodDetailView(TemplateView):
+    ### TemplateResponseMixin
+    template_name = 'food/food_detail.html'
+
+    ### ContextMixin 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = FoodDetailToDiaryForm()
+        context['object'] = get_object_or_404(Food, id=self.kwargs['pk'])
+        context['diary_form'] = FoodToDiaryForm(
+            prefix='diary_form',
+            data=self.request.POST if 'diary_form' in self.request.POST else None,
+        )
+        context['meal_form'] = FoodToMealForm(
+            prefix='meal_form',
+            data=self.request.POST if 'meal_form' in self.request.POST else None,
+            request=self.request,
+        )
         return context
 
-
-class FoodDetailForm(SingleObjectMixin, FormView):
-    template_name = 'food/food_detail.html'
-    form_class = FoodDetailToDiaryForm
-    model = Food
-
     def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden()
-        self.object = self.get_object()
-        return super().post(request, *args, **kwargs)
+        context = self.get_context_data(**kwargs)
 
-    def form_valid(self, form):
-        self.date = form.cleaned_data.get('date')
-        form.instance.user = self.request.user
-        form.instance.food = self.object
-        form.save()
-        return super().form_valid(form)
+        if context['diary_form'].is_valid():
+            instance = context['diary_form'].save(commit=False)
+            instance.user = request.user
+            instance.food = context['object']
+            instance.save()
+            messages.success(request, 'Food added to Diary')
 
-    def get_success_url(self):
-        return reverse('diaries:day', kwargs={'year': self.date.year, 'month': self.date.month, 'day': self.date.day})
+        elif context['meal_form'].is_valid():
+            instance = context['meal_form'].save(commit=False)
+            instance.user = request.user
+            instance.food = context['object']
+            instance.save()
+            messages.success(request, 'Food added to Meal')
+            
+        else:
+            messages.error(request, 'An error has occured, please review below and re-submit')
 
-
-class FoodDetailView(View):
-    def get(self, request, *args, **kwargs):
-        view = FoodDisplay.as_view()
-        return view(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        view = FoodDetailForm.as_view()
-        return view(request, *args, **kwargs)
+        return self.render_to_response(context)
 
 
 class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -202,44 +312,3 @@ class FoodDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         obj = self.get_object()
         return obj.user_created == self.request.user
-
-
-
-
-from django import forms
-import django_filters
-from food.models import Food
-BOOLEAN_CHOICES = (('false', 'False'), ('true', 'True'),)
-
-class FoodFilter(django_filters.FilterSet):
-    active = django_filters.BooleanFilter(widget=forms.CheckboxInput)
-    sort = django_filters.OrderingFilter(
-        choices = (
-            ('name', 'Name (a-z)'),
-            ('-name', 'Name (z-a)'),
-            ('energy', 'Calories (low-high)'),
-            ('-energy', 'Calories (high-low)'),
-            ('protein', 'Protein (low-high)'),
-            ('-protein', 'Protein (high-low)'),
-            ('carbohydrate', 'Carbs (low-high)'),
-            ('-carbohydrate', 'Carbs (high-low)'),
-            ('fat', 'Fat (low-high)'), 
-            ('-fat', 'Fat (high-low)'),
-            ('-datetime_created', 'Recently Created'),
-            ('-datetime_updated', 'Recently Updated'),
-        ))
-
-    class Meta:
-        model = Food
-        fields = ['name', 'brand', 'category', 'active']
-
-
-
-class FoodListed(ListView):
-    model = Food
-    template_name = 'food/flv.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['filter'] = FoodFilter(self.request.GET, queryset=self.get_queryset())
-        return context

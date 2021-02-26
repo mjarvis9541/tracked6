@@ -5,7 +5,7 @@ from . import views
 
 app_name = 'food'
 urlpatterns = [
-    path('flv/', views.FoodListed.as_view()),
+    # path('flv/', views.FoodListed.as_view()),
 
     path('api/', api_views.FoodListCreateAPIView.as_view(), name='food_listcreate_api'),
     path('api/<uuid:pk>/', api_views.FoodRetrieveUpdateDestroyAPIView.as_view(), name='food_retrieveupdatedelete_api'),
@@ -13,7 +13,9 @@ urlpatterns = [
     # Food urls
     path('', views.FoodListView.as_view(), name='list'),    
     path('create/', views.FoodCreateView.as_view(), name='create'),
+    # path('<uuid:pk>/detail/', views.FoodDetailView.as_view(), name='detail'), 
     path('<uuid:pk>/detail/', views.FoodDetailView.as_view(), name='detail'), 
+
     path('<uuid:pk>/update/', views.FoodUpdateView.as_view(), name='update'),
     path('<uuid:pk>/delete/', views.FoodDeleteView.as_view(), name='delete'),
 

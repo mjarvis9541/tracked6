@@ -73,24 +73,23 @@
 
 
 <div class="pagination mb-5">
-    <div></div>
     <div class="end">
-        <span style="margin-right: 1rem;">Page {{ formset.number }} of {{ formset.paginator.num_pages }}</span>
-        {% if formset.has_previous %}
+        <span style="margin-right: 1rem;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_previous %}
         <a class="page-btn" href="?{% param_replace page=formset.previous_page_number %}"><i class="fas fa-angle-left"></i></a>
         {% else %}
         <a class="disabled"><i class="fas fa-angle-left"></i></a>
         {% endif %}
 
-        {% for num in formset.paginator.page_range %}
-        {% if formset.number == num %}
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
         <a class="page-btn active" href="?{% param_replace page=num %}">{{ num }}</a>
-        {% elif num > formset.number|add:'-3' and num < formset.number|add:'3' %} 
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} 
         <a class="page-btn" href="?{% param_replace page=num %}">{{ num }}</a>
         {% endif %}
         {% endfor %}
 
-        {% if formset.has_next %}
+        {% if page_obj.has_next %}
         <a class="page-btn" href="?{% param_replace page=formset.next_page_number %}"><i class="fas fa-angle-right"></i></a>
         {% else %}
         <a class="disabled"><i class="fas fa-angle-right"></i></a>

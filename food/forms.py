@@ -4,7 +4,7 @@ from django import forms
 from django.utils.safestring import SafeData, SafeText, mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-
+from meals.models import Meal, MealItem
 from .models import Brand, Category, Food
 from diaries.models import Diary
 from utils.forms import DateInput
@@ -175,7 +175,6 @@ class FoodCreateServingForm(forms.ModelForm):
     #     return cleaned_data
 
 
-
 class BrandCreateForm(forms.ModelForm):
     class Meta:
         model = Brand
@@ -206,10 +205,87 @@ class FoodDetailToDiaryForm(forms.ModelForm):
         }
 
 
-
 class DiaryMealUpdateForm(forms.ModelForm):
     class Meta:
         model = Diary
+        fields = ['quantity']
+
+
+class FoodToDiaryForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['date'].initial = timezone.now()
+        self.fields['quantity'].initial = 1
+
+    class Meta:
+        model = Diary
         fields = [
-            'quantity'
+            'date',
+            'meal',
+            'quantity',
         ]
+        widgets = {
+            'date': DateInput(attrs={'class': 'form-control'}),
+            'meal': forms.Select(attrs={'class': 'form-control'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+class FoodToMealForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        super().__init__(*args, **kwargs)
+        self.fields['quantity'].initial = 1
+        # Only allow the user to add food to their own meal
+        self.fields['meal'].queryset = Meal.objects.filter(user=self.request.user)
+
+    class Meta:
+        model = MealItem
+        fields = [
+            'meal',
+            'quantity',
+        ]
+        widgets = {
+            'meal': forms.Select(attrs={'class': 'form-control'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+
+# from django import forms
+# import django_filters
+# from food.models import Food
+# BOOLEAN_CHOICES = (('false', 'False'), ('true', 'True'),)
+
+# class FoodFilter(django_filters.FilterSet):
+#     active = django_filters.BooleanFilter(widget=forms.CheckboxInput)
+#     sort = django_filters.OrderingFilter(
+#         choices = (
+#             ('name', 'Name (a-z)'),
+#             ('-name', 'Name (z-a)'),
+#             ('energy', 'Calories (low-high)'),
+#             ('-energy', 'Calories (high-low)'),
+#             ('protein', 'Protein (low-high)'),
+#             ('-protein', 'Protein (high-low)'),
+#             ('carbohydrate', 'Carbs (low-high)'),
+#             ('-carbohydrate', 'Carbs (high-low)'),
+#             ('fat', 'Fat (low-high)'), 
+#             ('-fat', 'Fat (high-low)'),
+#             ('-datetime_created', 'Recently Created'),
+#             ('-datetime_updated', 'Recently Updated'),
+#         ))
+
+#     class Meta:
+#         model = Food
+#         fields = ['name', 'brand', 'category', 'active']
+
+
+
+# class FoodListed(ListView):
+#     model = Food
+#     template_name = 'food/flv.html'
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['filter'] = FoodFilter(self.request.GET, queryset=self.get_queryset())
+#         return context

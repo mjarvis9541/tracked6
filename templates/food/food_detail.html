@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    body {
+        background: #f2f2f2;
+    }
+</style>
+
+<h1>{{ object.name }}</h1>
+<h2>{{ object.brand.name }}</h2>
+
+<br>
+<h2>Add to Diary Meal</h2>
+
+<form method="post"> {% csrf_token %}
+    {{ diary_form.as_p }}
+    <button class="btn mt-1" name="{{ diary_form.prefix }}">Add to Diary</button>
+</form>
+
+
+<br>
+<h2>Add to Saved Meal</h2>
+
+
+<form method="post"> {% csrf_token %}
+    {{ meal_form.as_p }}
+    <button class="btn mt-1" name="{{ meal_form.prefix }}">Add to Meal</button>
+</form>
+
+
+{% endblock content %}
