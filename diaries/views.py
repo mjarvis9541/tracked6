@@ -54,10 +54,12 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
         obj_list = request.POST.getlist('to_delete')
         if obj_list: 
             delete_list = Diary.objects.filter(id__in=obj_list)
+            count = len(delete_list)
             for obj in delete_list:
                 if obj.user != request.user:
                     return HttpResponseForbidden('You are not authorized to delete this user\'s diary entries')
             request.session['delete_list'] = obj_list
+            messages.success(request, f'Selected {count} food to delete')
             return redirect('diaries:delete_list') 
         else:
             messages.error(request, 'You have not selected any food to delete')
@@ -137,6 +139,7 @@ class DiaryCopyMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixi
         context = self.get_context_data(**kwargs)
         object_list = context['object_list']
         if object_list:
+            count = len(object_list)
             for obj in object_list:
                 Diary.objects.create(
                     user=self.request.user,
@@ -145,7 +148,7 @@ class DiaryCopyMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixi
                     food=obj.food,
                     quantity=obj.quantity,
                 )
-            messages.success(request, f'Copied {len(object_list)} food from {self.diary_meal_name}, {self.previous_day}')
+            messages.success(request, f'Copied {count} food from {self.diary_meal_name}, {self.previous_day}')
             return redirect('diaries:day', self.date.year, self.date.month, self.date.day)
         return self.render_to_response(context)
 
@@ -153,7 +156,8 @@ class DiaryCopyMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixi
 class DiaryCopyAllMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, TemplateView):
     """
     Allows the user to copy all food and associated quantities from the previous diary day.
-    TODO: Copies food even if the user has the same amount of food for a meal already (need to handle this)
+    TODO: Copies food even if the user has the same amount of food for 
+    a meal already - need a way to handle this as unlikely user will want to add duplicates 
     """
     template_name = 'diaries/diary_copy_previous_day.html'
 
@@ -166,6 +170,7 @@ class DiaryCopyAllMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, TemplateVi
         context = self.get_context_data(**kwargs)
         object_list = context['object_list']
         if object_list:
+            count = len(object_list)
             for obj in object_list:
                 Diary.objects.create(
                     user=self.request.user,
@@ -174,7 +179,7 @@ class DiaryCopyAllMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, TemplateVi
                     food=obj.food,
                     quantity=obj.quantity,
                 )
-            messages.success(request, f'Copied {len(object_list)} food from {self.previous_day}')
+            messages.success(request, f'Copied {count} food from {self.previous_day}')
             return redirect('diaries:day', self.date.year, self.date.month, self.date.day)
         return self.render_to_response(context)
 
@@ -210,6 +215,7 @@ class DiaryAddMealConfirmView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin
         saved_meal_obj = context['saved_meal_obj']
         meal_item_list = context['object_list']
         if meal_item_list:
+            count = len(meal_item_list)
             for food_item in meal_item_list:
                 Diary.objects.create(
                     user=request.user,
@@ -218,57 +224,36 @@ class DiaryAddMealConfirmView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin
                     food=food_item.food,
                     quantity=food_item.quantity
                 )
-            messages.success(request, f'Added {len(meal_item_list)} items from saved meal {saved_meal_obj} to {self.diary_meal_name}, {self.date}')
+            messages.success(request, f'Added {count} items from saved meal {saved_meal_obj} to {self.diary_meal_name}, {self.date}')
             return redirect('diaries:day', self.date.year, self.date.month, self.date.day)
         return self.render_to_response(context)
 
 
-class DiaryUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DiaryDateMixin, UpdateView):
-    model = Diary
-    form_class = DiaryUpdateForm
+class DiaryUpdateView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
     template_name = 'diaries/diary_update.html'
-    success_message = 'Updated %(food_name)s'
 
-    def test_func(self):
-        obj = self.get_object()
-        return obj.user == self.request.user
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['object'] = Diary.objects.filter(id=self.kwargs.get('pk')).summary().first()
+        context['form'] = DiaryUpdateForm(self.request.POST or None, instance=context['object'])
+        return context
 
-    def get_success_message(self, cleaned_data):
-        return self.success_message % dict(cleaned_data, food_name=self.object.food)
-
-    def get_success_url(self):
-        obj = self.get_object()
-        return reverse('diaries:day', kwargs={'year': obj.date.year, 'month': obj.date.month, 'day': obj.date.day})
-
-
-@login_required
-def diary_update_view(request, pk):
-    template_name = 'diaries/diary_update.html'
-    context = {}
-    obj = Diary.objects.filter(id=pk).summary().first()
-
-    if obj.user != request.user:
-        return HttpResponseForbidden()
-    date = obj.date
-
-    if request.method == 'POST':
-        form = DiaryUpdateForm(request.POST, instance=obj)
-        if form.is_valid():
-            form.save()
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        object_ = context['object']
+        date = context['object'].date
+        if context['form'].is_valid():
+            context['form'].save()
+            
             if 'save' in request.POST:
-                messages.success(request, f'Updated {obj.food_name}, {obj.get_meal_display()}')
-                return redirect('diaries:day', date.year, date.month, obj.date.day)
-
+                messages.success(request, f'Updated {object_.food_name}, {object_.get_meal_display()}')
+                return redirect('diaries:day', date.year, date.month, date.day)
+            
             elif 'another' in request.POST:
-                messages.success(request, f'{obj.get_meal_display()} - {obj.food_name} has been updated. You can add more food below')
-                return redirect('diaries:create', date.year, date.month, date.day, obj.meal)
-    else:
-        form = DiaryUpdateForm(instance=obj)
-
-    context['date'] = obj.date
-    context['object'] = obj
-    context['form'] = form
-    return render(request, template_name, context)
+                messages.success(request, f'{object_.get_meal_display()} - {object_.food_name} has been updated. You can add more food below')
+                return redirect('diaries:create', date.year, date.month, date.day, object_.meal)
+        
+        return self.render_to_response(context)
 
 
 class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):

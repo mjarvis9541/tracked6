@@ -43,7 +43,7 @@ urlpatterns = [
         name='saved_meal_to_diary',
     ),
     # Updating food in diary
-    path('<uuid:pk>/update/', views.diary_update_view, name='update'),
+    path('<uuid:pk>/update/', views.DiaryUpdateView.as_view(), name='update'),
     # Deleting food in diary
     path('<uuid:pk>/confirm-delete/', views.DiaryDeleteView.as_view(), name='delete'),
     path(

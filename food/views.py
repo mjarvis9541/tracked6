@@ -237,10 +237,8 @@ def food_detail_view(request, pk):
 
 
 class FoodDetailView(TemplateView):
-    ### TemplateResponseMixin
     template_name = 'food/food_detail.html'
 
-    ### ContextMixin 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object'] = get_object_or_404(Food, id=self.kwargs['pk'])
