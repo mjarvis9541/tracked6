@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Hello There, {{ request.user }}</h1>
+
+<div>Item 1: {{ item1 }}</div>
+<div>Item 2: {{ item2 }}</div>
+<div>Item 3: {{ item3 }}</div>
+
+{{ view.template_name }} <br>
+{{ view.blank }}
+
+<strong>{{ view.month }}</strong> <br>
+
+<form action="" method="post"> {% csrf_token %}
+    {{ form.date }}
+    {{ form.meal }}
+    {{ form.quantity }}
+    <button class="btn">Post it</button>
+</form>
+
+<div>{{ date }}</div>
+
+{% endblock content %}

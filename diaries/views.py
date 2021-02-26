@@ -36,7 +36,7 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user_ = self.request.user
-        object_list = Diary.objects.filter(user=user_, date=self.date).summary()
+        object_list = Diary.objects.filter(user=user_, date=self.date).summary().order_by('datetime_created')
         context['object_list'] = object_list 
         context['total'] = object_list.total()
         context['total_meal_1'] = object_list.filter(meal=1).total()

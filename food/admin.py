@@ -59,6 +59,7 @@ class FoodAdmin(admin.ModelAdmin):
             'datetime_updated',
             'user_created',
             'datetime_created',
+            'slug',
             'id',
         ]}]
     ]

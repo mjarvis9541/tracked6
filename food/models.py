@@ -14,6 +14,7 @@ from django.db.models import (
     Window,
 )
 from utils.behaviours import Authorable, Nutritionable, Timestampable, Uuidable
+from django.utils.text import slugify
 
 
 class Brand(Authorable, Timestampable, Uuidable):
@@ -73,6 +74,7 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
         SERVINGS = 'srv', ('serving')
 
     name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     data_value = models.IntegerField()
@@ -116,3 +118,9 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
             return f'{self.data_value}{self.data_measurement}'
         else:
             return f'{self.get_data_measurement_display().title()}'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            slug_str = f'{self.name} {self.brand} {self.serving}'
+            self.slug = slugify(slug_str)
+        super().save(*args, **kwargs)
