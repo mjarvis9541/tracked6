@@ -1,11 +1,11 @@
   
 from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import CreateView, DeleteView, DetailView, FormView, ListView, UpdateView, View
 from django.urls import reverse_lazy
 from .models import Progress
 from .forms import ProgressForm
-
+from django.contrib import messages
 
 class ProgressListView(LoginRequiredMixin, ListView):
     """ View to list all the Progresss in progress """
@@ -22,7 +22,6 @@ class ProgressCreateView(LoginRequiredMixin, CreateView):
 
     model = Progress
     form_class = ProgressForm
-    success_url = '/'
     
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -42,7 +41,24 @@ class ProgressUpdateView(LoginRequiredMixin, UpdateView):
     model = Progress
     form_class = ProgressForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
-class ProgressDeleteView(LoginRequiredMixin, DeleteView):
+
+
+class ProgressDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    # SuccessMessageMixin hooks to form_valid which is not present on DeleteView to push its message to the user.
+    
     model = Progress
     success_url = reverse_lazy('progress:list')
+   
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
+
+    def delete(self, request, *args, **kwargs):
+        obj = self.get_object()
+        messages.success(self.request, f'Deleted {obj}')
+        return super().delete(request, *args, **kwargs)

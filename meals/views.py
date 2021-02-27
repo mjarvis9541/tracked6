@@ -70,19 +70,18 @@ class MealItemCreateStep2View(LoginRequiredMixin, UserPassesTestMixin, TemplateV
         context = super().get_context_data(**kwargs)
         context['food'] = get_object_or_404(Food, id=self.kwargs.get('food_id'))
         context['meal'] = get_object_or_404(Meal, id=self.kwargs.get('meal_id'))
-        context['form'] = AddToMealForm()
+        context['form'] = AddToMealForm(self.request.POST or None)
         return context
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-        context['form'] = form = AddToMealForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
+        if context['form'].is_valid():
+            instance = context['form'].save(commit=False)
             instance.meal = context.get('meal')
             instance.food = context.get('food')
             instance.save()
             return redirect(instance.get_absolute_url())
-        return render(request, self.template_name, context)
+        return self.render_to_response(context)
 
 
 
@@ -98,7 +97,7 @@ class MealDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         obj = self.get_object()
-        messages.success(self.request, f'Deleted Meal {self.get_object().name}')
+        messages.success(self.request, f'Deleted Meal {obj.name}')
         return super().delete(request, *args, **kwargs)
 
 

@@ -1,0 +1,29 @@
+
+.progress__main {
+    background: #fff;
+    padding: 1rem 1rem 10rem 1rem;
+}
+
+.progress__form {
+    background: #fff;
+    padding: 1rem 1rem 10rem 1rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr;    
+}
+
+.progress__list__grid {
+    padding: .75rem 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 3fr 1fr 1fr;
+
+    .title {
+        font-weight: 700;
+        padding: .75rem 0;
+        border-bottom: 1px solid #000;
+    }
+    .item {
+        padding: .75rem 0;
+        border-bottom: 1px solid #f2f2f2;
+    }
+    
+}

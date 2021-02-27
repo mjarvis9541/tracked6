@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load customfilters %}
+{% block content %}
+<style>
+  body {
+    background: #f4f4f4;
+  }
+</style>
+
+<div class="progress__form">
+  <!-- Left side -->
+
+  <div>
+    <h2>Log Progress</h2>
+    <p>Use the form below to record your progress for the day.</p>
+
+    <br>
+
+    <form method="post" novalidate> {% csrf_token %}
+      {% include 'form.html' %}
+      <button class="btn">Submit</button>
+    </form>
+
+    <br>
+
+
+
+
+
+
+  </div>
+  <div>
+    <h2>Help</h2>
+    <p>TBC Some help text.</p>
+    <br>
+
+  </div>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background: #f2f2f2;
+    }
+</style>
+
+<div class="progress__main">
+    <h2>Progress Log {{ object.date|date:"l, j M" }}</h2>
+
+<br>
+
+<br>
+
+
+
+<div class="mb-1"><a href="{% url 'progress:update' object.id %}">Edit</a></div>
+
+<div class="mb-1"><a href="{% url 'progress:delete' object.id %}">Delete</a></div>
+
+
+</div>
+
+
+
+
+
+
+{% endblock content %}

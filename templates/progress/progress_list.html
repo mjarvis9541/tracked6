@@ -5,42 +5,36 @@
         background: #f2f2f2;
     }
 </style>
-<div class="grid-structure-1-5">
-    <!-- Right Sidebar -->
-    <div>
-        Right Sidebar
-    </div>
-   
-    
-    <!-- Main -->
-    <div>
-        <h2 class="mt-1 mb-1">Progress</h2>
-
-        <div class="progress-grid">
-            
-            <div class="title">Date</div>
-            <div class="title">Weight (kg)</div>
-            <div class="title">Weight (lb)</div>
-            <div class="title">Notes</div>
-        
-            {% for object in progress_list %}
-            <div class="item"><a href="">{{ object.date }}</a></div>
-            <div class="item">{{ object.weight }}</div>
-            <div class="item">{{ object.weight_st }}</div>
-            <div class="item">{{ object.notes }}</div>
-            {% endfor %}
-
-        </div>
 
 
-        <a class="btn" href="">Log Progress</a>
+<div class="progress__main">
 
+    <h2>Progress</h2>
+
+    <div class="progress__list__grid">
+
+        <div class="title">Date</div>
+        <div class="title">Weight (kg)</div>
+        <div class="title">Weight (st, lb)</div>
+        <div class="title">Notes</div>
+        <div class="title">Edit</div>
+        <div class="title">Delete</div>
+
+        {% for object in progress_list %}
+        <div class="item"><a href="{% url 'progress:detail' object.id %}">{{ object.date }}</a></div>
+        <div class="item">{{ object.weight }}</div>
+        <div class="item">{{ object.weight_st }}</div>
+        <div class="item">{{ object.notes }}</div>
+        <div class="item"><a href="{% url 'progress:update' object.id %}">Edit</a></div>
+        <div class="item"><a href="{% url 'progress:delete' object.id %}">Delete</a></div>
+        {% endfor %}
 
     </div>
 
+    <a class="btn" href="{% url 'progress:create' %}">Log Progress</a>
+    <a class="btn" href="{% url 'progress:create' %}">Log Progress</a>
 
 </div>
-
 
 
 

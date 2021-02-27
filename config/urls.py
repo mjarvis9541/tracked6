@@ -29,8 +29,9 @@ urlpatterns = [
     path('diary/', include('diaries.urls')),
     path('meals/', include('meals.urls')),
     path('progress/', include('progress.urls')),
-    
-    # Admin urls
+    path('accounts/', include('accounts.urls')),
+
+    # Admin site
     path('admin/', admin.site.urls),
 
     # Admin password reset urls

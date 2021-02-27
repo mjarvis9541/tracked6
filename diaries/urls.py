@@ -16,7 +16,7 @@ urlpatterns = [
         views.DiaryMealListView.as_view(),
         name='meal_list',
     ),
-    path('user/<str:username>/', views.DiaryUserDayListView.as_view(), name='diary_day_user'),
+    
     # Adding food to diary
     path(
         '<int:year>-<int:month>-<int:day>/add-multiple-food-to-diary/<int:meal>/',
@@ -53,5 +53,6 @@ urlpatterns = [
         name='delete_list',
     ),
 
-
+    # View another users diary
+    path('user/<str:username>/', views.DiaryUserDayListView.as_view(), name='diary_day_user'),
 ]

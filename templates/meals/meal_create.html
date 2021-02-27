@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
-{% load customfilters %}
 {% block content %}
-<h1 class="mt-1 mb-1">Create Meal</h1>
 
-<form action="" method="post"> {% csrf_token %}
+<h2 class="mt-1 mb-1">Create Meal</h2>
+<p class="mb-1">Create a meal below, start by choosing a name and optional description</p>
+ 
+<form method="post"> {% csrf_token %}
 
-   <table class="table">{{ form.as_table }}</table>
+   {% include 'form.html' %}
 
    <button class="btn">Submit</button>
 </form>

@@ -121,3 +121,6 @@ REST_FRAMEWORK = {
     #     'rest_framework.authentication.TokenAuthentication',
     # ],
 }
+
+LOGIN_REDIRECT_URL = 'profiles:profile'
+LOGIN_URL = 'accounts:login'

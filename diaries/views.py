@@ -24,6 +24,9 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+""" Diary list views """
+
+
 class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
     """
     * Displays a list of food objects a user has added to their food diary on a given day.
@@ -69,8 +72,6 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
         return self.render_to_response(context)
 
 
-
-
 class DiaryMealListView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, TemplateView):
     """
     Gives a breakdown of food for a given meal in a singular view.
@@ -86,11 +87,15 @@ class DiaryMealListView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, Temp
         return context
 
 
+""" Diary create views """
+
+
 class DiaryAddMultipleFoodView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, FoodFilterMixin, TemplateView):
     """
     Allows the user to add multiple food items to their food diary via formset.
     Renders the formset with food name and details and a quantity input field.
     """
+    
     template_name = 'diaries/diary_add_food_multiple.html'
 
     def get_context_data(self, **kwargs):
@@ -191,10 +196,10 @@ class DiaryCopyAllMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, TemplateVi
 
 class DiaryAddMealView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, TemplateView):
     """
-    Shows the user a list of their saved meals to select and add to the diary meal specified in URL parameters. 
+    Displays a list of users saved meals to select from and add to the food diary. 
     """
 
-    template_name = 'diaries/diary_add_meal.html'
+    template_name = 'diaries/diary_add_meal_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -234,6 +239,9 @@ class DiaryAddMealConfirmView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin
         return self.render_to_response(context)
 
 
+""" Diary update views """
+
+
 class DiaryUpdateView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
     template_name = 'diaries/diary_update.html'
 
@@ -259,6 +267,9 @@ class DiaryUpdateView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
                 return redirect('diaries:create', date.year, date.month, date.day, object_.meal)
         
         return self.render_to_response(context)
+
+
+""" Diary delete views """
 
 
 class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -318,8 +329,17 @@ class DiaryDeleteMultipleView(LoginRequiredMixin, TemplateView):
         return self.render_to_response(context)
     
 
+""" Diary list views - to view other user diaries """
+
+
 class DiaryUserDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
-    template_name = 'diaries/diary_day_list.html'
+    """
+    View to display other user's food diaries.
+    TODO: We need to create another template and remove visuals on 
+    creating, updating and delete food from diary.
+    """
+
+    template_name = 'diaries/diary_list_alt_user.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

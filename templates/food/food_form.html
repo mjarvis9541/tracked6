@@ -7,52 +7,50 @@
 </style>
 
 <div class="food__structure--2-1">
-  <!-- Left side -->
 
+  <!-- Left column -->
   <div>
-    <h2 class="mt-1 mb-1">Create Food</h2>
-    <p class="mb-3">Create a new food to add to our database using the form below.</p>
+
+    <br>
+
+    <h2>Create Food</h2>
+    <p>Create a new food to add to our database using the form below.</p>
+
+    <br>
+
     <form method="post" novalidate> {% csrf_token %}
-
-
-      {{ form.non_field_errors }}
-
-      {% for hidden_field in form.hidden_fields %}
-      {{ hidden_field.errors }}
-      {{ hidden_field }}
-      {% endfor %}
-      <div class="form-grid-1 mb-1">
-      {% for field in form.visible_fields %}
-
-    
-        <div class="">{{ field.label_tag }}</div>
-        <div class="">{{ field }}</div>
-        <div class="mb-field"></div>
-        <div class="mb-field">{{ field.errors.as_text }}</div>
-        {{ field.help_text }}
-    
-      
- 
-
-      {% endfor %}
-    </div>
+      {% include 'form.html' %}
       <button class="btn">Submit</button>
     </form>
 
-
-
+    <br>
 
 
 
 
 
   </div>
+
+
+
   <div>
-    <h2 class="mt-1 mb-1">Help</h2>
+
+    <br>
+
+    <h2>Help</h2>
     <p>Create a new food to add to our database.</p>
+    
+    <ul>
+  <!-- Need to reset list format -->
+      <li><a href="{% url 'food:brand_create' %}">Create Brand</a></li>
+
+    </ul>
+
+
     <br>
 
   </div>
+
 </div>
 
 
