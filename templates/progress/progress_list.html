@@ -21,12 +21,12 @@
         <div class="title">Delete</div>
 
         {% for object in progress_list %}
-        <div class="item"><a href="{% url 'progress:detail' object.id %}">{{ object.date }}</a></div>
+        <div class="item"><a href="{% url 'progress:detail' object.slug %}">{{ object.date }}</a></div>
         <div class="item">{{ object.weight }}</div>
         <div class="item">{{ object.weight_st }}</div>
         <div class="item">{{ object.notes }}</div>
-        <div class="item"><a href="{% url 'progress:update' object.id %}">Edit</a></div>
-        <div class="item"><a href="{% url 'progress:delete' object.id %}">Delete</a></div>
+        <div class="item"><a href="{% url 'progress:update' object.slug %}">Edit</a></div>
+        <div class="item"><a href="{% url 'progress:delete' object.slug %}">Delete</a></div>
         {% endfor %}
 
     </div>

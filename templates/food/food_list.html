@@ -39,7 +39,7 @@
         <div class="food_database__title end">Salt</div>
         {% for food in food_list %}
         <div class="food_database__name serving food-title-sm"><a href="{% url 'food:detail' food.slug %}">{{ food.name }}</a>
-            <br><small style="font-weight: normal;"><a href="">{{ food.brand }}</a></small></div>
+            <br><small style="font-weight: normal;"><a style="color: #333;" href="">{{ food.brand }}</a></small></div>
         <div class="food_database__data end serving text-nowrap food-title-sm">{{ food.serving }}</div>
         
         <div class="food_database__data hidden-lg">Calories</div>

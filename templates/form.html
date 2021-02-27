@@ -9,10 +9,10 @@
 
 {% for field in form.visible_fields %}
 
-<div class="mb-3">
+<div class="mb-2">
     <div>{{ field.label_tag }}</div>
     <div>{{ field|addclass:"form-control" }}</div>
-    <div>{{ field.errors.as_text }}</div>
+    <div>{{ field.errors }}</div>
     <div style="color: #bfbfbf;">{{ field.help_text }}</div>
 </div>
 

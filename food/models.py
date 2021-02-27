@@ -101,6 +101,7 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
             return f'{self.name}, {self.brand.name}, {self.data_value} {self.get_data_measurement_display().title()}'
 
     def get_absolute_url(self):
+        return reverse('food:detail', kwargs={'slug': self.slug})
         return reverse('food:detail', kwargs={'pk': self.pk})
 
     @property

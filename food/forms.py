@@ -126,53 +126,49 @@ class FoodCreateServingForm(forms.ModelForm):
             'salt': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
-    # def clean(self, *args, **kwargs):
-    #     cleaned_data = super().clean()
-    #     brand = cleaned_data.get('brand')
-    #     name = cleaned_data.get('name')
+    def clean(self, *args, **kwargs):
+        cleaned_data = super().clean()
+        brand = cleaned_data.get('brand')
+        name = cleaned_data.get('name')
 
-    #     if 'name' in self.changed_data or 'brand' in self.changed_data:
-    #         if (
-    #             Food.objects.exclude(pk=self.instance.pk)
-    #             .filter(brand=brand, name=name)
-    #             .exists()
-    #         ):
-    #             food = Food.objects.filter(brand=brand, name=name).first()
-    #             self.add_error(
-    #                 'name',
-    #                 _(
-    #                     mark_safe(
-    #                         f'A food with this name and brand already exists. \
-    #                         <a href="{food.get_absolute_url()}" target="_blank">Click here</a> \
-    #                             to check this is not a duplicate.'
-    #                     )
-    #                 ),
-    #             )
-    #     energy = cleaned_data.get('energy')
-    #     fat = cleaned_data.get('fat')
-    #     saturates = cleaned_data.get('saturates')
-    #     carbohydrate = cleaned_data.get('carbohydrate')
-    #     sugars = cleaned_data.get('sugars')
-    #     protein = cleaned_data.get('protein')
-    #     if saturates > fat:
-    #         self.add_error('saturates', _('Saturates must not exceed total fat.'))
-    #     if sugars > carbohydrate:
-    #         self.add_error('sugars', _('Sugars must not exceed total carbohydrate.'))
+        # if 'name' in self.changed_data or 'brand' in self.changed_data:
+        if Food.objects.exclude(id=self.instance.id).filter(brand=brand, name=name).exists():
+            obj = Food.objects.filter(brand=brand, name=name).first()
+            self.add_error(
+                'name',
+                _(
+                    mark_safe(
+                        f'A food with this name and brand already exists. \
+                        <a href="{obj.get_absolute_url()}" target="_blank">Click here</a> \
+                            to check this is not a duplicate.'
+                    )
+                ),
+            )
+        energy = cleaned_data.get('energy')
+        fat = cleaned_data.get('fat')
+        saturates = cleaned_data.get('saturates')
+        carbohydrate = cleaned_data.get('carbohydrate')
+        sugars = cleaned_data.get('sugars')
+        protein = cleaned_data.get('protein')
+        if saturates > fat:
+            self.add_error('saturates', _('Saturates must not exceed total fat.'))
+        if sugars > carbohydrate:
+            self.add_error('sugars', _('Sugars must not exceed total carbohydrate.'))
 
-    #     energy_from_fat = fat * 9
-    #     energy_from_carbohydrate = carbohydrate * 4
-    #     energy_from_protein = protein * 4
-    #     total_energy = round(
-    #         energy_from_fat + energy_from_carbohydrate + energy_from_protein
-    #     )
-    #     if total_energy > energy:
-    #         msg = _(
-    #             f'energy should be at least {total_energy} kcal for the total grams of protein, \
-    #             carbohydrate and fat you have provided. Please double check these values; \
-    #                 if correct, set energy to {total_energy} kcal.'
-    #         )
-    #         self.add_error('energy', msg)
-    #     return cleaned_data
+        energy_from_fat = fat * 9
+        energy_from_carbohydrate = carbohydrate * 4
+        energy_from_protein = protein * 4
+        total_energy = round(
+            energy_from_fat + energy_from_carbohydrate + energy_from_protein
+        )
+        if total_energy > energy:
+            msg = _(
+                f'energy should be at least {total_energy} kcal for the total grams of protein, \
+                carbohydrate and fat you have provided. Please double check these values; \
+                    if correct, set energy to {total_energy} kcal.'
+            )
+            self.add_error('energy', msg)
+        return cleaned_data
 
 
 class BrandCreateForm(forms.ModelForm):

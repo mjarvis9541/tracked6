@@ -1,3 +1,22 @@
+.food__detail--grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+}
+
+
+
+@media (max-width: 684px) {
+    .food__detail--grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-gap: 1rem;
+    }
+
+}
+
+
+
 .food__structure {
     padding: 0 1rem;
     background: #fff;

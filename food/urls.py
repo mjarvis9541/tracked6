@@ -12,8 +12,8 @@ urlpatterns = [
     path('', views.FoodListView.as_view(), name='list'),    
     path('create/', views.FoodCreateView.as_view(), name='create'),
     path('<slug:slug>/detail/', views.FoodDetailView.as_view(), name='detail'), 
-    path('<uuid:pk>/update/', views.FoodUpdateView.as_view(), name='update'),
-    path('<uuid:pk>/delete/', views.FoodDeleteView.as_view(), name='delete'),
+    path('<slug:slug>/update/', views.FoodUpdateView.as_view(), name='update'),
+    path('<slug:slug>/delete/', views.FoodDeleteView.as_view(), name='delete'),
 
     # Brand urls
     path('brand/list/', views.BrandListView.as_view(), name='brand_list'),    

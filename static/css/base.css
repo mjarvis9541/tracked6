@@ -365,7 +365,7 @@ small {
 table th,
 table td {
   text-align: start;
-  padding: 0 .5rem;
+  padding: .5rem .75rem;
   border: 1px solid #f2f2f2;
 }
 
@@ -976,6 +976,24 @@ html, body {
 .diary-create-grid .grid-item:nth-child(14n+6),
 .diary-create-grid .grid-item:nth-child(14n+7) {
   background: #fff;
+}
+
+.food__detail--grid {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+}
+
+@media (max-width: 684px) {
+  .food__detail--grid {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: 1fr;
+        grid-template-columns: 1fr;
+    grid-gap: 1rem;
+  }
 }
 
 .food__structure {

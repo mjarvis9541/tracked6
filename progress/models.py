@@ -5,7 +5,8 @@ from utils.behaviours import Uuidable, Timestampable
 from django.utils import timezone
 from django.urls import reverse
 from django.utils.text import slugify
-
+from django.core.validators import MaxValueValidator
+from datetime import date
 
 class Progress(Uuidable, Timestampable):
     """
@@ -13,7 +14,7 @@ class Progress(Uuidable, Timestampable):
     """
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    date = models.DateField(default=timezone.now)
+    date = models.DateField(default=timezone.now, validators=[MaxValueValidator(limit_value=date.today)])
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     weight = models.DecimalField(
         verbose_name='weight (kg)',
@@ -43,12 +44,11 @@ class Progress(Uuidable, Timestampable):
 
     def get_absolute_url(self):
         return reverse('progress:list')
-        return reverse('progress:detail', kwargs={'pk': self.pk})
+        # return reverse('progress:detail', kwargs={'pk': self.pk})
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            slug_str = f'{self.user.username} {self.date}'
-            self.slug = slugify(slug_str)
+        slug_str = f'{self.date} {self.user.username}'
+        self.slug = slugify(slug_str)
         super().save(*args, **kwargs)
 
     @property

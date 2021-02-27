@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background: #f2f2f2;
+    }
+</style>
+
+<div class="progress__main">
+    <h2>Delete</h2>
+
+<br>
+
+<p>Are you sure you wish to delete {{ object }}?</p>
+
+<p>This action cannot be undone.</p>
+
+
+<br>
+
+
+<form method="post"> {% csrf_token %}
+    <button class="btn">Delete</button>    
+</form>
+
+</div>
+
+
+
+
+
+
+{% endblock content %}

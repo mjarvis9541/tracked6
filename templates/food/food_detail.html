@@ -1,32 +1,150 @@
 {% extends 'base.html' %}
+{% load customfilters %}
 {% block content %}
-
 <style>
     body {
         background: #f2f2f2;
     }
 </style>
 
-<h1>{{ object.name }}</h1>
-<h2>{{ object.brand.name }}</h2>
+<div class="progress__main">
 
-<br>
-<h2>Add to Diary Meal</h2>
+    <!-- Food title and brand -->
+    <h2>{{ object.name }}</h2>
+    <div><a style="font-size: 1.1rem;" href="">{{ object.brand.name }}</a></div>
+    <div class="mb-2">
+        <small>
+            Created by <a href="">{{ object.user_created }}</a>
+            on {{ object.datetime_created|date:"l, j M" }}
+            {% if object.datetime_updated %} - edited {{ object.datetime_updated|date:"l, j M" }}
+            {% endif %}
+    
+        </small>
+    </div>
 
-<form method="post"> {% csrf_token %}
-    {{ diary_form.as_p }}
-    <button class="btn mt-1" name="{{ diary_form.prefix }}">Add to Diary</button>
-</form>
+    <div class="food__detail--grid">
+
+        <!-- Left column -->
+        <div>
+           
+            <h3 class="mb-1">Nutrional Information</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%;">Typical Values</th>
+                        <th class="text-end" style="width: 50%;">Per {{ object.serving }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Calories</td>
+                        <td class="text-end">{{ object.energy }} kcal</td>
+                    </tr>
+                    <tr>
+                        <td>Protein</td>
+                        <td class="text-end">{{ object.protein }} g</td>
+                    </tr>
+                    <tr>
+                        <td>Carbohydrate</td>
+                        <td class="text-end">{{ object.carbohydrate }} g</td>
+                    </tr>
+                    <tr>
+                        <td>Fat</td>
+                        <td class="text-end">{{ object.fat }} g</td>
+                    </tr>
+                    <tr>
+                        <td>Saturates</td>
+                        <td class="text-end">{{ object.saturates }} g</td>
+                    </tr>
+                    <tr>
+                        <td>Sugars</td>
+                        <td class="text-end">{{ object.sugars }} g</td>
+                    </tr>
+                    <tr>
+                        <td>Fibre</td>
+                        <td class="text-end">{{ object.fibre }} g</td>
+                    </tr>
+                    <tr>
+                        <td>Salt</td>
+                        <td class="text-end">{{ object.salt }} g</td>
+                    </tr>
+                    <tr>
+                        <td>Sodium</td>
+                        <td class="text-end">{{ object.sodium }} mg</td>
+                    </tr>
 
 
-<br>
-<h2>Add to Saved Meal</h2>
+                </tbody>
+            </table>
 
 
-<form method="post"> {% csrf_token %}
-    {{ meal_form.as_p }}
-    <button class="btn mt-1" name="{{ meal_form.prefix }}">Add to Meal</button>
-</form>
+            <div class="mt-1"><a href="{% url 'food:update' object.slug %}">Edit</a></div>
+            <div class="mt-1"><a href="{% url 'food:delete' object.slug %}">Delete</a></div>
+            
 
+            <br>
+            <br>
+
+        </div>
+
+
+        <!-- Right column -->
+        <div>
+            <h3 class="mb-1">Add to Diary</h3>
+           
+
+            <form method="post"> {% csrf_token %}
+                {{ diary_form.non_field_errors }}
+                {% for hidden_field in diary_form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+                {% endfor %}
+                {% for field in diary_form.visible_fields %}
+                <div class="mb-2">
+                    <div>{{ field.label_tag }}</div>
+                    <div>{{ field|addclass:"form-control" }}</div>
+                    <div>{{ field.errors }}</div>
+                    <div style="color: #bfbfbf;">{{ field.help_text }}</div>
+                </div>
+                {% endfor %}
+                <button class="btn" name="{{ diary_form.prefix }}">Submit</button>
+            </form>
+
+            <br>
+
+
+
+            <h3 class="mb-1">Save to Meal</h3>
+
+            <form method="post"> {% csrf_token %}
+                {{ meal_form.non_field_errors }}
+
+                {% for hidden_field in meal_form.hidden_fields %}
+                {{ hidden_field.errors }}
+                {{ hidden_field }}
+                {% endfor %}
+
+                {% for field in meal_form.visible_fields %}
+
+                <div class="mb-2">
+                    <div>{{ field.label_tag }}</div>
+                    <div>{{ field|addclass:"form-control" }}</div>
+                    <div>{{ field.errors }}</div>
+                    <div style="color: #bfbfbf;">{{ field.help_text }}</div>
+                </div>
+
+                {% endfor %}
+                <button class="btn" name="{{ meal_form.prefix }}">Submit</button>
+            </form>
+
+            <br>
+        </div>
+
+    </div>
+
+
+
+</div>
 
 {% endblock content %}
