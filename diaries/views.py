@@ -1,12 +1,13 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
 from django.db.models import Case, F, Q, Value, When
 from django.http import Http404, HttpResponse, HttpResponseForbidden
-from django.shortcuts import (HttpResponseRedirect, get_object_or_404, get_list_or_404,
-                              redirect, render)
+from django.shortcuts import (HttpResponseRedirect, get_list_or_404,
+                              get_object_or_404, redirect, render)
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import (CreateView, DayArchiveView, DeleteView,
@@ -19,7 +20,6 @@ from meals.models import Meal, MealItem
 from .forms import AddRecentToDiaryFormSet, AddToDiaryFormSet, DiaryUpdateForm
 from .mixins import DiaryDateMixin, DiaryMealMixin, FoodFilterMixin
 from .models import Diary
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

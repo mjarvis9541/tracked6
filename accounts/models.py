@@ -1,9 +1,6 @@
 from django.conf import settings
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
+from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
+                                        PermissionsMixin)
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, pre_save
@@ -14,7 +11,6 @@ from django.utils.translation import gettext_lazy as _
 from utils.behaviours import Uuidable
 
 from .managers import UserManager
-
 
 
 class User(Uuidable, PermissionsMixin, AbstractBaseUser):

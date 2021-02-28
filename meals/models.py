@@ -1,14 +1,12 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import (Avg, Case, Count, ExpressionWrapper, F, Func,
+                              Sum, Value, When, Window)
+from django.db.models.functions import Coalesce, Concat, Round
 from django.urls import reverse
 from django.utils.text import slugify
 from food.models import Food
 from utils.behaviours import Timestampable, Uuidable
-from django.db import models
-from django.db.models import (Avg, Case, ExpressionWrapper, F, Func, Sum,
-                              Value, When, Window)
-from django.db.models.functions import Coalesce, Concat, Round
-from django.db.models import Count
 
 
 class MealQuerySet(models.QuerySet):

@@ -1,17 +1,18 @@
+from datetime import date
 from decimal import Decimal
+
 from django.conf import settings
-from django.core.checks import messages
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.checks import messages
+from django.core.validators import MaxValueValidator
+from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from utils.behaviours import Nutritionable, Uuidable
 from django.urls import reverse
-from django.core.validators import MaxValueValidator
-from datetime import date
-from progress.models import Progress
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from progress.models import Progress
+from utils.behaviours import Nutritionable, Uuidable
 
 User = settings.AUTH_USER_MODEL
 

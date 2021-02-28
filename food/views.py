@@ -1,32 +1,20 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    FormView,
-    ListView,
-    UpdateView,
-    View,
-    TemplateView,
-)
-from django.contrib import messages
+    CreateView, DeleteView, DetailView, FormView, ListView, TemplateView,
+    UpdateView, View)
 from django.views.generic.detail import SingleObjectMixin
-from .forms import FoodToDiaryForm, FoodToMealForm
-from .forms import (
-    BrandCreateForm,
-    FoodCreateServingForm,
-    FoodDetailToDiaryForm,
-    BrandFilterForm,
-    FoodFilterForm,
-)
+
+from .forms import (BrandCreateForm, BrandFilterForm, FoodCreateServingForm,
+                    FoodDetailToDiaryForm, FoodFilterForm, FoodToDiaryForm,
+                    FoodToMealForm)
 from .mixins import BrandFilterMixin, FoodFilterMixin
 from .models import Brand, Category, Food
 from .utils import data_to_serving, serving_to_data
-from django.urls import reverse
 
 
 class BrandListView(BrandFilterMixin, ListView):

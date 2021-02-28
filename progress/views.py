@@ -1,19 +1,13 @@
-from django.shortcuts import render
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    FormView,
-    ListView,
-    UpdateView,
-    View,
-)
-from django.urls import reverse_lazy
-from .models import Progress
-from .forms import ProgressForm
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView, DeleteView, DetailView, FormView, ListView, UpdateView, View)
 from utils.mixins import UserFormKwargsMixin
+
+from .forms import ProgressForm
+from .models import Progress
 
 
 class ProgressListView(LoginRequiredMixin, ListView):

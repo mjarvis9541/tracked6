@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
-from django.views.generic import CreateView
-from django.urls import reverse_lazy
-from django.contrib.auth import login, authenticate
-from .forms import UserCreationForm
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
+from .forms import UserCreationForm
 
 """ Authentication """
 

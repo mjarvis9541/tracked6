@@ -3,7 +3,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, FormView, ListView, TemplateView, View
+from django.views.generic import (
+    CreateView, FormView, ListView, TemplateView, View)
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
 from food.forms import FoodFilterForm

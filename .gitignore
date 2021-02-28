@@ -11,6 +11,7 @@ requirements2.txt
 rempx.md
 old_meals/
 config.json
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

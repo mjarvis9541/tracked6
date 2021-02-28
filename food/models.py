@@ -1,20 +1,12 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import (Avg, Case, ExpressionWrapper, F, Func, Sum,
+                              Value, When, Window)
 from django.urls import reverse
 from django.utils import timezone
-from django.db.models import (
-    Avg,
-    Case,
-    ExpressionWrapper,
-    F,
-    Func,
-    Sum,
-    Value,
-    When,
-    Window,
-)
-from utils.behaviours import Authorable, Nutritionable, Timestampable, Uuidable
 from django.utils.text import slugify
+
+from utils.behaviours import Authorable, Nutritionable, Timestampable, Uuidable
 
 
 class Brand(Authorable, Timestampable, Uuidable):

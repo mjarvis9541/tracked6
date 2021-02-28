@@ -1,12 +1,14 @@
-from decimal import Decimal
-from django.conf import settings
-from django.db import models
-from utils.behaviours import Uuidable, Timestampable
-from django.utils import timezone
-from django.urls import reverse
-from django.utils.text import slugify
-from django.core.validators import MaxValueValidator
 from datetime import date
+from decimal import Decimal
+
+from django.conf import settings
+from django.core.validators import MaxValueValidator
+from django.db import models
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.text import slugify
+from utils.behaviours import Timestampable, Uuidable
+
 
 class Progress(Uuidable, Timestampable):
     """
