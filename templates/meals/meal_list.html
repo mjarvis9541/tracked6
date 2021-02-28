@@ -1,42 +1,46 @@
 {% extends 'base.html' %}
 {% load customfilters %}
 {% block content %}
-<div>
+<div class="grid-1">
+  <div>
     <h2 class="mt-1 mb-1">Meals</h2>
 
-<div class="mt- mb-2">Displays a list of meals you've saved for quickly adding to your food diary.</div>
+    <div>Displays a list of meals you've saved for quickly adding to your food diary.</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Items</th>
-            <th>Description</th>
-            <th>Created</th>
-            <th>Updated</th>
-            <th>Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for meal in object_list %}
-        <tr>
-            <td><a href="{% url 'meals:item_list' meal.id %}">{{ meal.name }}</a></td>
-            <td>{{ meal.item_count }}</td>
-            <td>{{ meal.description }}</td>
-            <td>{{ meal.datetime_created|date:"D, j M" }}</td>
-            <td>
-                {% if meal.datetime_updated > meal.datetime_created %}
-                {{ meal.datetime_updated|date:"D, j M" }}
-                {% else %}-{% endif%}
-            </td>
-            <td><a href="{% url 'meals:delete' meal.id %}">Delete</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <br>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Items</th>
+                <th>Description</th>
+                <th>Created</th>
+                <th>Updated</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for meal in object_list %}
+            <tr>
+                <td><a href="{% url 'meals:item_list' meal.id %}">{{ meal.name }}</a></td>
+                <td>{{ meal.item_count }}</td>
+                <td>{{ meal.description }}</td>
+                <td>{{ meal.datetime_created|date:"D, j M" }}</td>
+                <td>
+                    {% if meal.datetime_updated > meal.datetime_created %}
+                    {{ meal.datetime_updated|date:"D, j M" }}
+                    {% else %}-{% endif%}
+                </td>
+                <td><a href="{% url 'meals:delete' meal.id %}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 
-    <a class="btn mt-2" href="{% url 'meals:create' %}">Create Meal</a>
+    <div><a class="btn mt-5" href="{% url 'meals:create' %}">Create Meal</a></div>
+  </div>
 
 </div>
 {% endblock content %}

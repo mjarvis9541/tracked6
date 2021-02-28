@@ -1,10 +1,7 @@
 {% extends 'base.html' %}
 {% load humanize %} 
 {% block content %}
-
 <div class="grid-1">
-
-
 
     <div>
         <div class="diary-date">
@@ -39,7 +36,8 @@
                     {% for object in object_list %}
                     {% if object.meal == 1 %}
                     <div class="check-item"><input type="checkbox" class="checkbox_meal_1" name="to_delete" value="{{ object.id }}"></div>
-                    <div class="grid-item span-col-3"><a href="{{ object.get_absolute_url }}">{{ object.food_name }}, {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
+                    <div class="grid-item span-col-3"><a href="{{ object.get_absolute_url }}">{{ object.food_name }}, 
+                        {{ object.brand_name }}, {{ object.data_value|floatformat:0 }}{{ object.data_value_measurement }}</a></div>
                     <div class="grid-item text-end ">{{ object.energy|intcomma }}</div>
                     <div class="grid-item text-end hidden-sm">{{ object.protein|floatformat:1 }}</div>
                     <div class="grid-item text-end hidden-sm">{{ object.carbohydrate|floatformat:1 }}</div>

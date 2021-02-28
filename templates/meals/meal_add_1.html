@@ -1,37 +1,44 @@
 {% extends 'base.html' %}
-{% load customfilters %}
 {% block content %}
-<h2 class="mt-1 mb-1">Add Food to {{ meal }}</h2>
+
+<div class="grid-1">
+    <div>
+        <h2>Add Food to {{ meal }}</h2>
 
 
-<form>
-    <div class="food-search">
-        <div class="search">{{ form.q }}</div>
-        <div class="filter">{{ form.brand }}</div>
-        <div class="filter">{{ form.category }}</div>
-        <div class="filter">{{ form.sort }}</div>
-        <div class="results">{{ formset.paginator.count }} Results</div>
-        <div class="text-end">
+        <form>
+            <div class="food-search">
+                <div class="search">{{ form.q }}</div>
+                <div class="filter">{{ form.brand }}</div>
+                <div class="filter">{{ form.category }}</div>
+                <div class="filter">{{ form.sort }}</div>
+                <div class="results">{{ formset.paginator.count }} Results</div>
+                <div class="text-end">
 
-            {% if request.GET.q or request.GET.brand or request.GET.category or request.GET.sort %}
-            <a class="btn" href="{% url 'meals:meal_add_1' meal.id %}">Cancel</a>
-            {% endif %}
-            <button class="btn">Search</button>
-        </div>
+                    {% if request.GET.q or request.GET.brand or request.GET.category or request.GET.sort %}
+                    <a class="btn" href="{% url 'meals:meal_add_1' meal.id %}">Cancel</a>
+                    {% endif %}
+                    <button class="btn">Search</button>
+                </div>
+            </div>
+
+
+        </form>
+        <br>
+
+        {% for food in food_list %}
+
+        <div> <a href="{% url 'meals:meal_add_2' meal.id food.id %}">{{ food.name }}, {{ food.brand }},
+                {{ food.serving }}</a></div>
+
+        {% endfor %}
+
     </div>
-
-
-</form>
-<br>
-
-{% for food in food_list %}
-<div>
-    <a href="{% url 'meals:meal_add_2' meal.id food.id %}">{{ food.name }}, {{ food.brand }}, {{ food.serving }}</a>
 </div>
 
 
 
-{% endfor %}
+
 
 
 {% endblock content %}

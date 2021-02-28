@@ -23,7 +23,6 @@ class MealListView(LoginRequiredMixin, ListView):
 class MealCreateView(LoginRequiredMixin, CreateView):
     """ Step 1: Create a meal (name, description). """
 
-    template_name = 'meals/meal_create.html'
     model = Meal
     form_class = MealCreateForm
 

@@ -1,14 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1 class="mt-1 mb-1">Delete {{ object.food.name }}</h1>
+<div class="grid-1">
+    <div>
+        
+        <h1>Delete {{ object.food.name }}</h1>
+        
+        <br>
 
-<p>Are you sure you wish to delete {{ object.food.name }} from {{ object.meal.name }}?</p>
+        <p>Are you sure you wish to delete {{ object.food.name }} from {{ object.meal.name }}?</p>
 
-<p class="mt-1 mb-2">This action cannot be undone.</p>
+        <p>This action cannot be undone.</p>
 
-<form method="post"> {% csrf_token %}
-    <button class="btn">Delete</button>
-</form>
+        <br>
+
+        <form method="post"> {% csrf_token %}
+            <button class="btn">Delete</button>
+        </form>
+        
+    </div>
+</div>
 
 {% endblock content %}

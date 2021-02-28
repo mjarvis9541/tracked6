@@ -1,47 +1,61 @@
 {% extends 'base.html' %}
 {% load customfilters %}
 {% block content %}
-<h2 class="mt-1">{{ object.name }}</h2>
-<div>{{ object.description }}</div>
+<div class="grid-1">
+    <div>
+        <div style="display: flex; justify-content: space-between;">
+            <h2>{{ object.name }}</h2>
+            <a href="">Edit Name/Description</a>
+        </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th style="background: #333; color: #fff; ">Food</th>
-            <th style="background: #333; color: #fff; width: 10%;" class="text-end">Serving</th>
-            <th style="background: #333; color: #fff; width: 10%;" class="text-end">Calories</th>
-            <th style="background: #333; color: #fff; width: 10%;" class="text-end">Protein</th>
-            <th style="background: #333; color: #fff; width: 10%;" class="text-end">Carbs</th>
-            <th style="background: #333; color: #fff; width: 10%;" class="text-end">Fat</th>
-            <th style="background: #333; color: #fff; width: 10%;" class="text-end">Delete</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for object in object_list %}
-        <tr>
-            <td><a href="{% url 'food:detail' object.id %}">{{ object.food_name }}</a> <br> <small>{{ object.brand_name }}</small></td>
-            <td class="text-end">{{ object.serving_value }}{{ object.serving_measurement }}</td>
-            <td class="text-end">{{ object.energy }}</td>
-            <td class="text-end">{{ object.protein|floatformat:1 }}</td>
-            <td class="text-end">{{ object.carbohydrate|floatformat:1 }}</td>
-            <td class="text-end">{{ object.fat|floatformat:1 }}</td>
-            <td class="text-end"><a href="{% url 'meals:item_delete' object.id %}">Delete</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr>
-            <th colspan="2">Total:</th>
-            <th class="text-end">{{ total.total_energy }}kcal</th>
-            <th class="text-end">{{ total.total_protein|floatformat:1 }}g</th>
-            <th class="text-end">{{ total.total_carbohydrate|floatformat:1 }}g</th>
-            <th class="text-end">{{ total.total_fat|floatformat:1 }}g</th>
-            <th></th>
-        </tr>
-    </tfoot>
-</table>
+        <div>{{ object.description }}</div>
 
-<a class="btn mt-2" href="{% url 'meals:meal_add_1' object.id %}">Add Food</a>
+        <br>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th ">Food</th>
+                    <th style=" width: 12%;" class="text-end">Serving</th>
+                    <th style="width: 12%;" class="text-end">Calories</th>
+                    <th style="width: 12%;" class="text-end">Protein</th>
+                    <th style="width: 12%;" class="text-end">Carbs</th>
+                    <th style="width: 12%;" class="text-end">Fat</th>
+                    <th style="width: 12%;" class="text-end">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for object in object_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'food:detail' object.food.slug %}">{{ object.food_name }}</a>
+                        <br>
+                        <small>{{ object.brand_name }}</small>
+                    </td>
+                    <td class="text-end">{{ object.serving_value }}{{ object.serving_measurement }}</td>
+                    <td class="text-end">{{ object.energy }}</td>
+                    <td class="text-end">{{ object.protein|floatformat:1 }}</td>
+                    <td class="text-end">{{ object.carbohydrate|floatformat:1 }}</td>
+                    <td class="text-end">{{ object.fat|floatformat:1 }}</td>
+                    <td class="text-end"><a href="{% url 'meals:item_delete' object.id %}">Delete</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="2">Total:</th>
+                    <th class="text-end">{{ total.total_energy }}kcal</th>
+                    <th class="text-end">{{ total.total_protein|floatformat:1 }}g</th>
+                    <th class="text-end">{{ total.total_carbohydrate|floatformat:1 }}g</th>
+                    <th class="text-end">{{ total.total_fat|floatformat:1 }}g</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+
+        <a class="btn mt-5" href="{% url 'meals:meal_add_1' object.id %}">Add Food</a>
+    </div>
+</div>
+
 
 
 {% endblock content %}
