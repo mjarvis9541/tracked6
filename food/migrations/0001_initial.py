@@ -19,13 +19,42 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Brand',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
                 ('datetime_created', models.DateTimeField(auto_now_add=True)),
                 ('datetime_updated', models.DateTimeField(auto_now=True)),
                 ('name', models.CharField(max_length=100, unique=True)),
-                ('description', models.TextField(blank=True, max_length=1000, null=True)),
-                ('user_created', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_brand_user_created_related', related_query_name='food_brand_user_created_rquery', to=settings.AUTH_USER_MODEL)),
-                ('user_updated', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_brand_user_updated_related', related_query_name='food_brand_user_updated_rquery', to=settings.AUTH_USER_MODEL)),
+                (
+                    'description',
+                    models.TextField(blank=True, max_length=1000, null=True),
+                ),
+                (
+                    'user_created',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='food_brand_user_created_related',
+                        related_query_name='food_brand_user_created_rquery',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    'user_updated',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='food_brand_user_updated_related',
+                        related_query_name='food_brand_user_updated_rquery',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'brand',
@@ -36,13 +65,42 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Category',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
                 ('datetime_created', models.DateTimeField(auto_now_add=True)),
                 ('datetime_updated', models.DateTimeField(auto_now=True)),
                 ('name', models.CharField(max_length=100, unique=True)),
-                ('description', models.TextField(blank=True, max_length=1000, null=True)),
-                ('user_created', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_category_user_created_related', related_query_name='food_category_user_created_rquery', to=settings.AUTH_USER_MODEL)),
-                ('user_updated', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_category_user_updated_related', related_query_name='food_category_user_updated_rquery', to=settings.AUTH_USER_MODEL)),
+                (
+                    'description',
+                    models.TextField(blank=True, max_length=1000, null=True),
+                ),
+                (
+                    'user_created',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='food_category_user_created_related',
+                        related_query_name='food_category_user_created_rquery',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    'user_updated',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='food_category_user_updated_related',
+                        related_query_name='food_category_user_updated_rquery',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'category',
@@ -53,7 +111,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Food',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
                 ('energy', models.IntegerField(verbose_name='energy (kcal)')),
                 ('fat', models.DecimalField(decimal_places=1, max_digits=4)),
                 ('saturates', models.DecimalField(decimal_places=1, max_digits=4)),
@@ -66,12 +132,49 @@ class Migration(migrations.Migration):
                 ('datetime_updated', models.DateTimeField(auto_now=True)),
                 ('name', models.CharField(max_length=100)),
                 ('data_value', models.IntegerField()),
-                ('data_measurement', models.CharField(choices=[('g', 'g'), ('ml', 'ml'), ('srv', 'serving')], max_length=50)),
-                ('description', models.TextField(blank=True, max_length=1000, null=True)),
-                ('brand', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='food.brand')),
-                ('category', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='food.category')),
-                ('user_created', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_food_user_created_related', related_query_name='food_food_user_created_rquery', to=settings.AUTH_USER_MODEL)),
-                ('user_updated', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_food_user_updated_related', related_query_name='food_food_user_updated_rquery', to=settings.AUTH_USER_MODEL)),
+                (
+                    'data_measurement',
+                    models.CharField(
+                        choices=[('g', 'g'), ('ml', 'ml'), ('srv', 'serving')],
+                        max_length=50,
+                    ),
+                ),
+                (
+                    'description',
+                    models.TextField(blank=True, max_length=1000, null=True),
+                ),
+                (
+                    'brand',
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='food.brand'),
+                ),
+                (
+                    'category',
+                    models.ForeignKey(
+                        default=1,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='food.category',
+                    ),
+                ),
+                (
+                    'user_created',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='food_food_user_created_related',
+                        related_query_name='food_food_user_created_rquery',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    'user_updated',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='food_food_user_updated_related',
+                        related_query_name='food_food_user_updated_rquery',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'food',

@@ -3,10 +3,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (
-    CreateView, FormView, ListView, TemplateView, View)
+from django.views.generic import CreateView, FormView, ListView, TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView
+
 from food.forms import FoodFilterForm
 from food.mixins import FoodFilterMixin
 from food.models import Food
@@ -26,7 +26,7 @@ class MealCreateView(LoginRequiredMixin, CreateView):
     template_name = 'meals/meal_create.html'
     model = Meal
     form_class = MealCreateForm
-    
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
@@ -85,7 +85,6 @@ class MealItemCreateStep2View(LoginRequiredMixin, UserPassesTestMixin, TemplateV
         return self.render_to_response(context)
 
 
-
 class MealDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """ Delete a meal and return user to meal list view. """
 
@@ -130,7 +129,6 @@ class MealItemListView(ListView):
         context['object'] = get_object_or_404(Meal, id=self.kwargs.get('pk'))
         context['total'] = self.get_queryset().total()
         return context
-
 
 
 class MealItemDetailView(DetailView):

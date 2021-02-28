@@ -16,6 +16,7 @@
 @import "food_app";
 @import "meal_app";
 @import 'progress';
+@import 'profiles';
 
 * {
     font-family: "Poppins", sans-serif;
@@ -27,12 +28,10 @@ a {
 }
 
 .container {
-    padding: 0 0.75rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-// Base media query
-// @media (max-width: 684px) {
-
-// }
+body {
+    background: #f4f4f4;
+}

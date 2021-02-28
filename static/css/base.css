@@ -362,15 +362,21 @@ small {
   font-size: .875rem;
 }
 
-table th,
-table td {
-  text-align: start;
-  padding: .5rem .75rem;
-  border: 1px solid #f2f2f2;
+.table {
+  border-collapse: collapse;
+  width: 100%;
 }
 
-.table {
-  width: 100%;
+th,
+td {
+  text-align: start;
+  border-style: dashed;
+  border: 1px solid #f2f2f2;
+  padding: .75rem;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
 }
 
 .form-control {
@@ -447,7 +453,6 @@ header {
 .navbar {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 0.75rem;
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: auto 1fr auto;
@@ -1219,6 +1224,15 @@ html, body {
   border-bottom: 1px solid #f2f2f2;
 }
 
+.grid-2-1 {
+  background: #fff;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 5fr;
+      grid-template-columns: 1fr 5fr;
+  padding: .75rem;
+}
+
 * {
   font-family: "Poppins", sans-serif;
 }
@@ -1229,8 +1243,11 @@ a {
 }
 
 .container {
-  padding: 0 0.75rem;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+body {
+  background: #f4f4f4;
 }
 /*# sourceMappingURL=base.css.map */

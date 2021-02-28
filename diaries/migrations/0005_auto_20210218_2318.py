@@ -12,6 +12,9 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='diary',
-            options={'verbose_name': 'diary entry', 'verbose_name_plural': 'diary entries'},
+            options={
+                'verbose_name': 'diary entry',
+                'verbose_name_plural': 'diary entries',
+            },
         ),
     ]

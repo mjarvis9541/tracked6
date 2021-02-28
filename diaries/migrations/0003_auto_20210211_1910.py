@@ -12,6 +12,10 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='diary',
-            options={'ordering': ('-datetime_created',), 'verbose_name': 'diary entry', 'verbose_name_plural': 'diary entries'},
+            options={
+                'ordering': ('-datetime_created',),
+                'verbose_name': 'diary entry',
+                'verbose_name_plural': 'diary entries',
+            },
         ),
     ]

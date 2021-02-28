@@ -19,22 +19,65 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Profile',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
                 ('image', models.ImageField(null=True, upload_to='images')),
-                ('sex', models.CharField(choices=[('M', 'Male'), ('F', 'Female')], max_length=1, null=True)),
+                (
+                    'sex',
+                    models.CharField(
+                        choices=[('M', 'Male'), ('F', 'Female')],
+                        max_length=1,
+                        null=True,
+                    ),
+                ),
                 ('height', models.IntegerField(null=True, verbose_name='height (cm)')),
-                ('weight', models.DecimalField(decimal_places=1, max_digits=4, null=True, verbose_name='weight (kg)')),
+                (
+                    'weight',
+                    models.DecimalField(
+                        decimal_places=1,
+                        max_digits=4,
+                        null=True,
+                        verbose_name='weight (kg)',
+                    ),
+                ),
                 ('date_of_birth', models.DateField(null=True)),
-                ('goal_weight', models.DecimalField(decimal_places=1, max_digits=4, null=True, verbose_name='goal weight (kg)')),
+                (
+                    'goal_weight',
+                    models.DecimalField(
+                        decimal_places=1,
+                        max_digits=4,
+                        null=True,
+                        verbose_name='goal weight (kg)',
+                    ),
+                ),
                 ('target_energy', models.IntegerField(verbose_name='energy (kcal)')),
                 ('target_fat', models.DecimalField(decimal_places=1, max_digits=4)),
-                ('target_saturates', models.DecimalField(decimal_places=1, max_digits=4)),
-                ('target_carbohydrate', models.DecimalField(decimal_places=1, max_digits=4)),
+                (
+                    'target_saturates',
+                    models.DecimalField(decimal_places=1, max_digits=4),
+                ),
+                (
+                    'target_carbohydrate',
+                    models.DecimalField(decimal_places=1, max_digits=4),
+                ),
                 ('target_sugars', models.DecimalField(decimal_places=1, max_digits=4)),
                 ('target_fibre', models.DecimalField(decimal_places=1, max_digits=4)),
                 ('target_protein', models.DecimalField(decimal_places=1, max_digits=4)),
                 ('target_salt', models.DecimalField(decimal_places=2, max_digits=5)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    'user',
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 'abstract': False,

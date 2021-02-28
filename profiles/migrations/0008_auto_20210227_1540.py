@@ -16,11 +16,19 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='profile',
             name='date_of_birth',
-            field=models.DateField(blank=True, null=True, validators=[django.core.validators.MaxValueValidator(limit_value=datetime.date.today)]),
+            field=models.DateField(
+                blank=True,
+                null=True,
+                validators=[django.core.validators.MaxValueValidator(limit_value=datetime.date.today)],
+            ),
         ),
         migrations.AlterField(
             model_name='profile',
             name='image',
-            field=models.ImageField(default='images/default.jpg', upload_to='images/profile_pictures', verbose_name='profile picture'),
+            field=models.ImageField(
+                default='images/default.jpg',
+                upload_to='images/profile_pictures',
+                verbose_name='profile picture',
+            ),
         ),
     ]

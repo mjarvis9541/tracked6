@@ -7,6 +7,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
+
 from utils.behaviours import Timestampable, Uuidable
 
 
@@ -37,9 +38,7 @@ class Progress(Uuidable, Timestampable):
     class Meta:
         verbose_name = 'progress log'
         verbose_name_plural = 'progress logs'
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'date'], name='unique_user_date')
-        ]
+        constraints = [models.UniqueConstraint(fields=['user', 'date'], name='unique_user_date')]
 
     def __str__(self):
         return f'{self.user.username}, {self.date}'

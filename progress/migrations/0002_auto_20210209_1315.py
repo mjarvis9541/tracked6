@@ -19,14 +19,40 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Log',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
                 ('datetime_created', models.DateTimeField(auto_now_add=True)),
                 ('datetime_updated', models.DateTimeField(auto_now=True)),
                 ('date', models.DateField(default=django.utils.timezone.now)),
-                ('weight', models.DecimalField(blank=True, decimal_places=1, max_digits=4, null=True, verbose_name='weight (kg)')),
+                (
+                    'weight',
+                    models.DecimalField(
+                        blank=True,
+                        decimal_places=1,
+                        max_digits=4,
+                        null=True,
+                        verbose_name='weight (kg)',
+                    ),
+                ),
                 ('image', models.ImageField(blank=True, null=True, upload_to='images')),
-                ('notes', models.TextField(blank=True, max_length=1000, null=True, verbose_name='notes')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    'notes',
+                    models.TextField(blank=True, max_length=1000, null=True, verbose_name='notes'),
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'log',

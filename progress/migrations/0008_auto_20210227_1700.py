@@ -12,6 +12,9 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='progress',
-            options={'verbose_name': 'progress log', 'verbose_name_plural': 'progress logs'},
+            options={
+                'verbose_name': 'progress log',
+                'verbose_name_plural': 'progress logs',
+            },
         ),
     ]

@@ -22,12 +22,32 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MealItem',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('datetime_created', models.DateTimeField(auto_now_add=True, verbose_name='date created')),
-                ('datetime_updated', models.DateTimeField(auto_now=True, verbose_name='date updated')),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    'datetime_created',
+                    models.DateTimeField(auto_now_add=True, verbose_name='date created'),
+                ),
+                (
+                    'datetime_updated',
+                    models.DateTimeField(auto_now=True, verbose_name='date updated'),
+                ),
                 ('quantity', models.DecimalField(decimal_places=2, max_digits=4)),
-                ('food', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='food.food')),
-                ('meal', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='meals.meal')),
+                (
+                    'food',
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='food.food'),
+                ),
+                (
+                    'meal',
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='meals.meal'),
+                ),
             ],
             options={
                 'abstract': False,

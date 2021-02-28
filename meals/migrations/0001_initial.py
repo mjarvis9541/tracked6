@@ -20,20 +20,92 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Meal',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
                 ('name', models.CharField(max_length=100)),
                 ('description', models.TextField(max_length=1000)),
-                ('item_1_quantity', models.DecimalField(decimal_places=1, max_digits=3)),
-                ('item_2_quantity', models.DecimalField(blank=True, decimal_places=1, max_digits=3, null=True)),
-                ('item_3_quantity', models.DecimalField(blank=True, decimal_places=1, max_digits=3, null=True)),
-                ('item_4_quantity', models.DecimalField(blank=True, decimal_places=1, max_digits=3, null=True)),
-                ('item_5_quantity', models.DecimalField(blank=True, decimal_places=1, max_digits=3, null=True)),
-                ('item_1', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='item_1_foods', to='food.food')),
-                ('item_2', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='item_2_foods', to='food.food')),
-                ('item_3', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='item_3_foods', to='food.food')),
-                ('item_4', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='item_4_foods', to='food.food')),
-                ('item_5', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='item_5_foods', to='food.food')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    'item_1_quantity',
+                    models.DecimalField(decimal_places=1, max_digits=3),
+                ),
+                (
+                    'item_2_quantity',
+                    models.DecimalField(blank=True, decimal_places=1, max_digits=3, null=True),
+                ),
+                (
+                    'item_3_quantity',
+                    models.DecimalField(blank=True, decimal_places=1, max_digits=3, null=True),
+                ),
+                (
+                    'item_4_quantity',
+                    models.DecimalField(blank=True, decimal_places=1, max_digits=3, null=True),
+                ),
+                (
+                    'item_5_quantity',
+                    models.DecimalField(blank=True, decimal_places=1, max_digits=3, null=True),
+                ),
+                (
+                    'item_1',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='item_1_foods',
+                        to='food.food',
+                    ),
+                ),
+                (
+                    'item_2',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='item_2_foods',
+                        to='food.food',
+                    ),
+                ),
+                (
+                    'item_3',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='item_3_foods',
+                        to='food.food',
+                    ),
+                ),
+                (
+                    'item_4',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='item_4_foods',
+                        to='food.food',
+                    ),
+                ),
+                (
+                    'item_5',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='item_5_foods',
+                        to='food.food',
+                    ),
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'meal',

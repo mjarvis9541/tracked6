@@ -3,7 +3,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import (
-    CreateView, DeleteView, DetailView, FormView, ListView, UpdateView, View)
+    CreateView,
+    DeleteView,
+    DetailView,
+    FormView,
+    ListView,
+    UpdateView,
+    View,
+)
+
 from utils.mixins import UserFormKwargsMixin
 
 from .forms import ProgressForm
@@ -17,7 +25,7 @@ class ProgressListView(LoginRequiredMixin, ListView):
     paginate_by = 25
 
     def get_queryset(self, **kwargs):
-        return Progress.objects.filter(user=self.request.user) #.order_by('-date')
+        return Progress.objects.filter(user=self.request.user)  # .order_by('-date')
 
 
 class ProgressCreateView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):

@@ -12,6 +12,10 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='food',
-            options={'ordering': ('name',), 'verbose_name': 'food', 'verbose_name_plural': 'food'},
+            options={
+                'ordering': ('name',),
+                'verbose_name': 'food',
+                'verbose_name_plural': 'food',
+            },
         ),
     ]

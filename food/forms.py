@@ -1,12 +1,12 @@
 import string
 
-from diaries.models import Diary
 from django import forms
 from django.utils import timezone
 from django.utils.safestring import SafeData, SafeText, mark_safe
 from django.utils.translation import gettext_lazy as _
-from meals.models import Meal, MealItem
 
+from diaries.models import Diary
+from meals.models import Meal, MealItem
 from utils.forms import DateInput
 
 from .models import Brand, Category, Food
@@ -46,16 +46,10 @@ BRAND_SORT_CHOICES = [
 class FoodFilterForm(forms.Form):
     q = forms.CharField(
         required=False,
-        widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Search'}
-        ),
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Search'}),
     )
-    brand = forms.ChoiceField(
-        required=False, widget=forms.Select(attrs={'class': 'form-control'})
-    )
-    category = forms.ChoiceField(
-        required=False, widget=forms.Select(attrs={'class': 'form-control'})
-    )
+    brand = forms.ChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control'}))
+    category = forms.ChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control'}))
     sort = forms.ChoiceField(
         required=False,
         choices=FOOD_SORT_CHOICES,
@@ -81,9 +75,7 @@ class FoodFilterForm(forms.Form):
 class BrandFilterForm(forms.Form):
     q = forms.CharField(
         required=False,
-        widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Search'}
-        ),
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Search'}),
     )
     sort = forms.ChoiceField(
         required=False,
@@ -93,9 +85,7 @@ class BrandFilterForm(forms.Form):
 
 
 class FoodCreateServingForm(forms.ModelForm):
-    serving = forms.ChoiceField(
-        choices=SERVING_CHOICES, widget=forms.Select(attrs={'class': 'form-control'})
-    )
+    serving = forms.ChoiceField(choices=SERVING_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Food
@@ -159,9 +149,7 @@ class FoodCreateServingForm(forms.ModelForm):
         energy_from_fat = fat * 9
         energy_from_carbohydrate = carbohydrate * 4
         energy_from_protein = protein * 4
-        total_energy = round(
-            energy_from_fat + energy_from_carbohydrate + energy_from_protein
-        )
+        total_energy = round(energy_from_fat + energy_from_carbohydrate + energy_from_protein)
         if total_energy > energy:
             msg = _(
                 f'energy should be at least {total_energy} kcal for the total grams of protein, \
@@ -248,7 +236,6 @@ class FoodToMealForm(forms.ModelForm):
         }
 
 
-
 # from django import forms
 # import django_filters
 # from food.models import Food
@@ -266,7 +253,7 @@ class FoodToMealForm(forms.ModelForm):
 #             ('-protein', 'Protein (high-low)'),
 #             ('carbohydrate', 'Carbs (low-high)'),
 #             ('-carbohydrate', 'Carbs (high-low)'),
-#             ('fat', 'Fat (low-high)'), 
+#             ('fat', 'Fat (low-high)'),
 #             ('-fat', 'Fat (high-low)'),
 #             ('-datetime_created', 'Recently Created'),
 #             ('-datetime_updated', 'Recently Updated'),
@@ -275,7 +262,6 @@ class FoodToMealForm(forms.ModelForm):
 #     class Meta:
 #         model = Food
 #         fields = ['name', 'brand', 'category', 'active']
-
 
 
 # class FoodListed(ListView):

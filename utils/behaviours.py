@@ -45,20 +45,24 @@ class Timestampable(models.Model):
 
 
 class Authorable(models.Model):
-    user_created = models.ForeignKey(settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL, null=True,
+    user_created = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
         verbose_name='created by',
         default='c64c16ee-fc7f-45c3-a84b-a81a6a29d5d6',
         related_name='%(app_label)s_%(class)s_user_created_related',
         related_query_name='%(app_label)s_%(class)s_user_created_rquery',
-        )
-    user_updated = models.ForeignKey(settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL, null=True,
+    )
+    user_updated = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
         verbose_name='updated by',
         default='c64c16ee-fc7f-45c3-a84b-a81a6a29d5d6',
         related_name='%(app_label)s_%(class)s_user_updated_related',
         related_query_name='%(app_label)s_%(class)s_user_updated_rquery',
-        )
+    )
 
     class Meta:
         abstract = True

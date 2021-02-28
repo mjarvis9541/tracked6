@@ -19,26 +19,54 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='meal',
             name='item_1',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_1', to='food.food'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_1',
+                to='food.food',
+            ),
         ),
         migrations.AlterField(
             model_name='meal',
             name='item_2',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_2', to='food.food'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_2',
+                to='food.food',
+            ),
         ),
         migrations.AlterField(
             model_name='meal',
             name='item_3',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_3', to='food.food'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_3',
+                to='food.food',
+            ),
         ),
         migrations.AlterField(
             model_name='meal',
             name='item_4',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_4', to='food.food'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_4',
+                to='food.food',
+            ),
         ),
         migrations.AlterField(
             model_name='meal',
             name='item_5',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_5', to='food.food'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_5',
+                to='food.food',
+            ),
         ),
     ]

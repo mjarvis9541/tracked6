@@ -1,19 +1,28 @@
 from django.conf import settings
 from django.db import models
-from django.db.models import (Avg, Case, Count, ExpressionWrapper, F, Func,
-                              Sum, Value, When, Window)
+from django.db.models import (
+    Avg,
+    Case,
+    Count,
+    ExpressionWrapper,
+    F,
+    Func,
+    Sum,
+    Value,
+    When,
+    Window,
+)
 from django.db.models.functions import Coalesce, Concat, Round
 from django.urls import reverse
 from django.utils.text import slugify
+
 from food.models import Food
 from utils.behaviours import Timestampable, Uuidable
 
 
 class MealQuerySet(models.QuerySet):
     def summary(self):
-        return self.annotate(
-            item_count=Count('mealitem')
-        )
+        return self.annotate(item_count=Count('mealitem'))
 
 
 class Meal(Uuidable, Timestampable):
@@ -21,18 +30,14 @@ class Meal(Uuidable, Timestampable):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=1000, null=True, blank=True, help_text='Optional.')
     slug = models.SlugField(max_length=255, unique=True)
-    
+
     objects = MealQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'meal'
         verbose_name_plural = 'meals'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'name'], name='unique_meal_name'
-            )
-        ]
-    
+        constraints = [models.UniqueConstraint(fields=['user', 'name'], name='unique_meal_name')]
+
     def save(self, *args, **kwargs):
         if not self.slug:
             slug_str = f'{self.user.username} {self.name}'
@@ -41,7 +46,7 @@ class Meal(Uuidable, Timestampable):
 
     def __str__(self):
         return self.name
-    
+
     def get_absolute_url(self):
         return reverse('meals:item_list', kwargs={'pk': self.id})
 
@@ -69,11 +74,35 @@ class MealItemQuerySet(models.QuerySet):
             # serving_value=ExpressionWrapper(F('quantity') * F('food__data_value'), output_field=models.DecimalField()),
             serving_value=Case(
                 # Round food measured in grams or milliliters to whole number, round food measured in servings to 1 decimal place
-                When(data_measurement='g', then=Round(ExpressionWrapper(F('quantity') * F('food__data_value'), output_field=models.DecimalField()))),
-                When(data_measurement='ml', then=Round(ExpressionWrapper(F('quantity') * F('food__data_value'), output_field=models.DecimalField()))),
-                When(data_measurement='srv', then=Round1(ExpressionWrapper(F('quantity') * F('food__data_value'), output_field=models.DecimalField()))),
+                When(
+                    data_measurement='g',
+                    then=Round(
+                        ExpressionWrapper(
+                            F('quantity') * F('food__data_value'),
+                            output_field=models.DecimalField(),
+                        )
+                    ),
+                ),
+                When(
+                    data_measurement='ml',
+                    then=Round(
+                        ExpressionWrapper(
+                            F('quantity') * F('food__data_value'),
+                            output_field=models.DecimalField(),
+                        )
+                    ),
+                ),
+                When(
+                    data_measurement='srv',
+                    then=Round1(
+                        ExpressionWrapper(
+                            F('quantity') * F('food__data_value'),
+                            output_field=models.DecimalField(),
+                        )
+                    ),
+                ),
             ),
-            serving_measurement=Case( 
+            serving_measurement=Case(
                 # Pluralise serving if value > 1
                 When(data_measurement='g', then=Value('g')),
                 When(data_measurement='ml', then=Value('ml')),
@@ -105,6 +134,7 @@ class MealItemQuerySet(models.QuerySet):
             total_salt=Coalesce(Sum('salt'), 0),
             total_sodium=Coalesce(Sum('sodium'), 0),
         )
+
 
 class MealItem(Uuidable, Timestampable):
     meal = models.ForeignKey(Meal, on_delete=models.CASCADE)

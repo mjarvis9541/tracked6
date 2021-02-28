@@ -6,14 +6,28 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
 from django.db.models import Case, F, Q, Value, When
 from django.http import Http404, HttpResponse, HttpResponseForbidden
-from django.shortcuts import (HttpResponseRedirect, get_list_or_404,
-                              get_object_or_404, redirect, render)
+from django.shortcuts import (
+    HttpResponseRedirect,
+    get_list_or_404,
+    get_object_or_404,
+    redirect,
+    render,
+)
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import (CreateView, DayArchiveView, DeleteView,
-                                  FormView, ListView, TemplateView,
-                                  TodayArchiveView, UpdateView, View,
-                                  WeekArchiveView)
+from django.views.generic import (
+    CreateView,
+    DayArchiveView,
+    DeleteView,
+    FormView,
+    ListView,
+    TemplateView,
+    TodayArchiveView,
+    UpdateView,
+    View,
+    WeekArchiveView,
+)
+
 from food.models import Food
 from meals.models import Meal, MealItem
 
@@ -43,7 +57,7 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         user_ = self.request.user
         object_list = Diary.objects.filter(user=user_, date=self.date).summary().order_by('datetime_created')
-        context['object_list'] = object_list 
+        context['object_list'] = object_list
         context['total'] = object_list.total()
         context['total_meal_1'] = object_list.filter(meal=1).total()
         context['total_meal_2'] = object_list.filter(meal=2).total()
@@ -56,9 +70,9 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs) 
+        context = self.get_context_data(**kwargs)
         obj_list = request.POST.getlist('to_delete')
-        if obj_list: 
+        if obj_list:
             delete_list = Diary.objects.filter(id__in=obj_list)
             count = len(delete_list)
             for obj in delete_list:
@@ -66,7 +80,7 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
                     return HttpResponseForbidden('You are not authorized to delete this user\'s diary entries')
             request.session['delete_list'] = obj_list
             messages.success(request, f'Selected {count} food to delete')
-            return redirect('diaries:delete_list') 
+            return redirect('diaries:delete_list')
         else:
             messages.error(request, 'You have not selected any food to delete')
         return self.render_to_response(context)
@@ -75,15 +89,15 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
 class DiaryMealListView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, TemplateView):
     """
     Gives a breakdown of food for a given meal in a singular view.
-    * Helps mobile users view full calorie and macronutrient content of food as the page is to be displayed with more detail in mobile view. 
+    * Helps mobile users view full calorie and macronutrient content of food as the page is to be displayed with more detail in mobile view.
     """
-    
+
     template_name = 'diaries/diary_meal_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['object_list'] = Diary.objects.filter(user=self.request.user, date=self.date).summary() 
-        context['total'] = context['object_list'].total() 
+        context['object_list'] = Diary.objects.filter(user=self.request.user, date=self.date).summary()
+        context['total'] = context['object_list'].total()
         return context
 
 
@@ -95,18 +109,18 @@ class DiaryAddMultipleFoodView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixi
     Allows the user to add multiple food items to their food diary via formset.
     Renders the formset with food name and details and a quantity input field.
     """
-    
+
     template_name = 'diaries/diary_add_food_multiple.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        paginator = Paginator(context['queryset'], 20) # FoodFilterMixin
+        paginator = Paginator(context['queryset'], 20)  # FoodFilterMixin
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         context['page_obj'] = page_obj
         context['formset'] = AddToDiaryFormSet(data=self.request.POST or None, initial=page_obj)
         return context
-  
+
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         if context['formset'].is_valid():
@@ -121,28 +135,42 @@ class DiaryAddMultipleFoodView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixi
                     Diary.objects.create(**form)
 
             if 'save' in request.POST:
-                messages.success(request, f'Added {count} food to {self.diary_meal_name}, {self.date}')
+                messages.success(
+                    request,
+                    f'Added {count} food to {self.diary_meal_name}, {self.date}',
+                )
                 return redirect('diaries:day', self.date.year, self.date.month, self.date.day)
 
             elif 'another' in request.POST:
-                messages.success(request, f'Added {count} food to {self.diary_meal_name}, {self.date}. You can continue adding food below')
-                return redirect('diaries:create', self.date.year, self.date.month, self.date.day, self.diary_meal)
-        
+                messages.success(
+                    request,
+                    f'Added {count} food to {self.diary_meal_name}, {self.date}. You can continue adding food below',
+                )
+                return redirect(
+                    'diaries:create',
+                    self.date.year,
+                    self.date.month,
+                    self.date.day,
+                    self.diary_meal,
+                )
+
         return self.render_to_response(context)
 
 
 class DiaryCopyMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, TemplateView):
-    """ 
-    Allows the user to copy all food and quantities from the specified 
-    diary meal on a previous day to the same diary meal on the diary 
+    """
+    Allows the user to copy all food and quantities from the specified
+    diary meal on a previous day to the same diary meal on the diary
     day they are currently viewing.
     """
-    
+
     template_name = 'diaries/diary_copy_previous_day.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['object_list'] = Diary.objects.filter(user=self.request.user, date=self.previous_day, meal=self.diary_meal).summary()
+        context['object_list'] = Diary.objects.filter(
+            user=self.request.user, date=self.previous_day, meal=self.diary_meal
+        ).summary()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -158,7 +186,10 @@ class DiaryCopyMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixi
                     food=obj.food,
                     quantity=obj.quantity,
                 )
-            messages.success(request, f'Copied {count} food from {self.diary_meal_name}, {self.previous_day}')
+            messages.success(
+                request,
+                f'Copied {count} food from {self.diary_meal_name}, {self.previous_day}',
+            )
             return redirect('diaries:day', self.date.year, self.date.month, self.date.day)
         return self.render_to_response(context)
 
@@ -166,9 +197,10 @@ class DiaryCopyMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixi
 class DiaryCopyAllMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, TemplateView):
     """
     Allows the user to copy all food and associated quantities from the previous diary day.
-    TODO: Copies food even if the user has the same amount of food for 
-    a meal already - need a way to handle this as unlikely user will want to add duplicates 
+    TODO: Copies food even if the user has the same amount of food for
+    a meal already - need a way to handle this as unlikely user will want to add duplicates
     """
+
     template_name = 'diaries/diary_copy_previous_day.html'
 
     def get_context_data(self, **kwargs):
@@ -196,7 +228,7 @@ class DiaryCopyAllMealPreviousDay(LoginRequiredMixin, DiaryDateMixin, TemplateVi
 
 class DiaryAddMealView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin, TemplateView):
     """
-    Displays a list of users saved meals to select from and add to the food diary. 
+    Displays a list of users saved meals to select from and add to the food diary.
     """
 
     template_name = 'diaries/diary_add_meal_list.html'
@@ -213,7 +245,7 @@ class DiaryAddMealConfirmView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin
     """
 
     template_name = 'diaries/diary_add_meal_confirm.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['saved_meal_obj'] = get_object_or_404(Meal, id=self.kwargs.get('saved_meal'))
@@ -232,9 +264,12 @@ class DiaryAddMealConfirmView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin
                     date=self.date,
                     meal=self.diary_meal,
                     food=food_item.food,
-                    quantity=food_item.quantity
+                    quantity=food_item.quantity,
                 )
-            messages.success(request, f'Added {count} items from saved meal {saved_meal_obj} to {self.diary_meal_name}, {self.date}')
+            messages.success(
+                request,
+                f'Added {count} items from saved meal {saved_meal_obj} to {self.diary_meal_name}, {self.date}',
+            )
             return redirect('diaries:day', self.date.year, self.date.month, self.date.day)
         return self.render_to_response(context)
 
@@ -257,15 +292,21 @@ class DiaryUpdateView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
         date = context['object'].date
         if context['form'].is_valid():
             context['form'].save()
-            
+
             if 'save' in request.POST:
-                messages.success(request, f'Updated {object_.food_name}, {object_.get_meal_display()}')
+                messages.success(
+                    request,
+                    f'Updated {object_.food_name}, {object_.get_meal_display()}',
+                )
                 return redirect('diaries:day', date.year, date.month, date.day)
-            
+
             elif 'another' in request.POST:
-                messages.success(request, f'{object_.get_meal_display()} - {object_.food_name} has been updated. You can add more food below')
+                messages.success(
+                    request,
+                    f'{object_.get_meal_display()} - {object_.food_name} has been updated. You can add more food below',
+                )
                 return redirect('diaries:create', date.year, date.month, date.day, object_.meal)
-        
+
         return self.render_to_response(context)
 
 
@@ -276,10 +317,11 @@ class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """
     Allows the user to confirm deletion of single diary food item.
     """
+
     model = Diary
 
     def get_context_data_data(self, **kwargs):
-        context =  super().get_context_data_data(**kwargs)
+        context = super().get_context_data_data(**kwargs)
         context['date'] = self.get_object().date
         return context
 
@@ -294,13 +336,21 @@ class DiaryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         obj = self.get_object()
-        return reverse('diaries:day', kwargs={'year': obj.date.year, 'month': obj.date.month, 'day': obj.date.day})
+        return reverse(
+            'diaries:day',
+            kwargs={
+                'year': obj.date.year,
+                'month': obj.date.month,
+                'day': obj.date.day,
+            },
+        )
 
 
 class DiaryDeleteMultipleView(LoginRequiredMixin, TemplateView):
     """
     Allows the user to confirm deletion of multiple diary food items selected via checkboxes (sessions) from DiaryDayListView.
     """
+
     template_name = 'diaries/diary_confirm_delete.html'
 
     def get_context_data(self, **kwargs):
@@ -325,9 +375,9 @@ class DiaryDeleteMultipleView(LoginRequiredMixin, TemplateView):
             object_list.delete()
             request.session.pop('delete_list')
             messages.success(request, f'Deleted {count} food from {meal}, {date}')
-            return redirect('diaries:day', date.year, date.month, date.day) 
+            return redirect('diaries:day', date.year, date.month, date.day)
         return self.render_to_response(context)
-    
+
 
 """ Diary list views - to view other user diaries """
 
@@ -335,7 +385,7 @@ class DiaryDeleteMultipleView(LoginRequiredMixin, TemplateView):
 class DiaryUserDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
     """
     View to display other user's food diaries.
-    TODO: We need to create another template and remove visuals on 
+    TODO: We need to create another template and remove visuals on
     creating, updating and delete food from diary.
     """
 
@@ -344,8 +394,12 @@ class DiaryUserDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user_ = get_object_or_404(User, username=self.kwargs.get('username'))
-        object_list = Diary.objects.filter(user__username=self.kwargs.get('username'), date=self.date).summary().order_by('datetime_created')
-        context['object_list'] = object_list 
+        object_list = (
+            Diary.objects.filter(user__username=self.kwargs.get('username'), date=self.date)
+            .summary()
+            .order_by('datetime_created')
+        )
+        context['object_list'] = object_list
         context['total'] = object_list.total()
         context['total_meal_1'] = object_list.filter(meal=1).total()
         context['total_meal_2'] = object_list.filter(meal=2).total()
@@ -358,9 +412,9 @@ class DiaryUserDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs) 
+        context = self.get_context_data(**kwargs)
         obj_list = request.POST.getlist('to_delete')
-        if obj_list: 
+        if obj_list:
             delete_list = Diary.objects.filter(id__in=obj_list)
             count = len(delete_list)
             for obj in delete_list:
@@ -368,7 +422,7 @@ class DiaryUserDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
                     return HttpResponseForbidden('You are not authorized to delete this user\'s diary entries')
             request.session['delete_list'] = obj_list
             messages.success(request, f'Selected {count} food to delete')
-            return redirect('diaries:delete_list') 
+            return redirect('diaries:delete_list')
         else:
             messages.error(request, 'You have not selected any food to delete')
         return self.render_to_response(context)

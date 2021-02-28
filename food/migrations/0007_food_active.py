@@ -13,6 +13,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='food',
             name='active',
-            field=models.BooleanField(default=True, help_text='Designates whether the food is displayed in the database or not. Unselect this instead of deleting food.'),
+            field=models.BooleanField(
+                default=True,
+                help_text='Designates whether the food is displayed in the database or not. Unselect this instead of deleting food.',
+            ),
         ),
     ]

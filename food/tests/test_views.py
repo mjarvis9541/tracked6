@@ -15,13 +15,9 @@ class TestSkip(TestCase):
 
 class FoodTests(TestCase):
     def setUp(self):
-        self.user = get_user_model().objects.create_user(
-            email='testuser@email.com', password='test1pass2word3'
-        )
+        self.user = get_user_model().objects.create_user(email='testuser@email.com', password='test1pass2word3')
         self.brand = Brand.objects.create(name='Tesco', description='Supermarket')
-        self.category = Category.objects.create(
-            name='Generic', description='Generic category'
-        )
+        self.category = Category.objects.create(name='Generic', description='Generic category')
         self.food = Food.objects.create(
             name='Chicken Breast',
             brand=self.brand,

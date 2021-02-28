@@ -26,12 +26,28 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='brand',
             name='user_created',
-            field=models.ForeignKey(default='admin', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_brand_user_created_related', related_query_name='food_brand_user_created_rquery', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            field=models.ForeignKey(
+                default='admin',
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='food_brand_user_created_related',
+                related_query_name='food_brand_user_created_rquery',
+                to=settings.AUTH_USER_MODEL,
+                verbose_name='created by',
+            ),
         ),
         migrations.AlterField(
             model_name='brand',
             name='user_updated',
-            field=models.ForeignKey(default='admin', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_brand_user_updated_related', related_query_name='food_brand_user_updated_rquery', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            field=models.ForeignKey(
+                default='admin',
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='food_brand_user_updated_related',
+                related_query_name='food_brand_user_updated_rquery',
+                to=settings.AUTH_USER_MODEL,
+                verbose_name='updated by',
+            ),
         ),
         migrations.AlterField(
             model_name='category',
@@ -46,12 +62,28 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='category',
             name='user_created',
-            field=models.ForeignKey(default='admin', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_category_user_created_related', related_query_name='food_category_user_created_rquery', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            field=models.ForeignKey(
+                default='admin',
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='food_category_user_created_related',
+                related_query_name='food_category_user_created_rquery',
+                to=settings.AUTH_USER_MODEL,
+                verbose_name='created by',
+            ),
         ),
         migrations.AlterField(
             model_name='category',
             name='user_updated',
-            field=models.ForeignKey(default='admin', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_category_user_updated_related', related_query_name='food_category_user_updated_rquery', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            field=models.ForeignKey(
+                default='admin',
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='food_category_user_updated_related',
+                related_query_name='food_category_user_updated_rquery',
+                to=settings.AUTH_USER_MODEL,
+                verbose_name='updated by',
+            ),
         ),
         migrations.AlterField(
             model_name='food',
@@ -71,11 +103,27 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='food',
             name='user_created',
-            field=models.ForeignKey(default='admin', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_food_user_created_related', related_query_name='food_food_user_created_rquery', to=settings.AUTH_USER_MODEL, verbose_name='created by'),
+            field=models.ForeignKey(
+                default='admin',
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='food_food_user_created_related',
+                related_query_name='food_food_user_created_rquery',
+                to=settings.AUTH_USER_MODEL,
+                verbose_name='created by',
+            ),
         ),
         migrations.AlterField(
             model_name='food',
             name='user_updated',
-            field=models.ForeignKey(default='admin', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='food_food_user_updated_related', related_query_name='food_food_user_updated_rquery', to=settings.AUTH_USER_MODEL, verbose_name='updated by'),
+            field=models.ForeignKey(
+                default='admin',
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='food_food_user_updated_related',
+                related_query_name='food_food_user_updated_rquery',
+                to=settings.AUTH_USER_MODEL,
+                verbose_name='updated by',
+            ),
         ),
     ]

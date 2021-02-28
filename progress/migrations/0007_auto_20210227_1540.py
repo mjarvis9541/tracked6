@@ -13,7 +13,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='progress',
             name='image',
-            field=models.ImageField(blank=True, help_text='Upload an optional progress picture for this day.', null=True, upload_to='images/progress_pictures', verbose_name='progress picture'),
+            field=models.ImageField(
+                blank=True,
+                help_text='Upload an optional progress picture for this day.',
+                null=True,
+                upload_to='images/progress_pictures',
+                verbose_name='progress picture',
+            ),
         ),
         migrations.AlterField(
             model_name='progress',

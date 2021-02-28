@@ -10,5 +10,3 @@ urlpatterns = [
     path('<slug:slug>/update/', views.ProgressUpdateView.as_view(), name='update'),
     path('<slug:slug>/delete/', views.ProgressDeleteView.as_view(), name='delete'),
 ]
-
-

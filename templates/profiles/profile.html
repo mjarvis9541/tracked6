@@ -1,14 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
-<br>
-<h1>Profile {{ profile.user }}</h1>
-<br>
 
-<p>This will contain user profile details. Including</p>
-<ol>
-    <li>Base stats</li>
-</ol>
-<br>
-<a href="{% url 'accounts:logout' %}">Log out</a>
+
+<div class="pt-1 grid-2-1">
+    <div>
+        Settings
+    </div>
+
+
+
+
+
+    <div>
+        <table class="table">
+        <thead>
+            <tr>
+                <th colspan="2">Stats</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="width:50%">Gender</td>
+                <td style="width:50%">{{ profile.get_sex_display }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%">Height (cm)</td>
+                <td style="width:50%">{{ profile.height }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%">Weight (kg)</td>
+                <td style="width:50%">{{ profile.weight }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%">Date of Birth</td>
+                <td style="width:50%">{{ profile.date_of_birth }}</td>
+            </tr>
+         
+        </tbody>
+    </table>
+
+
+
+
+
+
+
+</div>
 
 {% endblock content %}

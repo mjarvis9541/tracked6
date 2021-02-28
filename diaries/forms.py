@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import BaseFormSet, formset_factory
+
 from utils.forms import DateInput
 
 from .models import Diary
@@ -13,11 +14,11 @@ class DiaryUpdateForm(forms.ModelForm):
 
 
 class BaseDiaryFormset(BaseFormSet):
-    # Only checks if quantities are in any of the forms submitted 
+    # Only checks if quantities are in any of the forms submitted
     def clean(self):
         if any(self.errors):
             return
-            
+
         quantity = []
         for form in self.forms:
             attrs = form.cleaned_data
@@ -54,25 +55,19 @@ class AddToDiaryForm(forms.Form):
     #     return cleaned_data
 
 
-
 AddToDiaryFormSet = formset_factory(AddToDiaryForm, formset=BaseDiaryFormset, extra=0)
 
 
-    # if sort and any(sort in x for x in FOOD_SORT_CHOICES):
-    #     queryset = queryset.order_by(sort)
-    # Adding the food via formset
-
-
-
-
-
+# if sort and any(sort in x for x in FOOD_SORT_CHOICES):
+#     queryset = queryset.order_by(sort)
+# Adding the food via formset
 
 
 class BaseRecentDiaryFormset(BaseFormSet):
     def clean(self):
         if any(self.errors):
             return
-            
+
         checkboxes = []
         for form in self.forms:
             attrs = form.cleaned_data
@@ -111,15 +106,12 @@ class AddRecentToDiaryForm(forms.Form):
 AddRecentToDiaryFormSet = formset_factory(AddRecentToDiaryForm, formset=BaseRecentDiaryFormset, extra=0)
 
 
-
-
-
 class DiaryUpdateForm(forms.ModelForm):
     class Meta:
         model = Diary
         fields = ['date', 'meal', 'quantity']
         widgets = {
-            'date': DateInput(attrs={'class':'form-control'}),
+            'date': DateInput(attrs={'class': 'form-control'}),
             'meal': forms.Select(attrs={'class': 'form-control'}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
         }

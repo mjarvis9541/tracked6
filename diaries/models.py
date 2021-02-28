@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+
 from food.models import Food
 from utils.behaviours import Timestampable, Uuidable
 
@@ -27,11 +28,12 @@ class Diary(Uuidable, Timestampable):
     class Meta:
         verbose_name = 'diary entry'
         verbose_name_plural = 'diary entries'
-      # ordering = ('-datetime_created',)
+
+    # ordering = ('-datetime_created',)
 
     def __str__(self):
         return f'{self.food.data_value}{self.food.data_measurement} {self.food.name}'
-    
+
     def get_absolute_url(self):
         return reverse('diaries:update', kwargs={'pk': self.pk})
 
@@ -47,6 +49,6 @@ class Diary(Uuidable, Timestampable):
             return f'{round(data_value)}{data_measurement}'
         else:
             if data_value > 1:
-                return f'{round(data_value)} {data_measurement.title()}s'     
-            else: 
-                return f'{round(data_value)} {data_measurement.title()}'     
+                return f'{round(data_value)} {data_measurement.title()}s'
+            else:
+                return f'{round(data_value)} {data_measurement.title()}'

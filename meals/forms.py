@@ -23,9 +23,7 @@ class MealCreateForm(forms.ModelForm):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
         if Meal.objects.filter(user=self.user, name=name).exists():
-            raise forms.ValidationError(
-                'You have already created a meal with this name.'
-            )
+            raise forms.ValidationError('You have already created a meal with this name.')
         return cleaned_data
 
 
@@ -37,6 +35,7 @@ class AddToMealForm(forms.ModelForm):
         widgets = {
             'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
 
 class MealItemForm(forms.Form):
     def __init__(self, *args, **kwargs):
@@ -52,5 +51,6 @@ class MealItemForm(forms.Form):
         required=False,
         widget=forms.NumberInput(attrs={'tabindex': "1", 'class': 'form-control', 'placeholder': 0}),
     )
+
 
 AddToMealFormSet = formset_factory(MealItemForm, extra=0)

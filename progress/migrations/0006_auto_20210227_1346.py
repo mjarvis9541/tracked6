@@ -17,11 +17,20 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='progress',
             name='date',
-            field=models.DateField(default=django.utils.timezone.now, validators=[django.core.validators.MaxValueValidator(limit_value=datetime.date.today)]),
+            field=models.DateField(
+                default=django.utils.timezone.now,
+                validators=[django.core.validators.MaxValueValidator(limit_value=datetime.date.today)],
+            ),
         ),
         migrations.AlterField(
             model_name='progress',
             name='image',
-            field=models.ImageField(blank=True, help_text='Upload an optional progress picture for this day.', null=True, upload_to='images', verbose_name='progress picture'),
+            field=models.ImageField(
+                blank=True,
+                help_text='Upload an optional progress picture for this day.',
+                null=True,
+                upload_to='images',
+                verbose_name='progress picture',
+            ),
         ),
     ]

@@ -5,13 +5,26 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import (
-    CreateView, DeleteView, DetailView, FormView, ListView, TemplateView,
-    UpdateView, View)
+    CreateView,
+    DeleteView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+    UpdateView,
+    View,
+)
 from django.views.generic.detail import SingleObjectMixin
 
-from .forms import (BrandCreateForm, BrandFilterForm, FoodCreateServingForm,
-                    FoodDetailToDiaryForm, FoodFilterForm, FoodToDiaryForm,
-                    FoodToMealForm)
+from .forms import (
+    BrandCreateForm,
+    BrandFilterForm,
+    FoodCreateServingForm,
+    FoodDetailToDiaryForm,
+    FoodFilterForm,
+    FoodToDiaryForm,
+    FoodToMealForm,
+)
 from .mixins import BrandFilterMixin, FoodFilterMixin
 from .models import Brand, Category, Food
 from .utils import data_to_serving, serving_to_data
@@ -126,6 +139,7 @@ class FoodDetailView(LoginRequiredMixin, TemplateView):
     * Form to add food to a diary meal.
     * Form to add food to a saved meal.
     """
+
     template_name = 'food/food_detail.html'
 
     def get_context_data(self, **kwargs):
@@ -158,7 +172,7 @@ class FoodDetailView(LoginRequiredMixin, TemplateView):
             instance.food = context['object']
             instance.save()
             messages.success(request, 'Food added to Meal')
-            
+
         else:
             messages.error(request, 'An error has occured, please review below and re-submit')
 
@@ -190,7 +204,6 @@ class FoodUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         obj = self.get_object()
         return obj.user_created == self.request.user
-
 
 
 class FoodDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

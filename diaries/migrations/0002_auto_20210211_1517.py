@@ -13,7 +13,11 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='diary',
-            options={'ordering': '', 'verbose_name': 'diary entry', 'verbose_name_plural': 'diary entries'},
+            options={
+                'ordering': '',
+                'verbose_name': 'diary entry',
+                'verbose_name_plural': 'diary entries',
+            },
         ),
         migrations.AddField(
             model_name='diary',

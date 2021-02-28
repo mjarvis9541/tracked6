@@ -7,6 +7,7 @@ from .models import Meal, MealItem
 class MealAdmin(admin.ModelAdmin):
     pass
 
+
 @admin.register(MealItem)
 class MealItemAdmin(admin.ModelAdmin):
     pass

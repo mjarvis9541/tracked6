@@ -15,7 +15,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='meal',
             name='item_10',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_10', to='food.food'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_10',
+                to='food.food',
+            ),
         ),
         migrations.AddField(
             model_name='meal',
@@ -25,7 +31,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='meal',
             name='item_6',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_6', to='food.food'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_6',
+                to='food.food',
+            ),
         ),
         migrations.AddField(
             model_name='meal',
@@ -35,7 +47,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='meal',
             name='item_7',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_7', to='food.food'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_7',
+                to='food.food',
+            ),
         ),
         migrations.AddField(
             model_name='meal',
@@ -45,7 +63,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='meal',
             name='item_8',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_8', to='food.food'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_8',
+                to='food.food',
+            ),
         ),
         migrations.AddField(
             model_name='meal',
@@ -55,7 +79,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='meal',
             name='item_9',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meal_items_9', to='food.food'),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='meal_items_9',
+                to='food.food',
+            ),
         ),
         migrations.AddField(
             model_name='meal',

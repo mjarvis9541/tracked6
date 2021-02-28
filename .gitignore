@@ -12,6 +12,7 @@ rempx.md
 old_meals/
 config.json
 .vscode/
+commands.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

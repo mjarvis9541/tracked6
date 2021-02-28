@@ -1,7 +1,17 @@
 from django.db import models
-from django.db.models import (Avg, Case, ExpressionWrapper, F, Func, Sum,
-                              Value, When, Window)
+from django.db.models import (
+    Avg,
+    Case,
+    ExpressionWrapper,
+    F,
+    Func,
+    Sum,
+    Value,
+    When,
+    Window,
+)
 from django.db.models.functions import Coalesce, Concat, Round
+
 from profiles.models import Profile
 
 
@@ -27,10 +37,12 @@ class DiaryQuerySet(models.QuerySet):
         return self.select_related('food', 'food__brand').annotate(
             food_name=F('food__name'),
             brand_name=F('food__brand__name'),
-            data_value=ExpressionWrapper(F('quantity') * F('food__data_value'), output_field=models.DecimalField()),
-            
+            data_value=ExpressionWrapper(
+                F('quantity') * F('food__data_value'),
+                output_field=models.DecimalField(),
+            ),
             data_measurement=F('food__data_measurement'),
-            data_value_measurement=Case( 
+            data_value_measurement=Case(
                 # removes 'servings' measurement so it's displayed as '1 <item>' instead of '1 serving <item>'
                 When(data_measurement='g', then=Value('g')),
                 When(data_measurement='ml', then=Value('ml')),
@@ -39,7 +51,6 @@ class DiaryQuerySet(models.QuerySet):
                 default=Value(''),
                 output_field=models.CharField(),
             ),
-
             energy=ExpressionWrapper(F('quantity') * F('food__energy'), output_field=models.IntegerField()),
             fat=F('quantity') * F('food__fat'),
             saturates=F('quantity') * F('food__saturates'),
@@ -66,15 +77,19 @@ class DiaryQuerySet(models.QuerySet):
             total_salt=Coalesce(Sum('salt'), 0),
             total_sodium=Coalesce(Sum('sodium'), 0),
         )
-    
+
     def remaining(self, user):
         """
-        Calculates the remaining calories and macronutrients for the diary 
+        Calculates the remaining calories and macronutrients for the diary
         display page, based off the current user's dietary target.
         """
         total = self.filter(user=user).total()
-        target = Profile.objects.filter(user=user).annotate(
-            sodium=ExpressionWrapper(F('salt') * 400, output_field=models.IntegerField())).values().first()
+        target = (
+            Profile.objects.filter(user=user)
+            .annotate(sodium=ExpressionWrapper(F('salt') * 400, output_field=models.IntegerField()))
+            .values()
+            .first()
+        )
         return {
             'energy': target.get('energy', 0) - total.get('total_energy', 0),
             'fat': target.get('fat', 0) - total.get('total_fat', 0),
@@ -87,24 +102,22 @@ class DiaryQuerySet(models.QuerySet):
             'sodium': target.get('sodium', 0) - total.get('total_sodium', 0),
         }
 
-
-
-
-
-
     def custom_summary(self, macro_1='protein', macro_2='carbohydrate', macro_3='fat'):
         return self.select_related('food').annotate(
             name=F('food__name'),
             brand=F('food__brand'),
-            data_value=ExpressionWrapper(F('quantity') * F('food__data_value'), output_field=models.DecimalField()),
+            data_value=ExpressionWrapper(
+                F('quantity') * F('food__data_value'),
+                output_field=models.DecimalField(),
+            ),
             data_measurement=F('food__data_measurement'),
-            data_value_measurement=Case( 
+            data_value_measurement=Case(
                 # removes 'servings' measurement so it's displayed as '1 <item>' instead of '1 serving <item>'
                 When(data_measurement='g', then=Value('g')),
                 When(data_measurement='ml', then=Value('ml')),
                 default=Value(''),
                 output_field=models.CharField(),
-            ), 
+            ),
             energy=ExpressionWrapper(F('quantity') * F('food__energy'), output_field=models.IntegerField()),
             macro_1=F('quantity') * F(f'food__{macro_1}'),
             macro_2=F('quantity') * F(f'food__{macro_2}'),

@@ -14,7 +14,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='meal',
             name='datetime_created',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now, verbose_name='date created'),
+            field=models.DateTimeField(
+                auto_now_add=True,
+                default=django.utils.timezone.now,
+                verbose_name='date created',
+            ),
             preserve_default=False,
         ),
         migrations.AddField(

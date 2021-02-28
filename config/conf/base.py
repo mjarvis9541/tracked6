@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     # Project
     'accounts',
     'diaries',
@@ -45,12 +44,9 @@ INSTALLED_APPS = [
     'meals',
     'utils',
     'progress',
-    
     # 3rd-party
     # 'django_filters',
     # 'debug_toolbar',
-
-
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -70,7 +66,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'templates' ],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -106,7 +102,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
 
 
 # Password validation
@@ -147,7 +142,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # STATIC_ROOT = BASE_DIR / 'static' # using collectstatic - send static files to
-STATICFILES_DIRS = [ BASE_DIR / 'static' ] # using collectstatic - retreive static files from
+STATICFILES_DIRS = [BASE_DIR / 'static']  # using collectstatic - retreive static files from
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

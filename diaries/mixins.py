@@ -3,10 +3,10 @@ import datetime
 from django.http import Http404
 from django.utils import timezone
 from django.views.generic.base import ContextMixin
-from food.forms import FoodFilterForm
-from food.models import Food
 
 from diaries.models import Diary
+from food.forms import FoodFilterForm
+from food.models import Food
 
 # class ContextMixin:
 #     """

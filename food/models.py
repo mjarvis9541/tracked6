@@ -1,7 +1,16 @@
 from django.conf import settings
 from django.db import models
-from django.db.models import (Avg, Case, ExpressionWrapper, F, Func, Sum,
-                              Value, When, Window)
+from django.db.models import (
+    Avg,
+    Case,
+    ExpressionWrapper,
+    F,
+    Func,
+    Sum,
+    Value,
+    When,
+    Window,
+)
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
@@ -55,9 +64,7 @@ class FoodQuerySet(models.QuerySet):
 
     def custom_summary(self, macro_1='protein', macro_2='carbohydrate', macro_3='fat'):
         # TODO: Complete this so the user can display different macros on their diary page.
-        return self.annotate(
-            macro_1=F(f'{macro_1}'), macro_2=F(f'{macro_2}'), macro_3=F(f'{macro_3}')
-        )
+        return self.annotate(macro_1=F(f'{macro_1}'), macro_2=F(f'{macro_2}'), macro_3=F(f'{macro_3}'))
 
 
 class Food(Uuidable, Nutritionable, Authorable, Timestampable):
@@ -83,9 +90,7 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
         verbose_name = 'food'
         verbose_name_plural = 'food'
         ordering = ('name',)
-        constraints = [
-            models.UniqueConstraint(fields=['name', 'brand'], name='unique_name_brand')
-        ]
+        constraints = [models.UniqueConstraint(fields=['name', 'brand'], name='unique_name_brand')]
 
     def __str__(self):
         if self.data_measurement == 'g' or self.data_measurement == 'ml':

@@ -28,11 +28,22 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='profile',
             name='sex',
-            field=models.CharField(blank=True, choices=[('M', 'Male'), ('F', 'Female')], max_length=1, null=True),
+            field=models.CharField(
+                blank=True,
+                choices=[('M', 'Male'), ('F', 'Female')],
+                max_length=1,
+                null=True,
+            ),
         ),
         migrations.AlterField(
             model_name='profile',
             name='weight',
-            field=models.DecimalField(blank=True, decimal_places=1, max_digits=4, null=True, verbose_name='weight (kg)'),
+            field=models.DecimalField(
+                blank=True,
+                decimal_places=1,
+                max_digits=4,
+                null=True,
+                verbose_name='weight (kg)',
+            ),
         ),
     ]
