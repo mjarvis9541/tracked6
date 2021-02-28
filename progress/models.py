@@ -45,7 +45,6 @@ class Progress(Uuidable, Timestampable):
 
     def get_absolute_url(self):
         return reverse('progress:list')
-        # return reverse('progress:detail', kwargs={'pk': self.pk})
 
     def save(self, *args, **kwargs):
         slug_str = f'{self.date} {self.user.username}'

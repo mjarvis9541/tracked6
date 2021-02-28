@@ -52,7 +52,7 @@ class Category(Authorable, Timestampable, Uuidable):
 
 class FoodQuerySet(models.QuerySet):
     def summary(self):
-        return self.annotate(
+        return self.select_related('brand', 'category').annotate(
             food_brand=F('brand__name'),
             data_value_measurement=Case(
                 When(data_measurement='g', then=Value('100g')),

@@ -4,67 +4,79 @@
 
 <div class="grid-1-5">
     <div>
-        <h2 >Settings</h2>
+        <h2>Settings</h2>
         <br>
         <div><a href="">Account</a></div>
         <br>
         <div><a href="">Profile</a></div>
         <br>
         <div><a href="{% url 'accounts:logout' %}">Log Out</a></div>
+        <br>
     </div>
-
-
-
 
 
     <div>
         <h2 class="mb-1">Profile</h2>
 
+        <p>User profile information.</p> <br>
+
         <table class="table">
-        <thead>
-            <tr>
-                <th colspan="2">Stats</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td style="width:50%">Gender</td>
-                <td style="width:50%">{{ profile.get_sex_display }}</td>
-            </tr>
-            <tr>
-                <td style="width:50%">Height (cm)</td>
-                <td style="width:50%">{{ profile.height }}</td>
-            </tr>
-            <tr>
-                <td style="width:50%">Weight (kg)</td>
-                <td style="width:50%">{{ profile.weight }}</td>
-            </tr>
-            <tr>
-                <td style="width:50%">Date of Birth</td>
-                <td style="width:50%">{{ profile.date_of_birth }}</td>
-            </tr>
-            <tr>
-                <td style="width:50%">Activity Level</td>
-                <td style="width:50%">{{ profile.activity_level }}</td>
-            </tr>
-            <tr>
-                <td style="width:50%">Goal Weight</td>
-                <td style="width:50%">{{ profile.goal_weight }}</td>
-            </tr>
-            <tr>
-                <td style="width:50%">Date of Birth</td>
-                <td style="width:50%">{{ profile.date_of_birth }}</td>
-            </tr>
-         
-        </tbody>
-    </table>
+            <thead>
+                <tr>
+                    <th colspan="2"><h3>Stats</h3></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 50%">Gender</td>
+                    <td style="text-align: end; width: 50%;">{{ profile.get_sex_display }}</td>
+                </tr>
+                <tr>
+                    <td style="width: 50%">Height</td>
+                    <td style="text-align: end; width: 50%">{{ profile.height }}cm</td>
+                </tr>
+                <tr>
+                    <td style="width: 50%">Weight</td>
+                    <td style="text-align: end; width: 50%">{{ profile.weight }}kg</td>
+                </tr>
+                <tr>
+                    <td style="width: 50%">Date of Birth</td>
+                    <td style="text-align: end; width: 50%">{{ profile.date_of_birth }}</td>
+                </tr>
+                <tr>
+                    <td style="width: 50%">Age</td>
+                    <td style="text-align: end; width: 50%">{{ profile.age }}</td>
+                </tr>
+                <tr>
+                    <td style="width: 50%">Activity Level</td>
+                    <td style="text-align: end; width: 50%">{{ profile.get_activity_level_display }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+        <div class="mt-2 mb-2"><a href="">Update Stats</a></div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th colspan="2"><h3>Goals</h3></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 50%">Goal</td>
+                    <td style="text-align: end; width: 50%">{{ profile.get_goal_display }}</td>
+                </tr>
+                <tr>
+                    <td style="width: 50%">Goal Weight</td>
+                    <td style="text-align: end; width: 50%">{{ profile.goal_weight }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="mt-2 mb-2"><a href="">Update Goals</a></div>
 
 
 
 
+    </div>
 
-
-
-</div>
-
-{% endblock content %}
+    {% endblock content %}

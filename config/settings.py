@@ -17,6 +17,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+INTERNAL_IPS = ['127.0.0.1',]
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -26,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    
     # Project
     'accounts.apps.AccountsConfig',
     'diaries.apps.DiariesConfig',
@@ -35,14 +38,18 @@ INSTALLED_APPS = [
     'progress.apps.ProgressConfig',
     'profiles.apps.ProfilesConfig',
     'blog.apps.BlogConfig',
+
     # 3rd-party
     'rest_framework',
-    # 'debug_toolbar',
+    'debug_toolbar',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
+    # Debug toolbar
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

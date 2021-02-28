@@ -104,12 +104,12 @@ class CategoryDeleteView(LoginRequiredMixin, DeleteView):
 class FoodListView(FoodFilterMixin, ListView):
     ordering = ('name', 'brand')
     paginate_by = 20
-    queryset = Food.objects.all()
+    queryset = Food.objects.select_related('brand')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = FoodFilterForm(self.request.GET)
-        context['latest_food'] = Food.objects.all().order_by('-datetime_created')[:10]
+        # context['latest_food'] = Food.objects.all().order_by('-datetime_created')[:10]
         return context
 
 
