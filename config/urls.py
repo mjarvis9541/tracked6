@@ -30,6 +30,7 @@ urlpatterns = [
     path('meals/', include('meals.urls')),
     path('progress/', include('progress.urls')),
     path('accounts/', include('accounts.urls')),
+    path('blog/', include('blog.urls')),
     # Admin site
     path('admin/', admin.site.urls),
     # Admin password reset urls

@@ -51,7 +51,7 @@ class DiaryDayListView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
     * Renders the remaining values of the users daily total minus the users daily target.
     """
 
-    template_name = 'diaries/diary_day_list.html'
+    template_name = 'diaries/diary_list_day.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

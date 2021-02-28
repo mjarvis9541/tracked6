@@ -2,12 +2,39 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
+from django.utils.text import slugify
 
 """ Reference: https://blog.kevinastone.com/django-model-behaviors """
 
 
+class Permalinkable(models.Model):
+    """
+    Requires a url parameter attribute in the model
+    Adds a slug field to the model, sets absolute url to the url_name
+    Automatically generates a slug
+    # TODO: Handle case sensitivity.
+    """
+
+    slug = models.SlugField(max_length=255, editable=False)
+
+    class Meta:
+        abstract = True
+
+    def get_absolute_url(self):
+        url_name = self.url_name
+        return reverse(url_name, kwargs={'slug': self.slug})
+
+    def save(self, *args, **kwargs):
+        slug_str = self.slug_str
+        self.slug = slugify(slug_str)
+        super().save(*args, **kwargs)
+
+
 class Uuidable(models.Model):
-    """ Model behaviour that replaces the standard primary key id field with a uuid field """
+    """
+    Adds an id field as a UUIDField to the model.
+    """
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -16,7 +43,12 @@ class Uuidable(models.Model):
 
 
 class Nutritionable(models.Model):
-    """ Model behaviour that adds energy and macronutrient fields """
+    """
+    Adds common calorie and macronutrient fields to the model.
+    - Calories as an PostiveInteferField.
+    - Macronutrients as a DecimalField, content formatted 000.0.
+    - Salt as a DecimalField, content formatted as 000.00.
+    """
 
     energy = models.IntegerField(verbose_name='calories (kcal)')
     fat = models.DecimalField(verbose_name='fat (g)', max_digits=4, decimal_places=1)
@@ -37,14 +69,22 @@ class Nutritionable(models.Model):
 
 
 class Timestampable(models.Model):
-    datetime_created = models.DateTimeField('date created', auto_now_add=True)
-    datetime_updated = models.DateTimeField('date updated', auto_now=True)
+    """
+    Adds a 'datetime_created' and 'datetime_updated' field to the model. Both auto-popluated.
+    """
+
+    datetime_created = models.DateTimeField(verbose_name='created on', auto_now_add=True)
+    datetime_updated = models.DateTimeField(verbose_name='updated on', auto_now=True)
 
     class Meta:
         abstract = True
 
 
 class Authorable(models.Model):
+    """
+    Adds a 'user_created' and 'user_updated' field to the model, defaults to admin user.
+    """
+
     user_created = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,

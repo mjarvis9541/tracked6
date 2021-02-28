@@ -55,10 +55,10 @@ class Profile(Uuidable):
         null=True,
         blank=True,
     )
-    
+
     # Base user stats
     sex = models.CharField(max_length=1, choices=Sex.choices, null=True, blank=True)
-    height = models.IntegerField('height (cm)', null=True, blank=True)
+    height = models.PositiveIntegerField('height (cm)', null=True, blank=True)
     weight = models.DecimalField('weight (kg)', max_digits=4, decimal_places=1, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True, validators=[MaxValueValidator(limit_value=date.today)])
     activity_level = models.CharField(
@@ -84,7 +84,7 @@ class Profile(Uuidable):
         decimal_places=1,
         null=True,
         blank=True,
-        help_text='Set a goal weight and we\'ll estimate how long it\'ll take for you to reach it.',
+        help_text='Used to determine duration required to reach weight goal.',
     )
     goal = models.CharField(
         max_length=2,
@@ -107,9 +107,9 @@ class Profile(Uuidable):
         null=True,
         blank=True,
         editable=False,
-        help_text="Records the method that was used to set the user's macronutrient targets.",
+        help_text="Calculation method used to set the user's macronutrient targets.",
     )
-    energy = models.IntegerField(verbose_name='energy (kcal)', default=2000)
+    energy = models.PositiveIntegerField(verbose_name='energy (kcal)', default=2000)
     fat = models.DecimalField(verbose_name='fat (g)', max_digits=4, decimal_places=1, default=70)
     saturates = models.DecimalField(verbose_name='saturates (g)', max_digits=4, decimal_places=1, default=20)
     carbohydrate = models.DecimalField(verbose_name='carbohydrate (g)', max_digits=4, decimal_places=1, default=260)
@@ -118,24 +118,73 @@ class Profile(Uuidable):
     protein = models.DecimalField(verbose_name='protein (g)', max_digits=4, decimal_places=1, default=50)
     salt = models.DecimalField(verbose_name='salt (g)', max_digits=5, decimal_places=2, default=6)
 
-    __original_weight = None
+    protein_pct = models.PositiveIntegerField(
+        verbose_name='protein percent',
+        null=True,
+        blank=True,
+        help_text="""
+        Percentage of daily calories from protein.
+        """,
+    )
+    carbohydrate_pct = models.PositiveIntegerField(
+        verbose_name='carbohydrate percent',
+        null=True,
+        blank=True,
+        help_text="""
+        Percentage of daily calories from carbohydrates.
+        """,
+    )
+    fat_pct = models.PositiveIntegerField(
+        verbose_name='fat percent',
+        null=True,
+        blank=True,
+        help_text="""
+        Percentage of daily calories from fat.
+        """,
+    )
+
+    calories_per_kg = models.PositiveIntegerField(
+        null=True, blank=True, help_text="""The amount of calories (kcal) per kilogram of body weight."""
+    )
+    protein_per_kg = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="""The amount of protein (in grams) per kilogram of body weight.""",
+    )
+    carbohydrate_per_kg = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="""The amount of carbohydrates (in grams) per kilogram of body weight.""",
+    )
+    fat_per_kg = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="""The amount of fat (in grams) per kilogram of body weight.""",
+    )
+
+    __original_weight = None  # Only used to determine previous value of self.weight if changed
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__original_weight = self.weight
 
     def save(self, *args, **kwargs):
-        # When the user updates their weight, this will either create
-        # or update an entry in the progress model with the current date.
         if self.weight != self.__original_weight:
+            # Checks if self.weight value was changed
             post = Progress.objects.filter(user=self.user, date=timezone.now()).first()
             if post:
                 post.weight = self.weight
                 post.save()
-                print('updated user weight within progress model on this date')
+                print('Updated log for user weight in the progress model for this date')
             else:
                 Progress.objects.create(user=self.user, date=timezone.now(), weight=self.weight)
-                print('created user weight within progress within on this date')
+                print('Logged user weight in the progress model for this date')
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -154,13 +203,13 @@ class Profile(Uuidable):
     def weight_lb(self):
         # Converts user's weight from kg to lb
         if self.weight:
-            return round(self.weight * 2.20462)
+            return round(self.weight * Decimal(2.20462))
 
     @property
     def goal_weight_lb(self):
         # Converts user's weight from kg to lb
         if self.goal_weight:
-            return round(self.goal_weight * 2.20462)
+            return round(self.goal_weight * Decimal(2.20462))
 
     @property
     def weight_st(self):
@@ -184,7 +233,7 @@ class Profile(Uuidable):
     def height_in(self):
         # Converts user's height from cm to in
         if self.height:
-            return round(self.height / 2.54)
+            return round(self.height / Decimal(2.54))
 
     @property
     def height_ft(self):
@@ -212,14 +261,14 @@ class Profile(Uuidable):
         if self.weight:
             duration = {}
             duration['short'] = abs(self.weight - self.goal_weight) / 1
-            duration['long'] = abs(self.weight - self.goal_weight) / 0.5
+            duration['long'] = abs(self.weight - self.goal_weight) / Decimal(0.5)
             return duration
 
     @property
     def bmi(self):
         # Calculates Body Mass Index
         if self.weight and self.height:
-            return round(self.weight / Decimal(((self.height / 100) ** 2)), 1)
+            return round(self.weight / Decimal((self.height / 100) ** 2), 1)
 
     @property
     def bmr(self):
@@ -263,6 +312,161 @@ class Profile(Uuidable):
             elif self.goal == self.Goal.GAIN_WEIGHT:
                 modifier = 1.1
             return round(self.tdee * modifier)
+
+    def set_default(self):
+        """
+        Updates the user's target with the recommended setup targets.
+        """
+
+        self.calculation_method = self.CalculationMethod.RECOMMENDED
+        sex = self.sex
+        weight = self.weight
+        calories = self.recommended_calories
+
+        self.calories = calories
+        if self.goal == self.Goal.LOSE_WEIGHT:
+            self.protein_pct = 40
+            self.carbohydrate_pct = 40
+            self.fat_pct = 20
+
+        elif self.goal == self.Goal.MAINTAIN_WEIGHT:
+            self.protein_pct = 25
+            self.carbohydrate_pct = 55
+            self.fat_pct = 20
+
+        elif self.goal == self.Goal.GAIN_WEIGHT:
+            self.protein_pct = 25
+            self.carbohydrate_pct = 55
+            self.fat_pct = 20
+
+        self.protein = round(calories * (self.protein_pct / 100) / 4)
+        self.carbohydrate = round(calories * (self.carbohydrate_pct / 100) / 4)
+        self.fat = round(calories * (self.fat_pct / 100) / 9)
+        self.saturates = self.fat * 0.35
+        if sex == self.Sex.MALE and self.saturates > 30:
+            self.saturates = 30
+        elif sex == self.Sex.FEMALE and self.saturates > 20:
+            self.saturates = 20
+        self.sugars = self.calories * 0.045
+        if self.sugars > self.carbohydrate:
+            self.sugars = self.carbohydrate
+        self.fibre = 30
+        self.salt = 6
+        self.calories_per_kg = self.calories / weight
+        self.protein_per_kg = round(self.protein / weight, 2)
+        self.carbohydrate_per_kg = round(self.carbohydrate / weight, 2)
+        self.fat_per_kg = round(self.fat / weight, 2)
+
+        # self.user.setup_complete = True
+        # self.user.save()
+        self.save()
+
+    def set_percent(self, calories, protein, carbohydrate, fat, **kwargs):
+        """
+        Updates the user's target based on a macronutrient percentage of
+        total calories.
+        """
+
+        self.calculation_method = self.CalculationMethod.PERCENT
+        sex = self.sex
+        weight = self.weight
+
+        self.calories = calories
+        self.protein = calories * (protein / 100) / 4
+        self.carbohydrate = calories * (carbohydrate / 100) / 4
+        self.fat = calories * (fat / 100) / 9
+
+        self.saturates = self.fat * 0.35
+        if sex == self.Sex.MALE and self.saturates > 30:
+            self.saturates = 30
+        elif sex == self.Sex.FEMALE and self.saturates > 20:
+            self.saturates = 20
+
+        self.sugars = self.calories * 0.045
+        if self.sugars > self.carbohydrate:
+            self.sugars = self.carbohydrate
+        self.fibre = 30
+        self.salt = 6
+        self.protein_pct = protein
+        self.carbohydrate_pct = carbohydrate
+        self.fat_pct = fat
+        self.calories_per_kg = self.calories / weight
+        self.protein_per_kg = round(self.protein / weight, 2)
+        self.carbohydrate_per_kg = round(self.carbohydrate / weight, 2)
+        self.fat_per_kg = round(self.fat / weight, 2)
+
+        # self.user.setup_complete = True
+        # self.user.save()
+        self.save()
+
+    def set_grams(self, protein, carbohydrate, fat):
+        """
+        Updates the user's target based on macronutrient grams per
+        kilogram of total body weight.
+        """
+
+        self.calculation_method = self.CalculationMethod.GRAMS
+        sex = self.sex
+        weight = self.weight
+
+        self.protein = protein * weight
+        self.carbohydrate = carbohydrate * weight
+        self.fat = fat * weight
+        self.calories = (self.protein * 4) + (self.carbohydrate * 4) + (self.fat * 9)
+
+        self.saturates = self.fat * 0.35  # Prevent saturates exceeding RI for male/female
+        if sex == self.Sex.MALE and self.saturates > 30:
+            self.saturates = 30
+        elif sex == self.Sex.FEMALE and self.saturates > 20:
+            self.saturates = 20
+
+        self.sugars = self.calories * 0.045  # Prevent sugars exceeding carbohydrate
+        if self.sugars > self.carbohydrate:
+            self.sugars = self.carbohydrate
+        self.fibre = 30
+        self.salt = 6
+
+        self.protein_pct = round((self.protein * 4) / self.calories * 100)
+        self.carbohydrate_pct = round((self.carbohydrate * 4) / self.calories * 100)
+        self.fat_pct = round((self.fat * 9) / self.calories * 100)
+
+        self.calories_per_kg = self.calories / weight
+        self.protein_per_kg = protein
+        self.carbohydrate_per_kg = carbohydrate
+        self.fat_per_kg = fat
+
+        # self.user.setup_complete = True
+        # self.user.save()
+        self.save()
+
+    def set_custom(self, protein, carbohydrate, fat, saturates, sugars, fibre, salt):
+        """
+        Updates the user's target customizing every macronutrient. Currently unused.
+        """
+
+        self.calculation_method = self.CalculationMethod.CUSTOM
+        weight = self.weight
+
+        self.protein = protein
+        self.carbohydrate = carbohydrate
+        self.fat = fat
+        self.saturates = saturates
+        self.sugars = sugars
+        self.fibre = fibre
+        self.salt = salt
+        self.calories = (self.protein * 4) + (self.carbohydrate * 4) + (self.fat * 9)
+
+        # Some issues with % - sometimes it doesn't add up to 100% due to rounding
+        self.protein_pct = round((self.protein * 4) / self.calories * 100)
+        self.carbohydrate_pct = round((self.carbohydrate * 4) / self.calories * 100)
+        self.fat_pct = round((self.fat * 9) / self.calories * 100)
+
+        self.calories_per_kg = self.calories / weight
+        self.protein_per_kg = protein
+        self.carbohydrate_per_kg = carbohydrate
+        self.fat_per_kg = fat
+
+        self.save()
 
 
 @receiver(post_save, sender=User)

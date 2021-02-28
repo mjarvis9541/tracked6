@@ -2,9 +2,15 @@
 {% block content %}
 
 
-<div class="pt-1 grid-2-1">
+<div class="grid-1-5">
     <div>
-        Settings
+        <h2 >Settings</h2>
+        <br>
+        <div><a href="">Account</a></div>
+        <br>
+        <div><a href="">Profile</a></div>
+        <br>
+        <div><a href="{% url 'accounts:logout' %}">Log Out</a></div>
     </div>
 
 
@@ -12,6 +18,8 @@
 
 
     <div>
+        <h2 class="mb-1">Profile</h2>
+
         <table class="table">
         <thead>
             <tr>
@@ -30,6 +38,18 @@
             <tr>
                 <td style="width:50%">Weight (kg)</td>
                 <td style="width:50%">{{ profile.weight }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%">Date of Birth</td>
+                <td style="width:50%">{{ profile.date_of_birth }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%">Activity Level</td>
+                <td style="width:50%">{{ profile.activity_level }}</td>
+            </tr>
+            <tr>
+                <td style="width:50%">Goal Weight</td>
+                <td style="width:50%">{{ profile.goal_weight }}</td>
             </tr>
             <tr>
                 <td style="width:50%">Date of Birth</td>

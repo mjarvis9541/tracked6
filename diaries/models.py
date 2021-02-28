@@ -26,8 +26,8 @@ class Diary(Uuidable, Timestampable):
     objects = DiaryQuerySet.as_manager()
 
     class Meta:
-        verbose_name = 'diary entry'
-        verbose_name_plural = 'diary entries'
+        verbose_name = 'food diary entry'
+        verbose_name_plural = 'food diary entries'
 
     # ordering = ('-datetime_created',)
 

@@ -34,8 +34,8 @@ class Meal(Uuidable, Timestampable):
     objects = MealQuerySet.as_manager()
 
     class Meta:
-        verbose_name = 'meal'
-        verbose_name_plural = 'meals'
+        verbose_name = 'saved meal'
+        verbose_name_plural = 'saved meals'
         constraints = [models.UniqueConstraint(fields=['user', 'name'], name='unique_meal_name')]
 
     def save(self, *args, **kwargs):
@@ -144,8 +144,8 @@ class MealItem(Uuidable, Timestampable):
     objects = MealItemQuerySet.as_manager()
 
     class Meta:
-        verbose_name = 'meal item'
-        verbose_name_plural = 'meal items'
+        verbose_name = 'meal content'
+        verbose_name_plural = 'meal contents'
 
     def __str__(self):
         return f'{self.food.name} of {self.meal.name}'
