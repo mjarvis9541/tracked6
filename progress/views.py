@@ -19,11 +19,11 @@ from utils.mixins import UserFormKwargsMixin
 class ProgressListView(LoginRequiredMixin, ListView):
     """ View to list all the Progresss in progress """
 
-    ordering = ['-date']
+    ordering = ('-date',)
     paginate_by = 25
 
     def get_queryset(self, **kwargs):
-        return Progress.objects.filter(user=self.request.user).order_by('-date')
+        return Progress.objects.filter(user=self.request.user) #.order_by('-date')
 
 
 class ProgressCreateView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):

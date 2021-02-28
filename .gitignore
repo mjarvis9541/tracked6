@@ -10,6 +10,7 @@ requirements2.txt
 /xcss
 rempx.md
 old_meals/
+config.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,13 +1,23 @@
+import json
 from pathlib import Path
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'fjlveoge8-9smu(0)m+3n@x4)y1==j1xzn-%f8ee-+0k=b)i_7'
+with open(BASE_DIR / 'config.json') as f:
+    config = json.load(f)
 
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config['SECRET_KEY']
+
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = []
-AUTH_USER_MODEL = 'accounts.User'
+
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -16,7 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-
     # Project
     'accounts',
     'diaries',
@@ -25,11 +34,9 @@ INSTALLED_APPS = [
     'utils',
     'progress',
     'profiles',
-    
     # 3rd-party
     'rest_framework',
     # 'debug_toolbar',
-
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -49,7 +56,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'templates' ],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,11 +74,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'trackedfitness',
-        'USER': 'postgres',
-        'PASSWORD': 'Exerceo10u',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': config['LOCAL_DB_NAME'],
+        'USER': config['LOCAL_DB_USER'],
+        'PASSWORD': config['LOCAL_DB_PASS'],
+        'HOST': config['LOCAL_DB_HOST'],
+        'PORT': config['LOCAL_DB_PORT'],
     }
 }
 
@@ -100,14 +107,22 @@ USE_L10N = True
 
 USE_TZ = True
 
+
 STATIC_URL = '/static/'
 # STATIC_ROOT = BASE_DIR / 'static' # using collectstatic - send static files to
-STATICFILES_DIRS = [ BASE_DIR / 'static' ] # using collectstatic - retreive static files from
+STATICFILES_DIRS = [BASE_DIR / 'static']
+# using collectstatic - retreive static files from
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
+LOGIN_REDIRECT_URL = 'profiles:profile'
+LOGIN_URL = 'accounts:login'
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -121,6 +136,3 @@ REST_FRAMEWORK = {
     #     'rest_framework.authentication.TokenAuthentication',
     # ],
 }
-
-LOGIN_REDIRECT_URL = 'profiles:profile'
-LOGIN_URL = 'accounts:login'

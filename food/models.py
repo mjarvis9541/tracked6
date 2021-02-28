@@ -62,6 +62,7 @@ class FoodQuerySet(models.QuerySet):
         )
 
     def custom_summary(self, macro_1='protein', macro_2='carbohydrate', macro_3='fat'):
+        # TODO: Complete this so the user can display different macros on their diary page.
         return self.annotate(
             macro_1=F(f'{macro_1}'), macro_2=F(f'{macro_2}'), macro_3=F(f'{macro_3}')
         )
@@ -96,17 +97,18 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
 
     def __str__(self):
         if self.data_measurement == 'g' or self.data_measurement == 'ml':
+            # displays '100g' or '100ml'
             return f'{self.name}, {self.brand.name}, {self.data_value}{self.data_measurement}'
         else:
+            # displays '1 serving'
             return f'{self.name}, {self.brand.name}, {self.data_value} {self.get_data_measurement_display().title()}'
 
     def get_absolute_url(self):
         return reverse('food:detail', kwargs={'slug': self.slug})
-        return reverse('food:detail', kwargs={'pk': self.pk})
 
     @property
     def serving(self):
-        """ Data value display for the food list page. """
+        # Data value display for the food list page.
         if self.data_measurement == 'g' or self.data_measurement == 'ml':
             return f'{self.data_value}{self.data_measurement}'
         else:
@@ -114,7 +116,7 @@ class Food(Uuidable, Nutritionable, Authorable, Timestampable):
 
     @property
     def data_value_measurement_detail(self):
-        """ Data value display for the food detail page. """
+        # Data value display for the food detail page.
         if self.data_measurement == 'g' or self.data_measurement == 'ml':
             return f'{self.data_value}{self.data_measurement}'
         else:

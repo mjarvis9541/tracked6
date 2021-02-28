@@ -15,7 +15,7 @@ class Progress(Uuidable, Timestampable):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date = models.DateField(default=timezone.now, validators=[MaxValueValidator(limit_value=date.today)])
-    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
+    slug = models.SlugField(max_length=255, unique=True)
     weight = models.DecimalField(
         verbose_name='weight (kg)',
         max_digits=4,
@@ -25,7 +25,7 @@ class Progress(Uuidable, Timestampable):
     )
     image = models.ImageField(
         verbose_name='progress picture',
-        upload_to='images',
+        upload_to='images/progress_pictures',
         null=True,
         blank=True,
         help_text='Upload an optional progress picture for this day.',
@@ -33,8 +33,8 @@ class Progress(Uuidable, Timestampable):
     notes = models.TextField('notes', max_length=1000, null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Progress'
-        verbose_name_plural = 'Progress'
+        verbose_name = 'progress log'
+        verbose_name_plural = 'progress logs'
         constraints = [
             models.UniqueConstraint(fields=['user', 'date'], name='unique_user_date')
         ]
