@@ -8,7 +8,6 @@ User = get_user_model()
 
 class FoodDataTests(TestCase):
     def setUp(self):
-
         user = User.objects.create(username='user', password='password123')
         brand = Brand.objects.create(name='Tesco', description='None')
         category = Category.objects.create(name='Generic', description='None')

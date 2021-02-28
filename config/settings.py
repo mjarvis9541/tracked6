@@ -17,7 +17,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-INTERNAL_IPS = ['127.0.0.1',]
+# For Debug toolbar
+# INTERNAL_IPS = ['127.0.0.1',]
 
 # Application definition
 INSTALLED_APPS = [
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
-    # Debug toolbar
+    # Debug toolbar - to be added high as possible
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 
     'django.middleware.security.SecurityMiddleware',

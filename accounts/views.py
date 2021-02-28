@@ -4,9 +4,9 @@ from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-
+from django.core.mail import EmailMessage
 from .forms import UserCreationForm
-
+from django.template.loader import render_to_string
 """ Authentication """
 
 
@@ -60,7 +60,7 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('profiles:profile')
 
     def dispatch(self, request, *args, **kwargs):
-        # override dispatch - override all methods (get, post, etc)
+        # overriding dispatch overrides all methods (get, post, etc)
         if request.user.is_authenticated:
             messages.error(
                 request,
