@@ -1,0 +1,40 @@
+.grid-1 {
+    background: #fff;
+    padding: .75rem;
+    display: grid;
+    grid-template-columns: 1;
+}
+
+.layout-1 {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+}
+
+.grid-structure-1-5 {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+    background: #fff;
+    min-height: 50vh;
+}
+
+
+.grid-1-5 {
+    padding: 1rem 1rem;
+    background: #fff;
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+}
+
+
+
+@media (max-width: 684px) {
+    .grid-1-5 {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+
+
+
+

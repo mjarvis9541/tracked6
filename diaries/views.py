@@ -277,7 +277,10 @@ class DiaryAddMealConfirmView(LoginRequiredMixin, DiaryDateMixin, DiaryMealMixin
 """ Diary update views """
 
 
-class DiaryUpdateView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
+class DiaryDetailUpdateView(LoginRequiredMixin, DiaryDateMixin, TemplateView):
+    """
+    Detail and update view combined.
+    """
     template_name = 'diaries/diary_update.html'
 
     def get_context_data(self, **kwargs):

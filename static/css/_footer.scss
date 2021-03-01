@@ -1,8 +1,12 @@
-html, body {
-    height: 100%;
+.footer {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
-.main {
-    min-height: 100%;
-    overflow: auto;
+// Phones
+@media (max-width: 575.98px) {
+    .footer {
+        grid-template-columns: 1fr 1fr;
+    }
 }

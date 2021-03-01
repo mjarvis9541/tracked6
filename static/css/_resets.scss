@@ -6,8 +6,11 @@
 }
 
 /* Remove default padding */
+ul,
+ol,
 ul[class],
 ol[class] {
+  margin: 0;
   padding: 0;
 }
 

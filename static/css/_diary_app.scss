@@ -138,60 +138,56 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;
+
+    .diary-detail-grid-item {
+        padding: 0.5rem 1rem;;
+        border: 1px solid #f2f2f2;
+    }
 }
 
-.diary-detail-grid-item {
-    padding: 0.5rem 1rem;;
-    border: 1px solid #f2f2f2;
-}
+
 
 
 
 @media (max-width: 684px) {
-
     .diary-detail-grid {
         grid-template-columns: 1fr;
     }
-
-
-
-
-}
-.diary-data {
-    display: grid;
-    grid-template-columns: auto 3fr repeat(5, 1fr);
-    grid-column-gap: .5rem;
-
-    .grid-title {
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid #f2f2f2;
-    }
-
-    div {
-        border-bottom: 1px solid #f2f2f2;
-    }
-
-    .check {
-        padding-right: .5rem;
-    }
-
-    .grid-item {
-        display: flex;
-        align-items: center;
-        border-bottom: 1px solid #f2f2f2;
-    }
-    .end {
-        justify-content: flex-end;
-        text-align: end;
-    }
-
 }
 
-@media (max-width: 684px) {
 
-}
+// .diary-data {
+//     display: grid;
+//     grid-template-columns: auto 3fr repeat(5, 1fr);
+//     grid-column-gap: .5rem;
+
+//     .grid-title {
+//         font-weight: bold;
+//         display: flex;
+//         align-items: center;
+//         border-bottom: 1px solid #f2f2f2;
+//     }
+
+//     div {
+//         border-bottom: 1px solid #f2f2f2;
+//     }
+
+//     .check {
+//         padding-right: .5rem;
+//     }
+
+//     .grid-item {
+//         display: flex;
+//         align-items: center;
+//         border-bottom: 1px solid #f2f2f2;
+//     }
+//     .end {
+//         justify-content: flex-end;
+//         text-align: end;
+//     }
+
+// }
+
 
 
 .diary-date {

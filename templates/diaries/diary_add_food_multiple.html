@@ -3,9 +3,11 @@
 {% load humanize %}
 {% block content %}
 
-<div class="structure">
+<div class="grid-1-5">
+    <!-- Left column -->
+    <div></div>
     <div>
-<h2 class="mt-1 mb-1">Add Food to {{ meal_name }}, {{ date|date:"l, j M" }}</h2>
+<h2>Add Food to {{ meal_name }}, {{ date|date:"l, j M" }}</h2>
 
 <form action="" method="get" class="mt-1 mb-1">
 <div class="food-search">
