@@ -5,7 +5,7 @@
 
     <div>
         <div class="diary-date">
-            <h2 class="grid-item-a">{{ date|date:"l, j M" }}</h2>
+            <h2 class="grid-item-a"></h2>
             <div class="grid-item-b">
                 <a class="btn" href="{% url 'diaries:today' %}">Today</a>
                 <a class="btn" href="{% url 'diaries:day' previous_day.year previous_day.month previous_day.day %}"><i class="fas fa-arrow-left"></i></a>

@@ -19,7 +19,7 @@ from .models import Progress
 
 
 class ProgressListView(LoginRequiredMixin, ListView):
-    """ View to list all the Progresss in progress """
+    """ View to list all the posts in progress """
 
     ordering = ('-date',)
     paginate_by = 25
