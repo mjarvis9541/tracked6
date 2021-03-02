@@ -1,27 +1,15 @@
 import json
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 with open(BASE_DIR / 'config.json') as f:
     config = json.load(f)
 
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config['SECRET_KEY']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-
-ALLOWED_HOSTS = []
-
-# For Debug toolbar
-# INTERNAL_IPS = ['127.0.0.1',]
-
-# Application definition
 INSTALLED_APPS = [
+    # Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -32,25 +20,21 @@ INSTALLED_APPS = [
     
     # Project
     'accounts.apps.AccountsConfig',
+    'blog.apps.BlogConfig',
     'diaries.apps.DiariesConfig',
     'food.apps.FoodConfig',
     'meals.apps.MealsConfig',
-    'utils.apps.UtilsConfig',
-    'progress.apps.ProgressConfig',
     'profiles.apps.ProfilesConfig',
-    'blog.apps.BlogConfig',
+    'progress.apps.ProgressConfig',
+    'utils.apps.UtilsConfig',
 
     # 3rd-party
     'rest_framework',
-    'debug_toolbar',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
-    # Debug toolbar - to be added high as possible
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -79,17 +63,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config['LOCAL_DB_NAME'],
-        'USER': config['LOCAL_DB_USER'],
-        'PASSWORD': config['LOCAL_DB_PASS'],
-        'HOST': config['LOCAL_DB_HOST'],
-        'PORT': config['LOCAL_DB_PORT'],
-    }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -125,13 +98,8 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
 LOGIN_REDIRECT_URL = 'profiles:profile'
 LOGIN_URL = 'accounts:login'
-
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -145,3 +113,4 @@ REST_FRAMEWORK = {
     #     'rest_framework.authentication.TokenAuthentication',
     # ],
 }
+
