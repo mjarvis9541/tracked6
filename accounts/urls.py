@@ -18,11 +18,7 @@ urlpatterns = [
     # Password management - reset (when user has forgotten their current password)
     path('password-reset/', views.PasswordResetView.as_view(), name='password_reset'),
     path('password-reset-done/', views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path(
-        'password-reset-confirm/<uidb64>/<token>/',
-        views.PasswordResetConfirmView.as_view(),
-        name='password_reset_confirm',
-    ),
+    path('password-reset-confirm/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('password-reset-complete/', views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     
     # Registration
@@ -50,11 +46,9 @@ urlpatterns = [
     # path('target-set-percent/', views.TargetSetPercentView.as_view(), name='target_set_percent'),
 
     # Registration with email confirmation
-    path('register/', views.register, name='register'),
-    path('register/resend-activation-email/', views.account_activation_resend, name='account_activation_resend'),
-    path('register/activation-sent/', views.account_activation_sent, name='account_activation_sent'),
-    path('register/activate-account/<uidb64>/<token>/', views.activate_account, name='activate_account'),
-    path(
-        'register/account-activation-complete/', views.account_activation_complete, name='account_activation_complete'
-    ),
+    path('register/', views.register_view, name='register'),
+    path('register/resend-activation-email/', views.account_activation_resend_view, name='account_activation_resend'),
+    path('register/activation-sent/', views.account_activation_sent_view, name='account_activation_sent'),
+    path('register/activate-account/<uidb64>/<token>/', views.activate_account_view, name='activate_account'),
+    path('register/account-activation-complete/', views.activate_account_complete_view, name='account_activation_complete'),
 ]
