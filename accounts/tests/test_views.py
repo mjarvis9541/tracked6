@@ -5,7 +5,7 @@ from django.contrib.auth.tokens import default_token_generator
 from ..forms import ResendActivationEmailForm
 from ..models import User
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from django.contrib import auth
 
@@ -43,26 +43,47 @@ class AccountViewTests(TestCase):
     def test_change_name_view(self):
         self.client.login(username='user', password='upassword123')
         response = self.client.get(reverse('accounts:change_name'))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['user'].username, 'user')
 
     def test_change_email_view(self):
         self.client.login(username='user', password='upassword123')
         response = self.client.get(reverse('accounts:change_email'))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['user'].username, 'user')
 
     def test_change_username_view(self):
         self.client.login(username='user', password='upassword123')
         response = self.client.get(reverse('accounts:change_username'))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['user'].username, 'user')
 
-    def test_register_view(self):
+    def test_register_view_get(self):
+        response = self.client.get(reverse('accounts:register'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'accounts/register.html')
+
+    def test_register_view_post(self):
+        response = self.client.post(
+            reverse('accounts:register'),
+            {
+                'first_name': 'Michael',
+                'last_name': 'Jarvis',
+                'username': 'mjarvis',
+                'email': 'mjarvis@email.com',
+                'password1': 'password123',
+                'password2': 'password123',
+            },
+        )
+        self.assertRedirects(response, reverse('accounts:account_activation_sent'))
+
+    def test_register_view_redirect_logged_in_user(self):
         self.client.login(username='user', password='upassword123')
         response = self.client.get(reverse('accounts:register'), follow=True)
-
-        self.assertEqual(response.status_code, 200)
         self.assertRedirects(response, '/accounts/index/')
 
         message = list(response.context.get('messages'))[0]
+
         self.assertEqual(message.tags, 'error')
         self.assertTrue(
             'You are already registered. If you wish to create a new account, please log out and try again.'
@@ -84,15 +105,18 @@ class AccountViewTests(TestCase):
         response = self.client.get(reverse('accounts:account_activation_sent'))
         self.assertTemplateUsed(response, 'accounts/account_activation_sent.html')
 
-    def test_activate_account_view(self):
+    def test_account_activate_view_post(self):
         user = User.objects.get(username='user')
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
-        response = self.client.get(reverse('accounts:activate_account', kwargs={'uidb64': uid, 'token': token}))
+        response = self.client.post(reverse('accounts:activate_account', kwargs={'uidb64': uid, 'token': token}))
         self.assertRedirects(response, reverse('accounts:account_activation_complete'))
-        # self.assertTemplateUsed(response, 'accounts/account_activation_invalid.html')
+
+        # Check token has expired
+        response = self.client.post(reverse('accounts:activate_account', kwargs={'uidb64': uid, 'token': token}))
+        self.assertTemplateUsed(response, 'accounts/account_activation_invalid.html')
+
 
     def test_activate_account_complete_view(self):
         response = self.client.get(reverse('accounts:account_activation_complete'))
         self.assertTemplateUsed(response, 'accounts/account_activation_complete.html')
-
