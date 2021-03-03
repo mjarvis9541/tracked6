@@ -98,7 +98,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-LOGIN_REDIRECT_URL = 'profiles:profile'
+LOGIN_REDIRECT_URL = 'accounts:account'
 LOGIN_URL = 'accounts:login'
 
 REST_FRAMEWORK = {

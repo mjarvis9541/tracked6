@@ -56,6 +56,7 @@ class User(Uuidable, PermissionsMixin, AbstractBaseUser):
 
     objects = UserManager()
 
+    EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
 
@@ -70,9 +71,8 @@ class User(Uuidable, PermissionsMixin, AbstractBaseUser):
     #     return reverse('accounts:account')
 
     def get_full_name(self):
-        if self.full_name:
-            return self.full_name
+        full_name = f'{self.first_name} {self.last_name}'
+        return full_name.strip()
 
     def get_short_name(self):
-        if self.full_name:
-            return self.full_name.split()[0]
+        return self.first_name
