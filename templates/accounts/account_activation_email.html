@@ -1,0 +1,13 @@
+{% autoescape off %}Hello {{ user.first_name }},
+
+You're receiving this email because you registered for a user account at {{ site_name }}. 
+
+Click on the following link to complete your registration:
+
+
+http://{{ domain }}{% url 'accounts:activate_account' uidb64=uid token=token %}
+
+
+Kind regards
+
+Trackedfitness{% endautoescape %}

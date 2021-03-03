@@ -1,9 +1,6 @@
 from django import forms
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from django.contrib.auth.models import Group
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 from .models import User
 
@@ -19,11 +16,12 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = (
-            'full_name',
+        fields = [
+            'first_name',
+            'last_name',
             'username',
             'email',
-        )
+        ]
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -60,3 +58,20 @@ class UserChangeForm(forms.ModelForm):
         # This is done here rather than on the field, because the
         # field does not have access to the initial value
         return self.initial['password']
+
+
+class ResendActivationEmailForm(forms.Form):
+    """ Resends activation email if user exists and is not actived """
+
+    email = forms.EmailField(required=True)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise forms.ValidationError('This email address has not been registered')
+        if user.is_active:
+            raise forms.ValidationError('This account has already been activated')
+        else:
+            return email

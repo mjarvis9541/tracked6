@@ -1,22 +1,18 @@
 {% extends 'base.html' %}
-{% block content %}
-<br>
-<div class="layout-1">
-<!-- Left column -->
-<div></div>
 
-<!-- Center column -->
-<div>
+{% block title %}
+Trackedfitness | Sign up
+{% endblock title %}
+
+{% block content %}
+
 <h1>Sign Up</h1>
 <br>
-
 <form method="post"> {% csrf_token %}
-{% include 'form.html' %}
-<button class="btn">Submit</button>
+    {% include 'form.html' %}
+    <button class="btn">Submit</button>
 </form>
+<br>
+<div>Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></div>
 
-</div>
-
-<!-- Right column -->
-</div></div>
 {% endblock content %}

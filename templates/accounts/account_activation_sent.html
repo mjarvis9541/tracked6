@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Trackedfitness | Activation email sent
+{% endblock title %}
+
+{% block content %}
+
+<h1>Activation Email Sent</h1>
+
+<p>We've sent an activation email to the email address provided, please click on the link withn the email to activate your account.</p>
+
+<br>
+<div><a href="{% url 'accounts:login' %}">Log in</a></div>
+
+{% endblock content %}

@@ -8,6 +8,8 @@ from django.utils.text import slugify
 """ Reference: https://blog.kevinastone.com/django-model-behaviors """
 
 
+
+
 class Permalinkable(models.Model):
     """
     Requires a url parameter attribute in the model
@@ -90,7 +92,6 @@ class Authorable(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='created by',
-        default='c64c16ee-fc7f-45c3-a84b-a81a6a29d5d6',
         related_name='%(app_label)s_%(class)s_user_created_related',
         related_query_name='%(app_label)s_%(class)s_user_created_rquery',
     )
@@ -99,7 +100,6 @@ class Authorable(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         verbose_name='updated by',
-        default='c64c16ee-fc7f-45c3-a84b-a81a6a29d5d6',
         related_name='%(app_label)s_%(class)s_user_updated_related',
         related_query_name='%(app_label)s_%(class)s_user_updated_rquery',
     )

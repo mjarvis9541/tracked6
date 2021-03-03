@@ -1,20 +1,20 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Trackedfitness | Log in
+Trackedfitness | Change name
 {% endblock title %}
 
 {% block content %}
 
-<h1>Log In</h1>
+<h1>Change Name</h1>
+<br>
+<p>Change your name using the form below.</p>
+
+
 <br>
 <form method="post"> {% csrf_token %}
     {% include 'form.html' %}
     <button class="btn">Submit</button>
 </form>
-<br>
-<div>Need an account? <a href="{% url 'accounts:register' %}">Sign up</a></div>
-<br>
-<div>Forgot password? <a href="{% url 'accounts:password_reset' %}">Reset</a></div>
 
 {% endblock content %}

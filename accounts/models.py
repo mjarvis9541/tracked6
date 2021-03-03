@@ -26,7 +26,9 @@ class User(Uuidable, PermissionsMixin, AbstractBaseUser):
 
     email = models.EmailField(_('email'), max_length=254, unique=True)
     email_confirmed = models.BooleanField(_('email confirmed'), default=False)
-    full_name = models.CharField(_('full name'), max_length=70, null=True, blank=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    # full_name = models.CharField(_('full name'), max_length=70, null=True, blank=True)
 
     username = models.CharField(
         _('username'),

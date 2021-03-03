@@ -17,7 +17,6 @@ from utils.behaviours import Nutritionable, Uuidable
 
 User = settings.AUTH_USER_MODEL
 
-admin_user = get_user_model().objects.get(username='admin')
 
 
 class Profile(Uuidable):

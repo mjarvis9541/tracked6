@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
+
+{% block title %}
+Trackedfitness | Logged out
+{% endblock title %}
+
 {% block content %}
-<br>
+
 <h1>Logged Out</h1>
 <br>
-
 <p>You have been logged out. Thanks for spending some quality time with the site.</p>
 <br>
-<a href="{% url 'accounts:login' %}">Log in again</a>
-
+<div><a href="{% url 'accounts:login' %}">Log in</a></div>
 
 {% endblock content %}

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Trackedfitness | Account settings
+{% endblock title %}
+
+{% block content %}
+
+<div class="main">
+    <h1>Account Settings</h1>
+
+
+    <p>This is a placeholder for the main account index page. Displaying account details and all routes for account auth.</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th colspan="2">Settings</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="width: 35%;">First name</td>
+                <td>{{ user.first_name }}</td>
+            </tr>
+            <tr>
+                <td>Last name</td>
+                <td>{{ user.last_name }}</td>
+            </tr>
+            <tr>
+                <td>Username</td>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <td>Active</td>
+                <td>{{ user.is_active }}</td>
+            </tr>
+            <tr>
+                <td>Last login</td>
+                <td>{{ user.last_login|date:"d M Y, G:i" }}</td>
+            </tr>
+            <tr>
+                <td>Date joined</td>
+                <td>{{ user.date_joined|date:"d M Y, G:i" }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <p><a href="{% url 'accounts:change_name' %}">Change name</a></p> 
+
+    <p><a href="{% url 'accounts:change_username' %}">Change username</a></p> 
+
+    <!-- <p><a href="{% url 'accounts:change_email' %}">Change email</a></p>  -->
+
+    <p><a href="{% url 'accounts:register' %}">Sign up</a></p> 
+
+    <p><a href="{% url 'accounts:password_change' %}">Change password</a></p>
+    
+    <p><a href="{% url 'accounts:password_reset' %}">Reset password</a></p>
+
+    <p><a href="{% url 'accounts:account_activation_resend' %}">Resend activation email</a></p>
+</div>
+
+{% endblock content %}

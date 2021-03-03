@@ -17,7 +17,7 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('username', 'email', 'password', 'id')}),
         (
             _('Personal info'),
-            {'fields': ('full_name', 'email_confirmed', 'setup_complete')},
+            {'fields': ('email_confirmed', 'setup_complete')},
         ),
         (
             _('Permissions'),
@@ -38,13 +38,13 @@ class CustomUserAdmin(UserAdmin):
     list_display = [
         'username',
         'email',
-        'full_name',
+    
         'is_active',
         'is_staff',
         'is_superuser',
         'last_login',
         'date_joined',
     ]
-    search_fields = ['username', 'email', 'full_name']
+    search_fields = ['username', 'email',]
     ordering = ('email',)
     readonly_fields = ['id', 'last_login', 'date_joined']
