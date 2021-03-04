@@ -1,0 +1,13 @@
+{% autoescape off %}Hello,
+
+You're receiving this email because you have requested to change your registered email address for your account at {{ site_name }}. 
+
+Please click on the following link to confirm your new email address:
+
+
+http://{{ domain }}{% url 'accounts:email_change_confirm' uidb64=uid token=token %}
+
+
+Kind regards
+
+Trackedfitness{% endautoescape %}

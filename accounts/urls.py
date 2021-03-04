@@ -4,51 +4,46 @@ from . import views
 
 app_name = 'accounts'
 urlpatterns = [
-    # Index
-    path('index/', views.AccountView.as_view(), name='account'),
-    
+    path('', views.AccountView.as_view(), name='account'),
     # Authentication
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
-    
     # Password management - change (when user knows their current password)
     path('password-change/', views.PasswordChangeView.as_view(), name='password_change'),
     path('password-change-done/', views.PasswordChangeDoneView.as_view(), name='password_change_done'),
-    
     # Password management - reset (when user has forgotten their current password)
     path('password-reset/', views.PasswordResetView.as_view(), name='password_reset'),
     path('password-reset-done/', views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('password-reset-confirm/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path(
+        'password-reset-confirm/<uidb64>/<token>/',
+        views.PasswordResetConfirmView.as_view(),
+        name='password_reset_confirm',
+    ),
     path('password-reset-complete/', views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
-    
-    # Registration
-    # path('register/', views.RegisterView.as_view(), name='register'),
-    # path('profile-setup/', views.ProfileSetupView.as_view(), name='profile_setup'),
-    # path('profile-setup-imperial/', views.ProfileSetupImperialView.as_view(), name='profile_setup_imperial'),
-    # path('profile-setup-complete/', views.ProfileSetupCompleteView.as_view(), name='profile_setup_complete'),
-    
-    # # Account management
-    # path('account/', views.AccountView.as_view(), name='account'),
-    path('account/change-name/', views.ChangeNameView.as_view(), name='change_name'),
-    path('account/change-username/', views.ChangeUsernameView.as_view(), name='change_username'),
-    path('account/change-email/', views.ChangeEmailView.as_view(), name='change_email'),
-    
-    # # Profile management
-    # path('profile/', views.ProfileView.as_view(), name='profile'),
-    # path('profile/update/', views.ProfileUpdateView.as_view(), name='profile_update'),
-    # path('profile/update-imperial/', views.ProfileUpdateImperialView.as_view(), name='profile_update_imperial'),
-    # path('profile/update-picture/', views.ChangePictureView.as_view(), name='change_picture'),
-    
-    # # Target management
-    # path('target/', views.TargetView.as_view(), name='target'),
-    # path('target-set-default/', views.TargetSetDefaultView.as_view(), name='target_set_default'),
-    # path('target-set-grams/', views.TargetSetGramView.as_view(), name='target_set_grams'),
-    # path('target-set-percent/', views.TargetSetPercentView.as_view(), name='target_set_percent'),
-
-    # Registration with email confirmation
+    # Account management - change name, username
+    path('name-change/', views.NameChangeView.as_view(), name='name_change'),
+    path('username-change/', views.UsernameChangeView.as_view(), name='username_change'),
+    # Account management - change email (requires email confirmation)
+    path('email-change/', views.EmailChangeView.as_view(), name='email_change'),
+    path('email-change-done/', views.email_change_done_view, name='email_change_done'),
+    path(
+        'email-change-confirm/<uidb64>/<token>/',
+        views.email_change_confirm_view,
+        name='email_change_confirm',
+    ),
+    path('email-change-complete/', views.email_change_complete_view, name='email_change_complete'),
+    # Registration and re-request activation email (requires email confirmation)
     path('register/', views.register_view, name='register'),
-    path('register/resend-activation-email/', views.account_activation_resend_view, name='account_activation_resend'),
-    path('register/activation-sent/', views.account_activation_sent_view, name='account_activation_sent'),
-    path('register/activate-account/<uidb64>/<token>/', views.activate_account_view, name='activate_account'),
-    path('register/account-activation-complete/', views.activate_account_complete_view, name='account_activation_complete'),
+    path('register/account-activation/', views.account_activation_view, name='account_activation'),
+    path('register/account-activation-done/', views.account_activation_done_view, name='account_activation_done'),
+    path(
+        'register/account-activation-confirm/<uidb64>/<token>/',
+        views.account_activation_confirm_view,
+        name='account_activation_confirm',
+    ),
+    path(
+        'register/account-activation-complete/',
+        views.account_activation_complete_view,
+        name='account_activation_complete',
+    ),
 ]

@@ -1,20 +1,25 @@
-from django import template
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.tokens import default_token_generator
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, UpdateView
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.views.generic import TemplateView, UpdateView, FormView
 
-from .forms import ResendActivationEmailForm, UserCreationForm
+from .forms import ResendActivationEmailForm, UserCreationForm, UserChangeEmailForm
+from .models import User
 
 
 class LoginView(auth_views.LoginView):
     template_name = 'accounts/login.html'
-    # redirect_authenticated_user = True
+    redirect_authenticated_user = True
 
 
 class LogoutView(auth_views.LogoutView):
@@ -57,46 +62,16 @@ class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'accounts/password_reset_complete.html'
 
 
-# class RegisterView(CreateView):
-#     """
-#     Standard registration view, takes full name, username, email,
-#     password1 & password2.
-#     """
-
-#     template_name = 'accounts/register.html'
-#     form_class = UserCreationForm
-#     success_url = reverse_lazy('accounts:login')
-
-#     def dispatch(self, request, *args, **kwargs):
-#         # overriding dispatch overrides all methods (get, post, etc)
-#         if request.user.is_authenticated:
-#             messages.error(
-#                 request,
-#                 'You are already registered. If you wish to create a new account, please log out and try again.',
-#             )
-#             return redirect(self.success_url)
-#         return super().dispatch(request, *args, **kwargs)
-
-#     def form_valid(self, form):
-#         # self.send_email(form.cleaned_data)
-#         user_ = super().form_valid(form)
-#         login(self.request, self.object)
-#         return user_
-
-#     # def send_email(self, valid_data):
-#     #     print(valid_data)
-#     #     email = EmailMessage()
-#     #     return email.send()
-
-
 class AccountView(LoginRequiredMixin, TemplateView):
-    """ Main page for account settings """
+    """ Main page for account settings. """
 
     template_name = 'accounts/index.html'
 
 
-class ChangeNameView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    template_name = 'accounts/change_name.html'
+class NameChangeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """ Allows the user to change their first and last name. """
+
+    template_name = 'accounts/name_change_form.html'
     fields = ['first_name', 'last_name']
     success_message = 'Your name has been updated'
     success_url = reverse_lazy('accounts:account')
@@ -105,18 +80,10 @@ class ChangeNameView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return self.request.user
 
 
-class ChangeEmailView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    template_name = 'accounts/change_email.html'
-    fields = ['email']
-    success_message = 'Your email address has been updated'
-    success_url = reverse_lazy('accounts:account')
+class UsernameChangeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    """ Allows the user to change their username. """
 
-    def get_object(self):
-        return self.request.user
-
-
-class ChangeUsernameView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    template_name = 'accounts/change_username.html'
+    template_name = 'accounts/username_change_form.html'
     fields = ['username']
     success_message = 'Your username has been updated'
     success_url = reverse_lazy('accounts:account')
@@ -125,16 +92,85 @@ class ChangeUsernameView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return self.request.user
 
 
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+class EmailChangeView(LoginRequiredMixin, SuccessMessageMixin, FormView):
+    """ Allows the user to change their email address, requires email confirmation. """
 
-from .models import User
+    template_name = 'accounts/email_change_form.html'
+    form_class = UserChangeEmailForm
+    success_message = (
+        'We have sent you a link to verify your new email address, please check your inbox and spam/junk folder'
+    )
+    success_url = reverse_lazy('accounts:email_change_done')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        user = self.request.user
+        user.email_change_pending = email
+        user.save()
+        current_site = get_current_site(self.request)
+        domain = current_site.domain
+        site_name = current_site.name
+        email_body = render_to_string(
+            'accounts/email_change_email.html',
+            {
+                'user': user,
+                'domain': domain,
+                'site_name': site_name,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            },
+        )
+        email_message = EmailMessage(
+            subject='Confirm email address change',
+            body=email_body,
+            from_email='\'Trackedfitness\' <noreply@trackedfitness.com>',
+            to=[email],
+        )
+        email_message.send()
+        return super().form_valid(form)
+
+
+def email_change_done_view(request):
+    """ Displays a success message for the above. """
+
+    template_name = 'accounts/email_change_done.html'
+    return render(request, template_name, {})
+
+
+def email_change_confirm_view(request, uidb64, token):
+    """ Allows the user to change their email address from link within email. """
+
+    template_name = 'accounts/email_change_invalid.html'
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+        new_email_address = user.email_change_pending
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.email = new_email_address
+        user.email_change_pending = None
+        user.save()
+        # messages.success(request, 'Your email address been updated')
+        return redirect('accounts:email_change_complete')
+    return render(request, template_name, {})
+
+
+def email_change_complete_view(request):
+    """ Displays a success message for the above. """
+
+    template_name = 'accounts/email_change_complete.html'
+    return render(request, template_name, {})
 
 
 def register_view(request):
+    """ Account registration view, requires email confirmation. """
+
     template_name = 'accounts/register.html'
     context = {}
 
@@ -147,21 +183,19 @@ def register_view(request):
 
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
-
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
             user.save()
             current_site = get_current_site(request)
-            domain = current_site.domain  # new
-            site_name = current_site.name  # new
+            domain = current_site.domain
+            site_name = current_site.name
             email_body = render_to_string(
                 'accounts/account_activation_email.html',
                 {
                     'user': user,
-                    # 'domain': current_site.domain,
-                    'domain': domain,  # new
-                    'site_name': site_name,  # new
+                    'domain': domain,
+                    'site_name': site_name,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': default_token_generator.make_token(user),
                 },
@@ -174,20 +208,22 @@ def register_view(request):
                 to=[email],
             )
             activation_email.send()
-            return redirect('accounts:account_activation_sent')
+            return redirect('accounts:account_activation_done')
     else:
         form = UserCreationForm()
+
     context['form'] = form
     return render(request, template_name, context)
 
 
-def account_activation_resend_view(request):
+def account_activation_view(request):
+    """ 
+    Allows the user to resend account activation email.
+    TODO: Only allow users who aren't banned to access this view
     """
-    This view enables the user to resend the activation email if they
-    didn't receive it or the link expired.
-    """
-    template_name = 'accounts/account_activation_resend.html'
+    template_name = 'accounts/account_activation_form.html'
     context = {}
+    
     if request.method == 'POST':
         form = ResendActivationEmailForm(request.POST)
         if form.is_valid():
@@ -213,24 +249,28 @@ def account_activation_resend_view(request):
                 to=[email],
             )
             activation_email.send()
-            return redirect('accounts:account_activation_sent')
+            return redirect('accounts:account_activation_done')
     else:
         form = ResendActivationEmailForm()
+
     context['form'] = form
     return render(request, template_name, context)
 
 
-def account_activation_sent_view(request):
-    template_name = 'accounts/account_activation_sent.html'
+def account_activation_done_view(request):
+    """ Displays a success message for the above. """
+
+    template_name = 'accounts/account_activation_done.html'
     return render(request, template_name, {})
 
 
-def activate_account_view(request, uidb64, token):
+def account_activation_confirm_view(request, uidb64, token):
+    """ Allows the user to activate their account from link within email. """
+
     template_name = 'accounts/account_activation_invalid.html'
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
-        # user = User._default_manager.get(pk=uid)
-        user = User.objects.get(pk=uid)  # new
+        user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
@@ -241,6 +281,8 @@ def activate_account_view(request, uidb64, token):
     return render(request, template_name, {})
 
 
-def activate_account_complete_view(request):
+def account_activation_complete_view(request):
+    """ Displays a success message for the above. """
+
     template_name = 'accounts/account_activation_complete.html'
     return render(request, template_name, {})

@@ -7,11 +7,9 @@ Trackedfitness | Change email
 {% block content %}
 
 <h1>Change Email</h1>
-<br>
-<p>Change your email address using the form below.</p>
 
+<p>Enter your new email address below, and we'll send you a link to verify.</p>
 
-<br>
 <form method="post"> {% csrf_token %}
     {% include 'form.html' %}
     <button class="btn">Submit</button>

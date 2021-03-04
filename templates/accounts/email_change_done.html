@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Trackedfitness | Email change
+{% endblock title %}
+
+{% block content %}
+
+<h1>Change Email Verification</h1>
+
+<p>We have sent you a link to verify your new email address, please check your inbox and spam/junk folder</p>
+
+<p>If you don't receive an email, please make sure you've checked your spam/junk folder.</p>
+
+<br>
+<p><a href="{% url 'accounts:account' %}">Return to account</a></p>
+
+{% endblock content %}

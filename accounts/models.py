@@ -1,57 +1,71 @@
-from django.conf import settings
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core.mail import send_mail
 from django.db import models
-from django.db.models.signals import post_save, pre_save
-from django.dispatch import receiver
-from django.urls import reverse
+from django.shortcuts import reverse
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
-
-from utils.behaviours import Uuidable
+from django.utils.translation import gettext as _
+from utils.models import LowerCaseCharField
 
 from .managers import UserManager
 
 
-class User(Uuidable, PermissionsMixin, AbstractBaseUser):
+class User(PermissionsMixin, AbstractBaseUser):
     """
-    Custom user model. Implemented as AbstractBaseUser for the following reasons:
-    Wanted the ability to use email/password for authentication over username/password.
-    Wanted to change first_name/last_name to full_name.
+    Custom user model.
+    Implemented as wanted the ability to switch out email/password for
+    authentication over username/password.
     """
 
-    email = models.EmailField(_('email'), max_length=254, unique=True)
-    email_confirmed = models.BooleanField(_('email confirmed'), default=False)
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    # full_name = models.CharField(_('full name'), max_length=70, null=True, blank=True)
+    username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
         _('username'),
-        max_length=30,
+        max_length=150,
         unique=True,
+        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators=[username_validator],
+        error_messages={
+            'unique': _('A user with that username already exists.'),
+        },
     )
+    first_name = models.CharField(_('first name'), max_length=150, blank=True)
+    last_name = models.CharField(_('last name'), max_length=150, blank=True)
+    email = models.EmailField(_('email address'), unique=True)
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,
-        help_text=_('Designates whether this user can log into this admin site.'),
+        help_text=_('Designates whether the user can log into this admin site.'),
     )
     is_active = models.BooleanField(
         _('active'),
         default=True,
         help_text=_(
-            'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.'
+            """
+            Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+            """
+        ),
+    )
+    is_banned = models.BooleanField(
+        _('banned'),
+        default=False,
+        help_text=_(
+            """
+            Designates whether this user should be treated as banned.
+            This prevents inactive users from re-activating their account by requesting a 'resend activation' email.
+            """
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-    setup_complete = models.BooleanField(
-        _('profile setup'),
-        default=False,
-        help_text='Confirms whether this user has gone through the initial setup and set their profile up. This is required to use the Food Diary.',
+    email_change_pending = models.EmailField(
+        _('email change pending'),
+        null=True,
+        help_text=_(
+            """
+            If the user has requested to change their registered email address, it will show here until it has been \
+            confirmed via email. Once the user has confirmed their new email address, this field will be blank.
+            """
+        ),
     )
 
     objects = UserManager()
@@ -67,8 +81,12 @@ class User(Uuidable, PermissionsMixin, AbstractBaseUser):
     def __str__(self):
         return self.username
 
+    def clean(self):
+        super().clean()
+        self.email = self.__class__.objects.normalize_email(self.email)
+
     # def get_absolute_url(self):
-    #     return reverse('accounts:account')
+    #     return reverse('profiles:profile', kwargs={'pk':self.pk})
 
     def get_full_name(self):
         full_name = f'{self.first_name} {self.last_name}'
@@ -76,3 +94,8 @@ class User(Uuidable, PermissionsMixin, AbstractBaseUser):
 
     def get_short_name(self):
         return self.first_name
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        """ Send an email to this user. """
+        send_mail(subject, message, from_email, [self.email], **kwargs)
+

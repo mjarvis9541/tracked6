@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Trackedfitness | Change email verification link invalid
+{% endblock title %}
+
+{% block content %}
+
+<h1>Change Email Verification Link Invalid</h1>
+
+<p>The link you clicked on to request an email address change has now expired.</p>
+
+<p>Please request a new one <a href="{% url 'accounts:email_change' %}">here</a></p>
+
+{% endblock content %}

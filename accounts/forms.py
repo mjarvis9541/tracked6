@@ -25,8 +25,8 @@ class UserCreationForm(forms.ModelForm):
 
     def clean_password2(self):
         # Check that the two password entries match
-        password1 = self.cleaned_data.get('password1')
-        password2 = self.cleaned_data.get('password2')
+        password1 = self.cleaned_data['password1']
+        password2 = self.cleaned_data['password2']
         if password1 and password2 and password1 != password2:
             raise ValidationError('Passwords don\'t match')
         return password2
@@ -60,6 +60,23 @@ class UserChangeForm(forms.ModelForm):
         return self.initial['password']
 
 
+class UserChangeEmailForm(forms.Form):
+    email = forms.EmailField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        user = User.objects.get(email=self.user.email)
+        if email == user.email:
+            raise forms.ValidationError('This email address is already registered to your account')
+        elif User.objects.exclude(email=user.email).filter(email=email).exists():
+            raise forms.ValidationError('This email address is already registered to another account')
+        return email
+
+
 class ResendActivationEmailForm(forms.Form):
     """ Resends activation email if user exists and is not actived """
 
@@ -73,5 +90,7 @@ class ResendActivationEmailForm(forms.Form):
             raise forms.ValidationError('This email address has not been registered')
         if user.is_active:
             raise forms.ValidationError('This account has already been activated')
+        if user.is_banned:
+            raise forms.ValidationError('This account is currently banned and cannot be activated')
         else:
             return email

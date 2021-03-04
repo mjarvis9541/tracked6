@@ -52,11 +52,12 @@ Trackedfitness | Account settings
 
     <br>
 
-    <p><a href="{% url 'accounts:change_name' %}">Change name</a></p> 
+    <p><a href="{% url 'accounts:name_change' %}">Change name</a></p> 
 
-    <p><a href="{% url 'accounts:change_username' %}">Change username</a></p> 
+    <p><a href="{% url 'accounts:username_change' %}">Change username</a></p> 
 
-    <!-- <p><a href="{% url 'accounts:change_email' %}">Change email</a></p>  -->
+    <p><a href="{% url 'accounts:email_change' %}">Change email address</a></p> 
+
 
     <p><a href="{% url 'accounts:register' %}">Sign up</a></p> 
 
@@ -64,7 +65,7 @@ Trackedfitness | Account settings
     
     <p><a href="{% url 'accounts:password_reset' %}">Reset password</a></p>
 
-    <p><a href="{% url 'accounts:account_activation_resend' %}">Resend activation email</a></p>
+    <p><a href="{% url 'accounts:account_activation' %}">Resend activation email</a></p>
 </div>
 
 {% endblock content %}
