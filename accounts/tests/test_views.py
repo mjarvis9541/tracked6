@@ -1,14 +1,16 @@
-from django.test import TestCase
+from django.test import TestCase, SimpleTestCase
 from django.urls import reverse
 from django.test import Client
 from django.contrib.auth.tokens import default_token_generator
 from ..forms import ResendActivationEmailForm
 from ..models import User
+from .. import views
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-
+from django.urls import resolve
 from django.contrib import auth
-
+import unittest
+from unittest.mock import patch, ANY
 
 class BaseAuthTestCase(TestCase):
     def assertLoggedInAs(self, user):
@@ -18,6 +20,184 @@ class BaseAuthTestCase(TestCase):
 
 
 class AccountViewTests(TestCase):
+    def setUp(self):
+        User.objects.create_user(username='user', email='email@email.com', password='password')
+
+    def test_account_view_url(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get('/accounts/index/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_account_view_status_code(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:account'))
+        self.assertEquals(response.status_code, 200)
+
+    def test_account_view_unauthorized_user_redirect_status_code(self):
+        response = self.client.get(reverse('accounts:account'))
+        self.assertEquals(response.status_code, 302)
+
+    def test_account_view_unauthorized_user_redirect_url(self):
+        response = self.client.get(reverse('accounts:account'))
+        self.assertRedirects(response, '/accounts/login/?next=/accounts/index/')
+
+    def test_account_view_template(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:account'))
+        self.assertTemplateUsed(response, 'accounts/index.html')
+
+    def test_account_view_correct_html_content(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:account'))
+        self.assertContains(response, 'Account Settings')
+
+    def test_account_view_incorrect_html_content(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:account'))
+        self.assertNotContains(response, 'This should not be on the html page')
+
+    def test_account_url_resolves_to_account_view(self):
+        self.client.login(username='user', password='password')
+        url = reverse('accounts:account')
+        self.assertEqual(resolve(url).func.view_class, views.AccountView)
+
+    def test_account_view_context(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:account'))
+        self.assertEqual(response.context['user'].username, 'user')
+        self.assertEqual(response.context['user'].email, 'email@email.com')
+
+
+class ChangeNameViewTests(TestCase):
+    def setUp(self):
+        User.objects.create_user(username='user', email='email@email.com', password='password')
+
+    def test_change_name_view_url(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get('/accounts/change-username/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_change_name_view_status_code(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_name'))
+        self.assertEquals(response.status_code, 200)
+
+    def test_change_name_view_unauthorized_user_redirect_status_code(self):
+        response = self.client.get(reverse('accounts:change_name'))
+        self.assertEquals(response.status_code, 302)
+
+    def test_change_name_view_unauthorized_user_redirect_url(self):
+        response = self.client.get(reverse('accounts:change_name'))
+        self.assertRedirects(response, '/accounts/login/?next=/accounts/change-name/')
+
+    def test_change_name_view_template(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_name'))
+        self.assertTemplateUsed(response, 'accounts/change_name.html')
+
+    def test_change_name_view_correct_html_content(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_name'))
+        self.assertContains(response, 'Change Name')
+
+    def test_change_name_view_incorrect_html_content(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_name'))
+        self.assertNotContains(response, 'This should not be on the html page')
+
+    def test_change_name_url_resolves_to_change_name_view(self):
+        self.client.login(username='user', password='password')
+        url = reverse('accounts:change_name')
+        self.assertEqual(resolve(url).func.view_class, views.ChangeNameView)
+
+
+class ChangeUsernameViewTests(TestCase):
+    def setUp(self):
+        User.objects.create_user(username='user', email='email@email.com', password='password')
+
+    def test_change_username_view_url(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get('/accounts/change-username/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_change_username_view_status_code(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_username'))
+        self.assertEquals(response.status_code, 200)
+
+    def test_change_username_view_unauthorized_user_redirect_status_code(self):
+        response = self.client.get(reverse('accounts:change_username'))
+        self.assertEquals(response.status_code, 302)
+
+    def test_change_username_view_unauthorized_user_redirect_url(self):
+        response = self.client.get(reverse('accounts:change_username'))
+        self.assertRedirects(response, '/accounts/login/?next=/accounts/change-username/')
+
+    def test_change_username_view_template(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_username'))
+        self.assertTemplateUsed(response, 'accounts/change_username.html')
+
+    def test_change_username_view_correct_html_content(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_username'))
+        self.assertContains(response, 'Change Username')
+
+    def test_change_username_view_incorrect_html_content(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_username'))
+        self.assertNotContains(response, 'This should not be on the html page')
+
+    def test_change_username_url_resolves_to_change_username_view(self):
+        self.client.login(username='user', password='password')
+        url = reverse('accounts:change_username')
+        self.assertEqual(resolve(url).func.view_class, views.ChangeUsernameView)
+
+
+class ChangeEmailViewTests(TestCase):
+    def setUp(self):
+        User.objects.create_user(username='user', email='email@email.com', password='password')
+
+    def test_change_email_view_url(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get('/accounts/change-username/')
+        self.assertEquals(response.status_code, 200)
+
+    def test_change_email_view_status_code(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_email'))
+        self.assertEquals(response.status_code, 200)
+
+    def test_change_email_view_unauthorized_user_redirect_status_code(self):
+        response = self.client.get(reverse('accounts:change_email'))
+        self.assertEquals(response.status_code, 302)
+
+    def test_change_email_view_unauthorized_user_redirect_url(self):
+        response = self.client.get(reverse('accounts:change_email'))
+        self.assertRedirects(response, '/accounts/login/?next=/accounts/change-email/')
+
+    def test_change_email_view_template(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_email'))
+        self.assertTemplateUsed(response, 'accounts/change_email.html')
+
+    def test_change_email_view_correct_html_content(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_email'))
+        self.assertContains(response, 'Change Email')
+
+    def test_change_email_view_incorrect_html_content(self):
+        self.client.login(username='user', password='password')
+        response = self.client.get(reverse('accounts:change_email'))
+        self.assertNotContains(response, 'This should not be on the html page')
+
+    def test_change_email_url_resolves_to_change_email_view(self):
+        self.client.login(username='user', password='password')
+        url = reverse('accounts:change_email')
+        self.assertEqual(resolve(url).func.view_class, views.ChangeEmailView)
+
+
+class AccountViewGeneralTests(TestCase):
     def setUp(self):
         User.objects.create_user(
             first_name='firstly', last_name='lastly', username='user', email='user@email.com', password='upassword123'
@@ -30,15 +210,6 @@ class AccountViewTests(TestCase):
         self.client.login(username='user', password='upassword123')
         # response = self.client.get('accounts/index/')
         response = self.client.get(reverse('accounts:account'))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Account Settings')
-        self.assertTemplateUsed(response, 'accounts/index.html')
-
-    def test_account_view_redirect_unauthorized_user(self):
-        response = self.client.get(reverse('accounts:account'))
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/accounts/login/?next=/accounts/index/')
 
     def test_change_name_view(self):
         self.client.login(username='user', password='upassword123')
@@ -90,6 +261,8 @@ class AccountViewTests(TestCase):
             in message.message
         )
 
+
+
     def test_account_activation_resend_view(self):
         response = self.client.get(reverse('accounts:account_activation_resend'))
         self.assertTemplateUsed(response, 'accounts/account_activation_resend.html')
@@ -116,7 +289,11 @@ class AccountViewTests(TestCase):
         response = self.client.post(reverse('accounts:activate_account', kwargs={'uidb64': uid, 'token': token}))
         self.assertTemplateUsed(response, 'accounts/account_activation_invalid.html')
 
-
     def test_activate_account_complete_view(self):
         response = self.client.get(reverse('accounts:account_activation_complete'))
         self.assertTemplateUsed(response, 'accounts/account_activation_complete.html')
+
+    def test_account_activate_view_exception(self):
+        response = self.client.post(reverse('accounts:activate_account', kwargs={'uidb64': 'bad-uid', 'token': 'bad-token'}))
+        
+        self.assertRaises(TypeError, msg=None)
