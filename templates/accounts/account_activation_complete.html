@@ -1,16 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Trackedfitness | Account activation complete
+Trackedfitness | Account Activation - Complete
 {% endblock title %}
 
 {% block content %}
 
 <h1>Account Activation</h1>
-<br>
-<p>Your account has been activated.</p>
-<br>
 
-<div><a href="{% url 'accounts:account' %}">Proceed to site</a></div>
+<p>Your account has been activated.</p>
+
+<p><a href="{% url 'accounts:account' %}">Continue</a></p>
 
 {% endblock content %}

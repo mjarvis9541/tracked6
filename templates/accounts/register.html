@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Trackedfitness | Sign up
+Trackedfitness | Sign Up
 {% endblock title %}
 
 {% block content %}
 
 <h1>Sign Up</h1>
-<br>
+
 <form method="post"> {% csrf_token %}
     {% include 'form.html' %}
     <button class="btn">Submit</button>
 </form>
+
 <br>
-<div>Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></div>
+
+<p>Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></p>
+
+<p><a href="{% url 'accounts:account_activation' %}">Resend activation</a></p>
 
 {% endblock content %}

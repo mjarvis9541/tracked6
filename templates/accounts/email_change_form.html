@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Trackedfitness | Change email
+Trackedfitness | Change Email
 {% endblock title %}
 
 {% block content %}
 
 <h1>Change Email</h1>
 
-<p>Enter your new email address below, and we'll send you a link to verify.</p>
+<p>To change your email address, enter your new email address below, and we'll send you a link to your new email address verify it.</p>
 
-<form method="post"> {% csrf_token %}
+<p>Your email address will not be changed until you </p>
+
+<form method="post" > {% csrf_token %}
     {% include 'form.html' %}
     <button class="btn">Submit</button>
 </form>

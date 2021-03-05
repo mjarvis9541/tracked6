@@ -9,7 +9,6 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from .. import views
 from ..models import User
 
-
 # class BaseAuthTestCase(TestCase):
 #     def assertLoggedInAs(self, user):
 #         client_user = auth.get_user(self.client)
@@ -111,10 +110,10 @@ class NameChangeViewTests(TestCase):
 
     def test_name_change_view_post_updates_name(self):
         self.client.login(username='user', password='password')
-        self.client.post(reverse('accounts:name_change'), data={'first_name': 'Ringo', 'last_name': 'Starr'})
+        self.client.post(reverse('accounts:name_change'), data={'first_name': 'firstly', 'last_name': 'lastly'})
         user = User.objects.get(username='user')
-        self.assertEqual(user.first_name, 'Ringo')
-        self.assertEqual(user.last_name, 'Starr')
+        self.assertEqual(user.first_name, 'firstly')
+        self.assertEqual(user.last_name, 'lastly')
 
 
 class UsernameChangeViewTests(TestCase):
@@ -220,13 +219,13 @@ class EmailChangeViewTests(TestCase):
         self.client.login(username='user', password='password')
         self.client.post(reverse('accounts:email_change'), data={'email': 'invalid_email_address'})
         user = User.objects.get(username='user')
-        self.assertEqual(user.email_change_pending, None)
+        self.assertEqual(user.email_change_request, None)
 
     def test_email_change_view_valid_post_data(self):
         self.client.login(username='user', password='password')
         self.client.post(reverse('accounts:email_change'), data={'email': 'new_email@email.com'})
         user = User.objects.get(username='user')
-        self.assertEqual(user.email_change_pending, 'new_email@email.com')
+        self.assertEqual(user.email_change_request, 'new_email@email.com')
 
     def test_email_change_view_success_redirect(self):
         self.client.login(username='user', password='password')
@@ -248,6 +247,14 @@ class EmailChangeDoneViewTests(TestCase):
         self.client.login(username='user', password='password')
         response = self.client.get(reverse('accounts:email_change_done'))
         self.assertEquals(response.status_code, 200)
+
+    def test_email_change_view_unauthorized_user_redirect_status_code(self):
+        response = self.client.get(reverse('accounts:email_change_done'))
+        self.assertEquals(response.status_code, 302)
+
+    def test_email_change_view_unauthorized_user_redirect_url(self):
+        response = self.client.get(reverse('accounts:email_change_done'))
+        self.assertRedirects(response, '/accounts/login/?next=/accounts/email-change-done/')
 
     def test_email_change_done_view_template(self):
         self.client.login(username='user', password='password')
@@ -284,7 +291,7 @@ class EmailChangeConfirmViewTests(TestCase):
         self.client.login(username='user', password='password')
         user = User.objects.get(username='user')
         user.email = 'old_email@email.com'
-        user.email_change_pending = 'new_email@email.com'
+        user.email_change_request = 'new_email@email.com'
         user.save()
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
@@ -295,7 +302,7 @@ class EmailChangeConfirmViewTests(TestCase):
         self.client.login(username='user', password='password')
         user = User.objects.get(username='user')
         user.email = 'old_email@email.com'
-        user.email_change_pending = 'new_email@email.com'
+        user.email_change_request = 'new_email@email.com'
         user.save()
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)

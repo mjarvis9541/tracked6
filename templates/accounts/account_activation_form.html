@@ -1,18 +1,16 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Trackedfitness | Resend activation email
+Trackedfitness | Resend Activation Email
 {% endblock title %}
 
 {% block content %}
 
 <h1>Resend Activation Email</h1>
-<br>
+
 <form method="post"> {% csrf_token %}
     {% include 'form.html' %}
     <button class="btn">Submit</button>
 </form>
-<br>
-<div>Already have an account? <a href="{% url 'accounts:login' %}">Log in</a></div>
 
 {% endblock content %}

@@ -1,20 +1,22 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Trackedfitness | Log in
+Trackedfitness | Log In
 {% endblock title %}
 
 {% block content %}
 
 <h1>Log In</h1>
-<br>
+
 <form method="post"> {% csrf_token %}
     {% include 'form.html' %}
     <button class="btn">Submit</button>
 </form>
+
 <br>
-<div>Need an account? <a href="{% url 'accounts:register' %}">Sign up</a></div>
-<br>
-<div>Forgot password? <a href="{% url 'accounts:password_reset' %}">Reset</a></div>
+
+<p>Forgot password? <a href="{% url 'accounts:password_reset' %}">Reset</a></p>
+
+<p>Need an account? <a href="{% url 'accounts:register' %}">Sign up</a></p>
 
 {% endblock content %}

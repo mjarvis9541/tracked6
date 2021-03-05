@@ -1,6 +1,6 @@
 from django.test.testcases import TestCase
 
-from ..forms import ResendActivationEmailForm, UserChangeForm, UserCreationForm, UserChangeEmailForm
+from ..forms import AccountActivationForm, EmailChangeForm, UserCreationForm
 from ..models import User
 
 
@@ -32,26 +32,38 @@ class UserCreationFormTests(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['password2'], ['Passwords don\'t match'])
 
+    def test_user_creation_form_save(self):
+        form = UserCreationForm(
+            data={
+                'first_name': 'Michael',
+                'last_name': 'Jarvis',
+                'username': 'mjarvis',
+                'email': 'mjarvis@email.com',
+                'password1': 'password123',
+                'password2': 'password123',
+            }
+        )
+        self.assertTrue(form.save())
 
-class UserChangeEmailFormTests(TestCase):
+
+class EmailChangeFormTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='user', email='user@email.com', password='password')
         self.anoter_user = User.objects.create_user(username='another', email='another@email.com', password='password')
 
     def test_email_already_registered_to_user(self):
-        form = UserChangeEmailForm(user=self.user, data={'email': 'user@email.com'})
+        form = EmailChangeForm(user=self.user, data={'email': 'user@email.com'})
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['email'], ['This email address is already registered to your account'])
 
     def test_email_already_registered_to_another_user(self):
-        form = UserChangeEmailForm(user=self.user, data={'email': 'another@email.com'})
+        form = EmailChangeForm(user=self.user, data={'email': 'another@email.com'})
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['email'], ['This email address is already registered to another account'])
+        self.assertEqual(form.errors['email'], ['This email address is already registered'])
 
     def test_user_change_form_is_valid(self):
-        form = UserChangeEmailForm(user=self.user, data={'email': 'new_email@email.com'})
+        form = EmailChangeForm(user=self.user, data={'email': 'new_email@email.com'})
         self.assertTrue(form.is_valid())
-
 
 
 class ResendActivationEmailFormTests(TestCase):
@@ -63,20 +75,20 @@ class ResendActivationEmailFormTests(TestCase):
         )
 
     def test_user_account_exists(self):
-        form = ResendActivationEmailForm(data={'email': 'idonotexist@email.com'})
+        form = AccountActivationForm(data={'email': 'idonotexist@email.com'})
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['email'], ['This email address has not been registered'])
 
     def test_user_account_is_not_active(self):
-        form = ResendActivationEmailForm(data={'email': 'active@email.com'})
+        form = AccountActivationForm(data={'email': 'active@email.com'})
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['email'], ['This account has already been activated'])
 
     def test_user_account_is_not_banned(self):
-        form = ResendActivationEmailForm(data={'email': 'banned@email.com'})
+        form = AccountActivationForm(data={'email': 'banned@email.com'})
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors['email'], ['This account is currently banned and cannot be activated'])
+        self.assertEqual(form.errors['email'], ['This account is currently banned and cannot be reactivated'])
 
     def test_resend_activation_form_valid(self):
-        form = ResendActivationEmailForm(data={'email': 'inactive@email.com'})
+        form = AccountActivationForm(data={'email': 'inactive@email.com'})
         self.assertTrue(form.is_valid())

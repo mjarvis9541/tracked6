@@ -1,18 +1,19 @@
 from django import forms
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.utils.translation import gettext as _
 
 from .models import User
 
 
 class UserCreationForm(forms.ModelForm):
-    """
-    Form for creating new users. Includes all the required
-    fields, plus a repeated password.
-    """
 
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    password1 = forms.CharField(
+        label=_('Password'),
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+    )
+    password2 = forms.CharField(
+        label=_('Password confirmation'),
+        widget=forms.PasswordInput(attrs={'autocomplete': 'new-password'}),
+    )
 
     class Meta:
         model = User
@@ -28,62 +29,52 @@ class UserCreationForm(forms.ModelForm):
         password1 = self.cleaned_data['password1']
         password2 = self.cleaned_data['password2']
         if password1 and password2 and password1 != password2:
-            raise ValidationError('Passwords don\'t match')
+            raise forms.ValidationError('Passwords don\'t match')
         return password2
 
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data.get('password1'))
+        user.set_password(self.cleaned_data['password1'])
         if commit:
             user.save()
         return user
 
 
-class UserChangeForm(forms.ModelForm):
-    """
-    Form for updating users. Includes all the fields on
-    the user, but replaces the password field with admin's
-    password hash display field.
-    """
-
-    password = ReadOnlyPasswordHashField()
-
-    class Meta:
-        model = User
-        fields = ('email', 'password', 'is_active', 'is_staff')
-
-    def clean_password(self):
-        # Regardless of what the user provides, return the initial value.
-        # This is done here rather than on the field, because the
-        # field does not have access to the initial value
-        return self.initial['password']
-
-
-class UserChangeEmailForm(forms.Form):
-    email = forms.EmailField(required=True)
+class EmailChangeForm(forms.Form):
+    email = forms.EmailField(label=_('New email address'), required=True)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        email = self.cleaned_data['email'].lower()
         user = User.objects.get(email=self.user.email)
         if email == user.email:
             raise forms.ValidationError('This email address is already registered to your account')
         elif User.objects.exclude(email=user.email).filter(email=email).exists():
-            raise forms.ValidationError('This email address is already registered to another account')
+            raise forms.ValidationError('This email address is already registered')
         return email
 
+    def is_valid(self):
+        # Adds CSS class to invalid fields
+        result = super().is_valid()
+        # loop on *all* fields if key '__all__' found else only on errors:
+        for x in self.fields if '__all__' in self.errors else self.errors:
+            attrs = self.fields[x].widget.attrs
+            attrs.update({'class': attrs.get('class', '') + ' form-invalid'})
+        return result
 
-class ResendActivationEmailForm(forms.Form):
+
+class AccountActivationForm(forms.Form):
     """ Resends activation email if user exists and is not actived """
 
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(label=_('email'), required=True)
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        email = self.cleaned_data['email'].lower()
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -91,6 +82,5 @@ class ResendActivationEmailForm(forms.Form):
         if user.is_active:
             raise forms.ValidationError('This account has already been activated')
         if user.is_banned:
-            raise forms.ValidationError('This account is currently banned and cannot be activated')
-        else:
-            return email
+            raise forms.ValidationError('This account is currently banned and cannot be reactivated')
+        return email

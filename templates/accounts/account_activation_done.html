@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Trackedfitness | Activation email sent
+Trackedfitness | Account Activation - Email Sent
 {% endblock title %}
 
 {% block content %}
@@ -10,7 +10,7 @@ Trackedfitness | Activation email sent
 
 <p>We've sent an activation email to the email address provided, please click on the link withn the email to activate your account.</p>
 
-<br>
-<div><a href="{% url 'accounts:login' %}">Log in</a></div>
+<p><a href="{% url 'accounts:login' %}">Log in</a></p>
+<p><a href="{% url 'accounts:account_activation' %}">Resend activation link</a></p>
 
 {% endblock content %}

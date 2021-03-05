@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.messages.views import SuccessMessageMixin
@@ -11,9 +12,9 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.views.generic import TemplateView, UpdateView, FormView
+from django.views.generic import FormView, TemplateView, UpdateView
 
-from .forms import ResendActivationEmailForm, UserCreationForm, UserChangeEmailForm
+from .forms import AccountActivationForm, EmailChangeForm, UserCreationForm
 from .models import User
 
 
@@ -92,14 +93,11 @@ class UsernameChangeView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return self.request.user
 
 
-class EmailChangeView(LoginRequiredMixin, SuccessMessageMixin, FormView):
+class EmailChangeView(LoginRequiredMixin, FormView):
     """ Allows the user to change their email address, requires email confirmation. """
 
     template_name = 'accounts/email_change_form.html'
-    form_class = UserChangeEmailForm
-    success_message = (
-        'We have sent you a link to verify your new email address, please check your inbox and spam/junk folder'
-    )
+    form_class = EmailChangeForm
     success_url = reverse_lazy('accounts:email_change_done')
 
     def get_form_kwargs(self):
@@ -110,13 +108,13 @@ class EmailChangeView(LoginRequiredMixin, SuccessMessageMixin, FormView):
     def form_valid(self, form):
         email = form.cleaned_data['email']
         user = self.request.user
-        user.email_change_pending = email
+        user.email_change_request = email
         user.save()
         current_site = get_current_site(self.request)
         domain = current_site.domain
         site_name = current_site.name
         email_body = render_to_string(
-            'accounts/email_change_email.html',
+            'accounts/emails/email_change_email.html',
             {
                 'user': user,
                 'domain': domain,
@@ -126,15 +124,16 @@ class EmailChangeView(LoginRequiredMixin, SuccessMessageMixin, FormView):
             },
         )
         email_message = EmailMessage(
-            subject='Confirm email address change',
+            subject='Confirm your email address',
             body=email_body,
-            from_email='\'Trackedfitness\' <noreply@trackedfitness.com>',
+            from_email='Trackedfitness <noreply@trackedfitness.com>',
             to=[email],
         )
         email_message.send()
         return super().form_valid(form)
 
 
+@login_required
 def email_change_done_view(request):
     """ Displays a success message for the above. """
 
@@ -149,14 +148,13 @@ def email_change_confirm_view(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = User.objects.get(pk=uid)
-        new_email_address = user.email_change_pending
+        new_email_address = user.email_change_request
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
-    if user is not None and default_token_generator.check_token(user, token):
+    if user is not None and new_email_address is not None and default_token_generator.check_token(user, token):
         user.email = new_email_address
-        user.email_change_pending = None
+        user.email_change_request = None
         user.save()
-        # messages.success(request, 'Your email address been updated')
         return redirect('accounts:email_change_complete')
     return render(request, template_name, {})
 
@@ -191,7 +189,7 @@ def register_view(request):
             domain = current_site.domain
             site_name = current_site.name
             email_body = render_to_string(
-                'accounts/account_activation_email.html',
+                'accounts/emails/account_activation_email.html',
                 {
                     'user': user,
                     'domain': domain,
@@ -204,7 +202,7 @@ def register_view(request):
             activation_email = EmailMessage(
                 subject='Activate your account',
                 body=email_body,
-                from_email='\'Trackedfitness\' <noreply@trackedfitness.com>',
+                from_email='Trackedfitness <noreply@trackedfitness.com>',
                 to=[email],
             )
             activation_email.send()
@@ -217,15 +215,14 @@ def register_view(request):
 
 
 def account_activation_view(request):
-    """ 
+    """
     Allows the user to resend account activation email.
-    TODO: Only allow users who aren't banned to access this view
     """
     template_name = 'accounts/account_activation_form.html'
     context = {}
-    
+
     if request.method == 'POST':
-        form = ResendActivationEmailForm(request.POST)
+        form = AccountActivationForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
             user = User.objects.get(email=email)
@@ -233,7 +230,7 @@ def account_activation_view(request):
             domain = current_site.domain
             site_name = current_site.name
             email_body = render_to_string(
-                'accounts/account_activation_email.html',
+                'accounts/emails/account_activation_email.html',
                 {
                     'user': user,
                     'domain': domain,
@@ -245,13 +242,13 @@ def account_activation_view(request):
             activation_email = EmailMessage(
                 subject='Activate your account',
                 body=email_body,
-                from_email='\'Trackedfitness\' <noreply@trackedfitness.com>',
+                from_email='Trackedfitness <noreply@trackedfitness.com>',
                 to=[email],
             )
             activation_email.send()
             return redirect('accounts:account_activation_done')
     else:
-        form = ResendActivationEmailForm()
+        form = AccountActivationForm()
 
     context['form'] = form
     return render(request, template_name, context)
@@ -281,6 +278,7 @@ def account_activation_confirm_view(request, uidb64, token):
     return render(request, template_name, {})
 
 
+@login_required
 def account_activation_complete_view(request):
     """ Displays a success message for the above. """
 

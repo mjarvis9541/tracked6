@@ -1,17 +1,15 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Trackedfitness | Change name
+Trackedfitness | Change Name
 {% endblock title %}
 
 {% block content %}
 
 <h1>Change Name</h1>
-<br>
-<p>Change your name using the form below.</p>
 
+<p>Change your name below.</p>
 
-<br>
 <form method="post"> {% csrf_token %}
     {% include 'form.html' %}
     <button class="btn">Submit</button>
